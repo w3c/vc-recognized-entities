@@ -1,0 +1,20 @@
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:web:register.example.gov",
+  "verificationMethod": [{
+    "id": "did:web:register.example.gov#issuance-key-1",
+    "type": "JsonWebKey2020",
+    "controller": "did:web:register.example.gov",
+    "publicKeyJwk": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "ReGiStErPuBlIcKeYxVaLuE",
+      "y": "ReGiStErPuBlIcKeYyVaLuE"
+    }
+  }],
+  "service": [{
+    "id": "did:web:register.example.gov#recognized-entity",
+    "type": "RecognizedEntityCredential",
+    "serviceEndpoint": "https://grid.un.org/credentials/register.example.gov.json"
+  }]
+}

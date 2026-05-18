@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:accreditation.example.gov",
+    "type": "RecognizedIssuer",
+    "name": "Sample National Accreditation Authority"
+  },
+  "validFrom": "2024-06-01T00:00:00Z",
+  "validUntil": "2028-06-01T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:samplecertifier.example.com",
+    "type": "RecognizedEntity",
+    "name": "Sample Certifier Inc",
+    "legalName": "Sample Certifier Incorporated",
+    "url": "https://www.samplecertifier.example.com/",
+    "description": "An accredited conformity assessment body authorized to issue product and process conformity certificates.",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:accreditation.example.gov"
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2024-06-01T09:15:00Z",
+    "verificationMethod": "did:web:accreditation.example.gov#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z4AcCrEdExAmPlEpRoOfVaLuEfOrDeMoNsTrAtIoNpUrPoSeS0nLy1234567890"
+  }
+}

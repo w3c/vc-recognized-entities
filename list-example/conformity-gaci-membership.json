@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:register.global-aci.org",
+    "type": "RecognizedIssuer",
+    "name": "Global Accreditation Cooperation"
+  },
+  "validFrom": "2024-01-01T00:00:00Z",
+  "validUntil": "2034-01-01T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:accreditation.example.gov",
+    "type": "RecognizedEntity",
+    "name": "Sample National Accreditation Authority",
+    "legalName": "Sample National Accreditation Authority",
+    "url": "https://accreditation.example.gov/",
+    "description": "The authoritative national accreditation body for conformity assessment bodies.",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:register.global-aci.org"
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2024-01-01T08:00:00Z",
+    "verificationMethod": "did:web:register.global-aci.org#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z4GaCiExAmPlEpRoOfVaLuEfOrDeMoNsTrAtIoNpUrPoSeS0nLy1234567890ab"
+  }
+}

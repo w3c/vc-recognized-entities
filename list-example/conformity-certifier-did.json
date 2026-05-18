@@ -1,0 +1,20 @@
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:web:samplecertifier.example.com",
+  "verificationMethod": [{
+    "id": "did:web:samplecertifier.example.com#issuance-key-1",
+    "type": "JsonWebKey2020",
+    "controller": "did:web:samplecertifier.example.com",
+    "publicKeyJwk": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "CeRtIfIeRpUbLiCkEyXvAlUe",
+      "y": "CeRtIfIeRpUbLiCkEyYvAlUe"
+    }
+  }],
+  "service": [{
+    "id": "did:web:samplecertifier.example.com#recognized-entity",
+    "type": "RecognizedEntityCredential",
+    "serviceEndpoint": "https://accreditation.example.gov/credentials/samplecertifier.example.com.json"
+  }]
+}

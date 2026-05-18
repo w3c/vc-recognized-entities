@@ -260,9 +260,81 @@ share a Verifiable Presentation to that Verifier.
 Lists of Verifiable Issuers and Verifiers help to automate the decision process
 of whether to engage with a counterparty in a transaction and make it more
 auditable by ensuring that software can note that a party was on a list before
-engaging with them. This paper contains the following sections that provide
-background on the problem space and requirements to address it:
+engaging with them.
     </p>
+
+      <section>
+        <h3>Recognition Patterns</h3>
+
+        <p>
+There are two broad patterns by which a verifier can determine whether the
+issuer of a credential is a recognized entity:
+        </p>
+
+        <h4>Pre-configured List Pattern</h4>
+
+        <p>
+In this pattern, the verifier has prior access to a recognized entity list
+through some out-of-band mechanism. The verifier receives a credential,
+identifies the issuer, and checks whether that issuer appears in a list
+that the verifier already knows about and trusts. This pattern works well
+when the verifier has an established relationship with the list operator
+or when a governance framework mandates the use of a specific list.
+        </p>
+
+        <h4>Discoverable Chain Pattern</h4>
+
+        <p>
+In many real-world scenarios — particularly in cross-border trade — the verifier
+has no direct relationship with the credential issuer and no prior knowledge
+of which recognized entity list to consult. In these cases, a discoverable
+chain of trust model is needed, where the verifier follows a predictable path
+from the credential being verified up through a chain of recognized entity
+credentials to a globally recognized authority.
+        </p>
+
+        <p>
+In this pattern, each entity in the chain holds a recognized entity credential
+that is discoverable from their Decentralized Identifier (DID) document (for
+example, via a DID service endpoint). Verification follows linked credentials
+where the issuer DID of one credential matches the subject DID of the next
+credential in the chain. This enables a verifier to start from any transaction
+credential and walk up the chain to a root authority without needing prior
+knowledge of any specific list.
+        </p>
+
+        <p>
+For example, a verifier receiving a commercial invoice can follow this chain:
+        </p>
+        <ol>
+          <li>Verify the commercial invoice credential and identify the issuer DID.</li>
+          <li>Resolve the issuer's DID document and discover the business registration
+credential from the DID service endpoint.</li>
+          <li>Verify that the subject DID of the business registration credential
+matches the issuer DID of the commercial invoice.</li>
+          <li>Identify the issuer DID of the business registration credential (the
+national register) and resolve its DID document.</li>
+          <li>Discover the register's own recognized entity credential (issued by a
+global authority) from the register's DID service endpoint.</li>
+          <li>Verify the chain terminates at a globally recognized root authority.</li>
+        </ol>
+
+        <p>
+This discoverable chain pattern places specific requirements on recognized entity
+credentials: the subject identifier must be a DID (to enable DID document
+resolution), and a standard discovery mechanism must exist (to enable
+credential retrieval from DID service endpoints). Additionally, linked
+credential verification rules are needed to ensure that the issuer DID of each
+credential in the chain corresponds to the subject DID of the next recognition
+credential.
+        </p>
+
+      </section>
+
+      <p>
+This paper contains the following sections that provide background on the
+problem space and requirements to address it:
+      </p>
 
       <ul>
         <li>
@@ -648,6 +720,101 @@ wallet to surrender the information.
 Figure 2: A properly-implemented wallet with Verifiable-Verifier List protects
 citizens against overzealous law enforcement.
 </p>
+<h3>Discoverable Chain Use Cases</h3>
+
+<p>
+The following use cases illustrate scenarios where a verifier has no prior
+relationship with the credential issuer and must discover the chain of trust
+dynamically rather than consulting a pre-configured list.
+</p>
+
+<ul>
+<li>
+<strong>Streamlined Border Clearance for Cross-Border Trade</strong>
+<p>
+Sample Seller Inc, an exporter in one country, issues a commercial invoice as a
+Verifiable Credential and sends it (via the importer) to the importing customs
+authority in another country. The customs authority has no direct relationship
+with Sample Seller Inc and no prior knowledge of the exporter's national
+business register. However, the customs authority can verify the identity trust
+chain as follows:
+</p>
+<ol>
+<li>The customs authority verifies the commercial invoice credential and
+identifies the issuer DID (claimed to be "Sample Seller Inc").</li>
+<li>The customs authority resolves Sample Seller Inc's DID document and
+discovers a business registration credential (a recognized entity credential)
+at the DID service endpoint.</li>
+<li>The customs authority verifies that the subject DID of the business
+registration credential matches the issuer DID of the commercial invoice,
+confirming that the registered entity and the invoice issuer are the same.</li>
+<li>The customs authority identifies the issuer of the business registration
+credential — Sample National Business Register — and resolves its DID
+document.</li>
+<li>The customs authority discovers Sample National Business Register's own
+recognized entity credential (issued by the UN Global Registrar Information
+Directory) at the register's DID service endpoint.</li>
+<li>The customs authority verifies that Sample National Business Register is a
+recognized member of the UN directory, completing the trust chain.</li>
+</ol>
+<p>
+This enables the importing customs authority to pre-clear shipments
+automatically and with high confidence, even though the authority has never
+previously interacted with the exporter or the exporting country's business
+register. The trust chain links approximately 10 billion trade documents
+issued annually, to around 20 million business registrations managed by
+roughly 1,000 national registers worldwide, anchored by a single global
+directory.
+</p>
+<p>
+The same pattern applies to trade finance: a lender receiving a commercial
+invoice can follow the identical chain to confirm the identity of the
+invoice issuer before approving finance, helping to close the estimated
+three trillion dollar global trade finance gap.
+</p>
+</li>
+
+<li>
+<strong>Verifiable Product Conformity</strong>
+<p>
+A corporate buyer or an environmental regulator receives a product conformity
+certificate issued as a Verifiable Credential by Sample Certifier Inc, a
+third-party auditor. The buyer needs to confirm not only that the certificate
+is genuine and untampered, but also that Sample Certifier Inc is legitimately
+accredited to issue such certificates. The verifier can follow a discoverable
+trust chain as follows:
+</p>
+<ol>
+<li>The verifier verifies the conformity certificate credential and identifies
+the issuer DID (claimed to be "Sample Certifier Inc").</li>
+<li>The verifier resolves Sample Certifier Inc's DID document and discovers an
+accreditation credential (a recognized entity credential) at the DID service
+endpoint.</li>
+<li>The verifier verifies that the subject DID of the accreditation credential
+matches the issuer DID of the conformity certificate, confirming that the
+accredited entity and the certificate issuer are the same.</li>
+<li>The verifier identifies the issuer of the accreditation credential —
+Sample National Accreditation Authority — and resolves its DID document.</li>
+<li>The verifier discovers Sample National Accreditation Authority's own
+recognized entity credential (issued by the Global Accreditation Cooperation)
+at the authority's DID service endpoint.</li>
+<li>The verifier verifies that Sample National Accreditation Authority is a
+recognized member of the Global Accreditation Cooperation, completing
+the trust chain.</li>
+</ol>
+<p>
+This pattern mirrors the existing structure of the Global Accreditation
+Cooperation (GACI), which operates mutual recognition arrangements spanning
+over one hundred countries. By encoding accreditation credentials as recognized
+entity credentials discoverable from DID documents, any party receiving a
+product conformity certificate can follow the chain from the certificate,
+through the auditor's accreditation, to GACI's globally recognized mutual
+recognition arrangement — all cryptographically verifiable without prior
+knowledge of the specific auditor or national accreditation authority.
+</p>
+</li>
+</ul>
+
 <h3>Commonalities and Differences</h3>
 <p>
 Conceptually and technically, the two types of lists (Verifiable Issuer,
@@ -666,6 +833,19 @@ target Holder (digital wallet) implementations. Also there may be major
 differences in the governance between the two types of lists, or whether/how the
 consulting of lists is implemented and enforced. All of these differences are
 out of the scope of this paper.
+</p>
+<p>
+The discoverable chain pattern introduces an additional dimension. Rather than
+a verifier consulting a pre-configured list, the recognized entity credential
+is discovered from the DID document of the entity being verified. In this
+model, a recognized entity credential may contain a single entity (rather than
+a list of many entities), and multiple such credentials are linked in a chain
+where each credential's issuer is the subject of the next credential in the
+chain. This pattern and the pre-configured list pattern are not mutually
+exclusive — a recognized entity credential can serve both models — but the
+discoverable chain pattern places additional requirements on the data model,
+particularly that the subject identifier be a DID and that a standard discovery
+mechanism be defined.
 </p>
 
     </section>

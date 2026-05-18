@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:register.example.gov",
+    "type": "RecognizedIssuer",
+    "name": "Sample National Business Register"
+  },
+  "validFrom": "2024-03-15T00:00:00Z",
+  "validUntil": "2034-03-15T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:sampleseller.example.com",
+    "type": "RecognizedEntity",
+    "name": "Sample Seller Inc",
+    "legalName": "Sample Seller Incorporated",
+    "url": "https://www.sampleseller.example.com/",
+    "description": "A registered trading entity authorized to issue commercial trade documents.",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:register.example.gov"
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2024-03-15T10:30:00Z",
+    "verificationMethod": "did:web:register.example.gov#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z4EXaMpLeProOfVaLuEfOrDeMoNsTrAtIoNpUrPoSeS0nLy1234567890abcdef"
+  }
+}
