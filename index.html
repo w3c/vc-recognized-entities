@@ -268,12 +268,15 @@ be referenced and composed into new decentralized ecosystems.
 
       <p>
 Readers who are interested in the variety of use cases supported by this
-specification are urged to read the
-<a href="use-cases.html">use cases document</a>.
+specification are urged to read Section [[[#use-cases]]].
 The remainder of this document is organized into the following sections:
       </p>
 
       <ul>
+        <li>
+Section [[[#use-cases]]] describes a set of use cases that motivate the
+design of this specification.
+        </li>
         <li>
 Section [[[#data-model]]] defines the core data model, including the
 `RecognizedEntity`, `RecognizedAction`, and `RecognizedEntityCredential`
@@ -310,6 +313,103 @@ comments (`//`) and the use of ellipsis (`...`) to denote
 information that adds little value to the example. Implementers are cautioned to
 remove this content if they desire to use the information as valid JSON or
 JSON-LD.
+        </p>
+      </section>
+
+    </section>
+
+    <section>
+      <h2>Use Cases</h2>
+
+      <p>
+This section describes a set of use cases that motivate the design of this
+specification.
+      </p>
+
+      <section>
+        <h3>Cross-border Trade</h3>
+
+        <p>
+Roughly five billion commercial invoices are exchanged annually among
+approximately 50 million trading entities worldwide. An exporter issues a
+commercial invoice as a [=verifiable credential=] and sends it to the importer.
+The importer, in turn, presents that invoice to the importing customs authority
+for border clearance and to a trade finance lender for documentary letter of
+credit settlement. Neither the customs authority nor the lender has a direct
+relationship with the exporter — they receive the invoice indirectly, through
+the importer, yet must determine whether the exporter is a legitimate
+registered entity.
+        </p>
+
+        <p>
+Verification relies on two independent but linked credentials, issued at
+different times and with different lifecycles:
+        </p>
+
+        <ul>
+          <li>
+The commercial invoice [=verifiable credential=], issued by the exporter's
+DID — billions issued per year with a lifecycle of weeks to months.
+          </li>
+          <li>
+A `RecognizedEntityCredential` issued by the national business register of the
+exporting economy to the exporter — millions valid at any time, with lifecycles
+spanning years to decades.
+          </li>
+        </ul>
+
+        <p>
+Upon receiving the invoice, the [=verifier=] resolves the exporter's DID,
+discovers the linked `RecognizedEntityCredential` issued by the national
+business register, and confirms that the DID in the invoice matches the subject
+of that credential. This gives the customs authority or the lender both document
+integrity — the invoice has not been tampered with — and identity integrity —
+the [=issuer=] is a registered entity in the exporting economy — enabling
+automated border clearance and automated trade finance due diligence without any
+prior knowledge of the exporter.
+        </p>
+      </section>
+
+      <section>
+        <h3>Product Conformity</h3>
+
+        <p>
+A conformity assessment body (CAB) issues a certificate of conformity (CoC) as
+a [=verifiable credential=] attesting to the safety or quality performance of a
+specific product. The CoC accompanies the product through the supply chain to an
+importing market. However, the market surveillance authority in the importing
+country typically has no direct relationship with the CAB and cannot
+independently determine whether the certificate was issued by a genuinely
+accredited test laboratory.
+        </p>
+
+        <p>
+When the national accreditation authority in the exporting country issues a
+`RecognizedEntityCredential` to the CAB — attesting to the CAB's accreditation
+scope — a linked verification chain becomes possible, analogous to the
+cross-border trade case above:
+        </p>
+
+        <ul>
+          <li>
+The certificate of conformity [=verifiable credential=], issued by the CAB's
+DID, asserting that a product meets specific safety or quality standards.
+          </li>
+          <li>
+A `RecognizedEntityCredential` issued by the national accreditation authority to
+the CAB, attesting that the CAB is accredited to perform conformity assessments
+within a defined scope.
+          </li>
+        </ul>
+
+        <p>
+Upon receiving the CoC, the market surveillance authority resolves the CAB's
+DID, discovers the linked `RecognizedEntityCredential` issued by the national
+accreditation authority, and confirms that the DID in the certificate matches
+the subject of that credential. This gives the authority both document
+integrity — the CoC has not been tampered with — and identity integrity — the
+[=issuer=] is a genuinely accredited CAB — enabling pre-clearance of goods at
+the border without manual verification of the CAB's accreditation status.
         </p>
       </section>
 
