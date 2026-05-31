@@ -103,13 +103,13 @@ their own verifiable credential, allowing the verifier to confirm both the
 integrity of the presented credential and the recognized status of its issuer.
       </p>
       <p>
-The core trust challenge is that a verifier receiving a credential from an
+The core challenge is that a verifier receiving a credential from an
 unknown issuer must be able to determine, in an automated and
 cryptographically-verifiable way, whether that issuer is recognized within
 the relevant ecosystem. The Recognized Entities specification addresses this
 by providing a data model for publishing recognition information as a verifiable
-credential, enabling a chain of trust from verifier trust anchors through
-list publishers to individual recognized entities.
+credential, enabling a verifier to accept verifiable credentials from
+recognized entities described by recognized entity list publishers.
       </p>
       <p>
 For this threat model, we consider a minimal instantiation of the Recognized
@@ -135,8 +135,8 @@ The data flow diagram below illustrates the key elements and data flows in
 a minimal Recognized Entities ecosystem. The diagram shows how a recognized
 entity credential is issued by a list publisher to a recognized entity,
 how the holder presents that credential alongside a verifiable credential
-to a verifier, and how the verifier resolves the chain of trust back to its
-configured trust anchors.
+to a verifier, and how the verifier resolves the issuer back to the
+recognized entity in a published list known to the verifier.
       </p>
 
       <img src="diagrams/dfd.svg">
@@ -219,7 +219,7 @@ An entity — such as a customs authority, a trade finance lender, or a
 market surveillance authority — that receives a verifiable credential from
 a holder and must determine whether the issuer of that credential is
 recognized within the relevant ecosystem. The verifier is configured with
-one or more trust anchors that identify the list publishers it considers
+one or more URLs that identify the list publishers it considers
 authoritative.
             </td>
           </tr>
@@ -233,7 +233,7 @@ An entity — such as a national business register, an accreditation
 authority, or an industry consortium — that issues
 <code>RecognizedEntityCredential</code> resources asserting that one or
 more entities are recognized to perform specific actions. The list
-operator is the root of trust for any recognized entity credentials it
+operator is the authority for any recognized entity credentials it
 issues.
             </td>
           </tr>
@@ -271,7 +271,7 @@ P2 Credential Verification Process</dfn>
 The running algorithm by which a verifier checks the cryptographic proof
 of a presented verifiable credential, resolves the issuer's recognized
 entity credential, and confirms that the issuer is recognized within a
-trusted list. This process may involve fetching recognized entity
+configured list. This process may involve fetching recognized entity
 credentials from external URLs or from holder-provided presentations.
             </td>
           </tr>
@@ -306,7 +306,7 @@ F2 Credential Presentation</dfn>
             <td>
 The data flow by which a holder presents a verifiable credential — and
 optionally a recognized entity credential — to a verifier. This flow
-crosses a trust boundary between the holder's wallet and the verifier's
+crosses a security boundary between the holder's wallet and the verifier's
 verification process.
             </td>
           </tr>
@@ -342,7 +342,7 @@ S1 Holder Credential Store</dfn>
             <td>
 The persistent storage within the holder's wallet where verifiable
 credentials and recognized entity credentials are kept. In the holder's
-trust container, this storage is accessible only to the holder's wallet
+security boundary, this storage is accessible only to the holder's wallet
 software.
             </td>
           </tr>
@@ -469,7 +469,7 @@ ability to function.
     <p>
 A list publisher is an entity that issues
 <code>RecognizedEntityCredential</code> resources. List operators are
-the root of trust for any recognized entity credentials they issue. They
+the the authority for any recognized entity credentials they issue. They
 range from national government bodies (such as business registers and
 accreditation authorities) to industry consortia and standards organizations.
     </p>
