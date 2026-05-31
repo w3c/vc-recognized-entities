@@ -30,9 +30,9 @@
   <link rel="stylesheet" href="threats/threat-model.css" />
   <script src="threats/t1-unauthorized-issuer-spoofing.js"></script>
   <script src="threats/t2-recognized-entity-credential-tampering.js"></script>
-  <script src="threats/t3-registry-fetch-denial-of-service.js"></script>
-  <script src="threats/t4-privacy-leakage-via-registry-fetch.js"></script>
-  <script src="threats/t5-anti-competitive-registry-gatekeeping.js"></script>
+  <script src="threats/t3-list-fetch-denial-of-service.js"></script>
+  <script src="threats/t4-privacy-leakage-via-list-fetch.js"></script>
+  <script src="threats/t5-anti-competitive-list-gatekeeping.js"></script>
 </head>
 
 <body>
@@ -229,7 +229,7 @@ E4 List Publisher</dfn>
 An entity — such as a national business register, an accreditation
 authority, or an industry consortium — that issues
 <code>RecognizedEntityCredential</code> resources asserting that one or
-more entities are recognized to perform specific actions. The registry
+more entities are recognized to perform specific actions. The list
 operator is the root of trust for any recognized entity credentials it
 issues.
             </td>
@@ -243,7 +243,7 @@ E5 Governance Authority</dfn>
 A legal person or consortium that sets the policies, criteria, and rules
 under which a list publisher may grant recognition. Examples include
 government regulators, standards bodies, and industry governance frameworks.
-The governance authority may or may not be the same entity as the registry
+The governance authority may or may not be the same entity as the list
 operator.
             </td>
           </tr>
@@ -268,14 +268,14 @@ P2 Credential Verification Process</dfn>
 The running algorithm by which a verifier checks the cryptographic proof
 of a presented verifiable credential, resolves the issuer's recognized
 entity credential, and confirms that the issuer is recognized within a
-trusted registry. This process may involve fetching recognized entity
+trusted list. This process may involve fetching recognized entity
 credentials from external URLs or from holder-provided presentations.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="P3|P3 Registry Publication Process|Registry Publication Process">
-P3 Registry Publication Process</dfn>
+              <dfn data-lt="P3|P3 List Publication Process|List Publication Process">
+P3 List Publication Process</dfn>
             </td>
             <td>
 The running algorithm by which a list publisher creates, signs, and
@@ -309,8 +309,8 @@ verification process.
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="F3|F3 Registry Fetch|Registry Fetch">
-F3 Registry Fetch</dfn>
+              <dfn data-lt="F3|F3 List Fetch|List Fetch">
+F3 List Fetch</dfn>
             </td>
             <td>
 The data flow by which a verifier retrieves a recognized entity credential
@@ -345,8 +345,8 @@ software.
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="S2|S2 Registry Data Store|Registry Data Store">
-S2 Registry Data Store</dfn>
+              <dfn data-lt="S2|S2 List Data Store|List Data Store">
+S2 List Data Store</dfn>
             </td>
             <td>
 The persistent storage within the list publisher's server where
@@ -376,7 +376,7 @@ O2 RecognizedEntityCredential</dfn>
 A cryptographically-signed data object issued by a list publisher to a
 recognized entity. It asserts that the entity's DID is recognized to
 perform one or more actions — such as issuing or verifying specific types
-of verifiable credentials — within the ecosystem governed by the registry
+of verifiable credentials — within the ecosystem governed by the list
 operator.
             </td>
           </tr>
@@ -394,14 +394,14 @@ control.
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="C2|C2 Registry Server|Registry Server">
-C2 Registry Server</dfn>
+              <dfn data-lt="C2|C2 List Server|List Server">
+C2 List Server</dfn>
             </td>
             <td>
 The container — typically a web server or DID-linked resource host —
 managed by the list publisher to store (S2) and serve recognized entity
-credentials. It runs the registry publication process (P3) and responds to
-registry fetch requests (F3).
+credentials. It runs the list publication process (P3) and responds to
+list fetch requests (F3).
             </td>
           </tr>
         </tbody>
@@ -441,7 +441,7 @@ presenting a university-issued diploma.
 The holder's primary goal is to present credentials that will be accepted
 by verifiers, without disclosing more information than necessary. Holders
 have a strong interest in privacy: they do not want their credential
-presentations to leak information about their activities to registry
+presentations to leak information about their activities to list
 operators or other third parties.
     </p>
 
@@ -458,21 +458,21 @@ The verifier's primary goal is to confirm that the credential it has
 received was issued by an entity that is genuinely recognized within the
 relevant ecosystem, and that the credential itself has not been tampered
 with. Verifiers also have a strong interest in availability: a denial of
-service against the registries they depend on directly impairs their
+service against the lists they depend on directly impairs their
 ability to function.
     </p>
 
     <h3>E4 List Publisher</h3>
     <p>
 A list publisher is an entity that issues
-<code>RecognizedEntityCredential</code> resources. Registry operators are
+<code>RecognizedEntityCredential</code> resources. List operators are
 the root of trust for any recognized entity credentials they issue. They
 range from national government bodies (such as business registers and
 accreditation authorities) to industry consortia and standards organizations.
     </p>
     <p>
-Registry operators have a strong interest in ensuring that only properly
-vetted entities appear in their registries, and that their registry
+List operators have a strong interest in ensuring that only properly
+vetted entities appear in their lists, and that their list
 credentials are not forged or misused. They also bear operational
 responsibility for the availability and integrity of the credentials they
 publish.
