@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Recognized Entities Threat Model</title>
+  <script src="https://www.w3.org/Tools/respec/respec-w3c"
+    class="remove"></script>
+  <script class="remove"
+    src="https://cdn.jsdelivr.net/gh/w3c/respec-mermaid@1.3.0/dist/main.js">
+  </script>
+  <script src="threats/threat-model.js"></script>
+
+  <script class='remove'>
+    // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
+    var respecConfig = {
+      specStatus: "NOTE",
+      github: {
+        repoURL: "https://github.com/w3c/vc-recognized-entities",
+        branch: "main"
+      },
+      noRecTrack: "true",
+      maxTocLevel: 4,
+      threatModelTocSelector: "#threat-model-toc",
+      threatModelDetailsSelector: "#threat-model-details",
+      preProcess: [window.ThreatModel.render]
+    };
+  </script>
+  <script src="threats/outline.js"></script>
+  <link rel="stylesheet" href="threats/threat-model.css" />
+  <script src="threats/t1-unauthorized-issuer-spoofing.js"></script>
+  <script src="threats/t2-recognized-entity-credential-tampering.js"></script>
+  <script src="threats/t3-registry-fetch-denial-of-service.js"></script>
+  <script src="threats/t4-privacy-leakage-via-registry-fetch.js"></script>
+  <script src="threats/t5-anti-competitive-registry-gatekeeping.js"></script>
+</head>
+
+<body>
+  <section id="abstract">
+    <p>
+This document describes a threat model for the
+<a href="https://w3c.github.io/vc-recognized-entities/">Recognized
+Entities</a> specification. It identifies and analyzes security and
+privacy threats specific to ecosystems that use
+<code>RecognizedEntityCredential</code> resources to express recognition of
+entities and the actions they are authorized to perform, such as issuing or
+verifying verifiable credentials.
+    </p>
+  </section>
+  <section id="sotd">
+    <p>
+This threat model is a work in progress. It is published alongside the
+Recognized Entities specification to inform implementers and ecosystem
+designers of the security and privacy considerations relevant to deployments
+of the specification. Feedback and proposed additions are welcome via the
+<a href="https://github.com/w3c/vc-recognized-entities/issues">issue
+tracker</a>.
+    </p>
+  </section>
+  <section id="Introduction">
+    <h2>Introduction</h2>
+    <p>
+Threat modeling is a vital part of specification development. This
+document provides a threat model for the Recognized Entities specification,
+which defines a data model for expressing that one or more entities are
+recognized to perform specific actions — such as issuing or verifying verifiable
+credentials — within a particular ecosystem.
+    </p>
+    <p>
+This threat model follows the methodology described in the
+<a href="https://www.w3.org/TR/threat-modeling-guide/">W3C Threat
+Modeling Guide</a> and uses the STRIDE taxonomy for classifying threats.
+Threats are grouped into four categories:
+    </p>
+    <ul>
+      <li>
+<strong>Target Threats</strong> — threats the specification was designed
+to address.
+      </li>
+      <li>
+<strong>Implementation Threats</strong> — threats that implementers must
+handle; the specification leaves the choice of mitigation open.
+      </li>
+      <li>
+<strong>External Threats</strong> — real-world risks acknowledged as out
+of scope for this version of the specification.
+      </li>
+      <li>
+<strong>Dependency Threats</strong> — threats inherited from technologies
+the specification depends upon.
+      </li>
+    </ul>
+
+    <section id="threat-model-description">
+      <h3>Description</h3>
+      <p>
+The Recognized Entities ecosystem enables a list publisher — such as a
+national business register, an accreditation authority, or an industry
+consortium — to issue a <code>RecognizedEntityCredential</code> asserting
+that one or more entities are recognized to perform specific actions. A
+holder can acquire such a credential and present it to a verifier alongside
+their own verifiable credential, allowing the verifier to confirm both the
+integrity of the presented credential and the recognized status of its issuer.
+      </p>
+      <p>
+The core trust challenge is that a verifier receiving a credential from an
+unknown issuer must be able to determine, in an automated and
+cryptographically-verifiable way, whether that issuer is recognized within
+the relevant ecosystem. The Recognized Entities specification addresses this
+by providing a data model for publishing recognition information as a verifiable
+credential, enabling a chain of trust from verifier trust anchors through
+list publishers to individual recognized entities.
+      </p>
+      <p>
+For this threat model, we consider a minimal instantiation of the Recognized
+Entities ecosystem consisting of five roles: the <strong>List Publisher
+</strong> who issues recognized entity credentials, the <strong>Recognized
+Entity / Issuer</strong> who receives recognition and issues verifiable
+credentials, the <strong>Holder</strong> who receives and presents those
+credentials, the <strong>Verifier</strong> who verifies the credential
+chain, and the <strong>Governance Authority</strong> who sets the policies
+under which recognition is granted.
+      </p>
+      <p class="note" role="note">
+<span class="marker">Note:</span> We do NOT model potential attackers as
+first-class elements, as over-characterizing attackers can lead to analysis
+bias that is better avoided.
+      </p>
+    </section>
+
+    <section id="threat-model-data-flow-diagram">
+      <h3>Data Flow Diagram for the Recognized Entities Ecosystem</h3>
+      <p>
+The data flow diagram below illustrates the key elements and data flows in
+a minimal Recognized Entities ecosystem. The diagram shows how a recognized
+entity credential is issued by a list publisher to a recognized entity,
+how the holder presents that credential alongside a verifiable credential
+to a verifier, and how the verifier resolves the chain of trust back to its
+configured trust anchors.
+      </p>
+      <p>
+The following notation is used in the diagram description and dictionary:
+      </p>
+      <ul>
+        <li>
+<strong>E</strong> — External Entity (human or legal person outside the
+system boundary)
+        </li>
+        <li>
+<strong>P</strong> — Process (running algorithm that transforms data)
+        </li>
+        <li>
+<strong>F</strong> — Data Flow (movement of data between elements)
+        </li>
+        <li>
+<strong>S</strong> — Data Store (persistent or ephemeral storage)
+        </li>
+        <li>
+<strong>O</strong> — Data Object (self-contained, transferable artifact)
+        </li>
+        <li>
+<strong>C</strong> — Container (collection of elements under a single
+authority)
+        </li>
+      </ul>
+    </section>
+
+    <section id="threat-model-architecture-dictionary">
+      <h3>Dictionary</h3>
+      <style>
+        table.dictionary,
+        table.dictionary th,
+        table.dictionary td {
+          border: thin solid rgb(176, 176, 176);
+          border-collapse: collapse;
+          padding: 5px;
+        }
+        table.dictionary td.left {
+          width: 12em;
+        }
+      </style>
+      <table class="dictionary">
+        <tbody>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E1|E1 Recognized Entity|Recognized Entity">
+E1 Recognized Entity / Issuer</dfn>
+            </td>
+            <td>
+An entity — such as a university, a trade exporter, or a conformity
+assessment body — that has been granted a
+<code>RecognizedEntityCredential</code> by a list publisher and uses it
+to issue verifiable credentials to holders. This entity controls a DID
+whose identifier appears as the <code>credentialSubject.id</code> of the
+recognized entity credential and as the <code>issuer</code> of the
+verifiable credentials it produces.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E2|E2 Holder|Holder">E2 Holder</dfn>
+            </td>
+            <td>
+A person or organization that receives a verifiable credential from a
+recognized entity and presents it — together with the recognized entity
+credential — to a verifier. The holder stores credentials in a digital
+wallet and controls what is disclosed to verifiers.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E3|E3 Verifier|Verifier">E3 Verifier</dfn>
+            </td>
+            <td>
+An entity — such as a customs authority, a trade finance lender, or a
+market surveillance authority — that receives a verifiable credential from
+a holder and must determine whether the issuer of that credential is
+recognized within the relevant ecosystem. The verifier is configured with
+one or more trust anchors that identify the list publishers it considers
+authoritative.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E4|E4 List Publisher|List Publisher">
+E4 List Publisher</dfn>
+            </td>
+            <td>
+An entity — such as a national business register, an accreditation
+authority, or an industry consortium — that issues
+<code>RecognizedEntityCredential</code> resources asserting that one or
+more entities are recognized to perform specific actions. The registry
+operator is the root of trust for any recognized entity credentials it
+issues.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E5|E5 Governance Authority|Governance Authority">
+E5 Governance Authority</dfn>
+            </td>
+            <td>
+A legal person or consortium that sets the policies, criteria, and rules
+under which a list publisher may grant recognition. Examples include
+government regulators, standards bodies, and industry governance frameworks.
+The governance authority may or may not be the same entity as the registry
+operator.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P1|P1 Credential Issuance Process|Credential Issuance Process">
+P1 Credential Issuance Process</dfn>
+            </td>
+            <td>
+The running algorithm by which a recognized entity signs and issues a
+verifiable credential to a holder. This process uses the recognized
+entity's private key material to produce a cryptographic proof over the
+credential.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P2|P2 Credential Verification Process|Credential Verification Process">
+P2 Credential Verification Process</dfn>
+            </td>
+            <td>
+The running algorithm by which a verifier checks the cryptographic proof
+of a presented verifiable credential, resolves the issuer's recognized
+entity credential, and confirms that the issuer is recognized within a
+trusted registry. This process may involve fetching recognized entity
+credentials from external URLs or from holder-provided presentations.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P3|P3 Registry Publication Process|Registry Publication Process">
+P3 Registry Publication Process</dfn>
+            </td>
+            <td>
+The running algorithm by which a list publisher creates, signs, and
+publishes a recognized entity credential. This process applies the
+operator's private key material to produce a cryptographic proof, then
+makes the credential available at a URL or via a DID-linked resource.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F1|F1 VC Issuance|VC Issuance">
+F1 VC Issuance</dfn>
+            </td>
+            <td>
+The data flow by which a recognized entity delivers a signed verifiable
+credential to a holder. The credential contains the recognized entity's
+DID as its <code>issuer</code> value.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F2|F2 Credential Presentation|Credential Presentation">
+F2 Credential Presentation</dfn>
+            </td>
+            <td>
+The data flow by which a holder presents a verifiable credential — and
+optionally a recognized entity credential — to a verifier. This flow
+crosses a trust boundary between the holder's wallet and the verifier's
+verification process.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F3|F3 Registry Fetch|Registry Fetch">
+F3 Registry Fetch</dfn>
+            </td>
+            <td>
+The data flow by which a verifier retrieves a recognized entity credential
+directly from the list publisher's server, either to confirm an
+issuer's current status or to obtain a more recent version of the
+credential than the one provided by the holder.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F4|F4 RecognizedEntityCredential Issuance|RecognizedEntityCredential Issuance">
+F4 RecognizedEntityCredential Issuance</dfn>
+            </td>
+            <td>
+The data flow by which a list publisher delivers a signed
+<code>RecognizedEntityCredential</code> to a recognized entity. This
+credential asserts that the entity's DID is recognized to perform one or
+more specific actions.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="S1|S1 Holder Credential Store|Holder Credential Store">
+S1 Holder Credential Store</dfn>
+            </td>
+            <td>
+The persistent storage within the holder's wallet where verifiable
+credentials and recognized entity credentials are kept. In the holder's
+trust container, this storage is accessible only to the holder's wallet
+software.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="S2|S2 Registry Data Store|Registry Data Store">
+S2 Registry Data Store</dfn>
+            </td>
+            <td>
+The persistent storage within the list publisher's server where
+recognized entity credentials are kept and made available for retrieval.
+This store is managed by the list publisher and is typically accessible
+to the public via HTTPS.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="O1|O1 Verifiable Credential|Verifiable Credential">
+O1 Verifiable Credential</dfn>
+            </td>
+            <td>
+A cryptographically-signed data object issued by a recognized entity to a
+holder. The credential asserts claims about the holder and is signed with
+the recognized entity's private key, allowing any party to verify its
+integrity and the identity of its issuer.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="O2|O2 RecognizedEntityCredential|RecognizedEntityCredential">
+O2 RecognizedEntityCredential</dfn>
+            </td>
+            <td>
+A cryptographically-signed data object issued by a list publisher to a
+recognized entity. It asserts that the entity's DID is recognized to
+perform one or more actions — such as issuing or verifying specific types
+of verifiable credentials — within the ecosystem governed by the registry
+operator.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C1|C1 Holder Wallet|Holder Wallet">
+C1 Holder Wallet</dfn>
+            </td>
+            <td>
+The container — typically a mobile or desktop application — that manages
+the holder's credentials, keys, and DID. All credential storage (S1) and
+presentation logic runs within this container, which is under the holder's
+control.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C2|C2 Registry Server|Registry Server">
+C2 Registry Server</dfn>
+            </td>
+            <td>
+The container — typically a web server or DID-linked resource host —
+managed by the list publisher to store (S2) and serve recognized entity
+credentials. It runs the registry publication process (P3) and responds to
+registry fetch requests (F3).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <section id="threat-model-stakeholders">
+    <h2>Stakeholders</h2>
+
+    <h3>E1 Recognized Entity / Issuer</h3>
+    <p>
+A recognized entity is any person or organization that has been granted a
+<code>RecognizedEntityCredential</code> by a list publisher and uses
+that recognition to issue verifiable credentials to holders. Examples
+include universities issuing academic credentials, national business
+registers issuing trade entity credentials, and conformity assessment
+bodies issuing product certificates.
+    </p>
+    <p>
+The recognized entity's primary goal is to issue verifiable credentials
+that will be accepted by verifiers within the relevant ecosystem. They want
+confidence that their recognized status is accurately represented, that
+their recognition credentials are not misappropriated or tampered with,
+and that their DID remains under their control.
+    </p>
+
+    <h3>E2 Holder</h3>
+    <p>
+A holder is a person or organization that receives verifiable credentials
+from recognized entities and presents them to verifiers. In the cross-border
+trade use case, the holder is an importer presenting an exporter's invoice
+credential to customs. In the education use case, the holder is a student
+presenting a university-issued diploma.
+    </p>
+    <p>
+The holder's primary goal is to present credentials that will be accepted
+by verifiers, without disclosing more information than necessary. Holders
+have a strong interest in privacy: they do not want their credential
+presentations to leak information about their activities to registry
+operators or other third parties.
+    </p>
+
+    <h3>E3 Verifier</h3>
+    <p>
+A verifier is an entity that receives a credential presentation from a
+holder and must determine whether to accept it. Verifiers range from
+automated customs clearance systems processing thousands of trade documents
+per hour to human-operated market surveillance authorities checking product
+conformity certificates.
+    </p>
+    <p>
+The verifier's primary goal is to confirm that the credential it has
+received was issued by an entity that is genuinely recognized within the
+relevant ecosystem, and that the credential itself has not been tampered
+with. Verifiers also have a strong interest in availability: a denial of
+service against the registries they depend on directly impairs their
+ability to function.
+    </p>
+
+    <h3>E4 List Publisher</h3>
+    <p>
+A list publisher is an entity that issues
+<code>RecognizedEntityCredential</code> resources. Registry operators are
+the root of trust for any recognized entity credentials they issue. They
+range from national government bodies (such as business registers and
+accreditation authorities) to industry consortia and standards organizations.
+    </p>
+    <p>
+Registry operators have a strong interest in ensuring that only properly
+vetted entities appear in their registries, and that their registry
+credentials are not forged or misused. They also bear operational
+responsibility for the availability and integrity of the credentials they
+publish.
+    </p>
+
+    <h3>E5 Governance Authority</h3>
+    <p>
+Governance authorities set the rules under which list publishers may
+grant recognition. They may be government regulators, international
+standards bodies, or industry governance frameworks. In some ecosystems
+the governance authority and the list publisher are the same entity;
+in others they are distinct.
+    </p>
+    <p>
+Governance authorities have an interest in preventing anti-competitive
+gatekeeping, ensuring that recognition criteria are applied consistently
+and transparently, and that the ecosystem as a whole remains open to
+legitimate new entrants. They may also have law-enforcement interests in
+being able to revoke the recognition of bad actors.
+    </p>
+  </section>
+
+  <section id="threat-model-threats">
+    <h2>Threats</h2>
+    <section id="threat-model-toc">
+    </section>
+    <section id="threat-model-details">
+    </section>
+  </section>
+
+  <section id="threat-model-contributing">
+    <h3>Contributing</h3>
+    <p>
+This threat model is maintained alongside the Recognized Entities
+specification. Feedback, bug reports, and proposed additions are welcome
+via the <a
+href="https://github.com/w3c/vc-recognized-entities/issues/new">issue
+tracker</a>.
+    </p>
+    <section id="threat-model-adding-a-threat">
+      <h4>Adding a Threat</h4>
+      <p>
+To add a new threat to the model, provide the following components:
+      </p>
+      <ol>
+        <li>A short, descriptive name</li>
+        <li>
+A unique ID (letter <strong>T</strong> followed by an integer,
+e.g., <strong>T6</strong>)
+        </li>
+        <li>
+A description of the threat with enough detail for readers to understand
+its scope
+        </li>
+        <li>
+One or more responses, each with a name, unique ID (letter <strong>R
+</strong> followed by an integer), response type (Eliminate, Reduce,
+Transfer, or Accept), and description
+        </li>
+        <li>
+A list of affected DFD elements drawn from the dictionary above
+        </li>
+        <li>
+The threat taxonomy used (e.g., STRIDE) and the threat class within
+that taxonomy
+        </li>
+      </ol>
+      <p>
+Create a JavaScript file following the pattern of the existing threat
+files, register it with <code>window.ThreatModel.register(threat)</code>,
+add a <code>&lt;script&gt;</code> tag in <code>index.html</code>, and add
+the threat ID to the appropriate category in
+<code>threats/outline.js</code>.
+      </p>
+    </section>
+  </section>
+
+</body>
+
+</html>
