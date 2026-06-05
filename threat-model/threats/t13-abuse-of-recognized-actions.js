@@ -8,7 +8,7 @@
         "id": "R13",
         "name": "Controlled Action Vocabulary and Strict Interpretation",
         "type": "Reduce",
-        "desc": "Ecosystem governance frameworks SHOULD define and publish a controlled vocabulary of permitted <code>action</code> values and their precise semantics. [=E1|List publishers=] SHOULD use only values from the governed vocabulary when issuing [=O1|recognized entity credentials=]. [=E4|Verifiers=] MUST only accept <code>action</code> values they explicitly recognize and have been configured to trust during [=P3|Configure Verifier=]. [=E4|Verifiers=] SHOULD treat unknown, overly broad, or undefined action values as grounds for rejection during [=P6|Validate Credential(s)=] rather than falling back to permissive defaults."
+        "desc": "Ecosystem governance frameworks define and publish a controlled vocabulary of permitted <code>action</code> values and their precise semantics. [=E1|List publishers=] use only values from the governed vocabulary when issuing [=O1|recognized entity credentials=]. [=E4|Verifiers=] accept only <code>action</code> values they explicitly recognize and have been configured to trust during [=P3|Configure Verifier=]. [=E4|Verifiers=] treat unknown, overly broad, or undefined action values as grounds for rejection during [=P6|Validate Credential(s)=] rather than falling back to permissive defaults."
       }
     ],
     "elements": ["O1", "E1", "E2", "E4", "P3", "P6"],

@@ -8,7 +8,7 @@
         "id": "R8",
         "name": "Independent Cryptographic Verification Before Acting on Any Recognized Entity Credential",
         "type": "Reduce",
-        "desc": "[=E4|Verifiers=] MUST independently verify the cryptographic integrity and provenance of any [=O1|recognized entity credential=] before acting on it, regardless of the channel through which it was received. The [=E1|list publisher=] identified as the issuer of the [=O1|recognized entity credential=] MUST be validated against a trust anchor established through independent, out-of-band means \u2014 not through the credential itself. [=E4|Verifiers=] MUST NOT treat peer acceptance of a credential as evidence of its validity. [=E4|Verifiers=] SHOULD also confirm that the credential has not expired and has not been revoked before relying upon it."
+        "desc": "[=E4|Verifiers=] independently verify the cryptographic integrity and provenance of any [=O1|recognized entity credential=] before acting on it, regardless of the channel through which it was received. The [=E1|list publisher=] identified as the issuer of the [=O1|recognized entity credential=] is validated against a trust anchor established through independent, out-of-band means \u2014 not through the credential itself. [=E4|Verifiers=] do not treat peer acceptance of a credential as evidence of its validity. [=E4|Verifiers=] also confirm that the credential has not expired and has not been revoked before relying upon it."
       }
     ],
     "elements": ["O1", "E1", "E2", "E3", "E4", "F4", "P6"],

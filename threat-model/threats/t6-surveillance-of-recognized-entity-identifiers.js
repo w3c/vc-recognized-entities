@@ -8,7 +8,7 @@
         "id": "R6",
         "name": "Minimize Personal Information in Recognized Entity Credentials",
         "type": "Reduce",
-        "desc": "[=E1|List publishers=] SHOULD minimize the personal information included in [=O1|recognized entity credentials=] for natural persons. Where feasible, pseudonymous or role-based identifiers should be preferred over personally identifying information such as legal names and images. Governance frameworks SHOULD establish policies on what attributes may be included in a [=O1|recognized entity credential=] and SHOULD require a documented justification for any personally identifying fields. [=E1|List publishers=] should advise recognized entities that their inclusion in a publicly-accessible list is effectively a public disclosure of their participation in the ecosystem."
+        "desc": "[=E1|List publishers=] minimize the personal information included in [=O1|recognized entity credentials=] for natural persons. Where feasible, pseudonymous or role-based identifiers are preferred over personally identifying information such as legal names and images. Governance frameworks establish policies on what attributes are permitted in a [=O1|recognized entity credential=] and require a documented justification for any personally identifying fields. [=E1|List publishers=] advise recognized entities that their inclusion in a publicly-accessible list is effectively a public disclosure of their participation in the ecosystem."
       }
     ],
     "elements": ["O1", "E1", "E2", "S1", "F5"],

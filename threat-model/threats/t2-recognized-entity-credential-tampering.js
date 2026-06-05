@@ -8,7 +8,7 @@
         "id": "R2",
         "name": "Cryptographic Binding Between Credential and Recognition",
         "type": "Reduce",
-        "desc": "[=O1|Recognized entity credentials=] MUST be cryptographically signed by the [=E1|list publisher=] using a verifiable proof. [=E4|Verifiers=] MUST confirm that the <code>credentialSubject.id</code> of the [=O1|recognized entity credential=] exactly matches the <code>issuer.id</code> (or <code>issuer</code> value) in the presented [=O2|verifiable credential=]. Any mismatch MUST cause the verification to fail. Because each [=O1|recognized entity credential=] is independently signed, tampering with the binding is detectable through standard proof verification."
+        "desc": "[=O1|Recognized entity credentials=] are cryptographically signed by the [=E1|list publisher=] using a verifiable proof. [=E4|Verifiers=] confirm that the <code>credentialSubject.id</code> of the [=O1|recognized entity credential=] exactly matches the <code>issuer.id</code> (or <code>issuer</code> value) in the presented [=O2|verifiable credential=]. Any mismatch causes the verification to fail. Because each [=O1|recognized entity credential=] is independently signed, tampering with the binding is detectable through standard proof verification."
       }
     ],
     "elements": ["F4", "O2", "O1"],

@@ -8,7 +8,7 @@
         "id": "R14",
         "name": "Precise and Complete Schema Validation Rules",
         "type": "Reduce",
-        "desc": "[=E1|List publishers=] SHOULD define <code>outputValidation</code> schema rules that are as precise and restrictive as the intended recognition scope requires. Schemas SHOULD enumerate permitted credential types explicitly rather than relying on broad or permissive patterns. Governance frameworks SHOULD review and audit schema constraints as part of the [=P1|Create List=] and [=P7|Update List=] processes. [=E4|Verifiers=] SHOULD treat credentials that fail schema validation as invalid and SHOULD NOT relax validation rules to accept credentials that would otherwise be rejected."
+        "desc": "[=E1|List publishers=] define <code>outputValidation</code> schema rules that are as precise and restrictive as the intended recognition scope requires. Schemas enumerate permitted credential types explicitly rather than relying on broad or permissive patterns. Governance frameworks review and audit schema constraints as part of the [=P1|Create List=] and [=P7|Update List=] processes. [=E4|Verifiers=] treat credentials that fail schema validation as invalid and do not relax validation rules to accept credentials that would otherwise be rejected."
       }
     ],
     "elements": ["O1", "E1", "E2", "E4", "P1", "P6"],

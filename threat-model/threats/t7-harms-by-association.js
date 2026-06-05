@@ -8,7 +8,7 @@
         "id": "R7",
         "name": "Scoping and Distribution Controls for Sensitive Ecosystems",
         "type": "Accept",
-        "desc": "The specification cannot prevent a [=E3|holder=] or [=E4|verifier=] from disclosing a received [=O1|recognized entity credential=] to third parties. [=E1|List publishers=] should treat the act of publishing a [=O1|recognized entity credential=] as equivalent to a public disclosure of the membership list. For highly sensitive ecosystems, [=E1|list publishers=] should consider issuing individual [=O1|recognized entity credentials=] to each entity rather than a single list-style credential, limiting the blast radius of any single disclosure. Governance frameworks SHOULD explicitly advise ecosystem participants that membership in a recognized entity list may become publicly known and that sensitive ecosystems may be better served by alternative trust mechanisms."
+        "desc": "The specification cannot prevent a [=E3|holder=] or [=E4|verifier=] from disclosing a received [=O1|recognized entity credential=] to third parties. [=E1|List publishers=] treat the act of publishing a [=O1|recognized entity credential=] as equivalent to a public disclosure of the membership list. For highly sensitive ecosystems, [=E1|list publishers=] consider issuing individual [=O1|recognized entity credentials=] to each entity rather than a single list-style credential, limiting the blast radius of any single disclosure. Governance frameworks explicitly advise ecosystem participants that membership in a recognized entity list might become publicly known and that sensitive ecosystems might be better served by alternative trust mechanisms."
       }
     ],
     "elements": ["O1", "E1", "E3", "S1", "F5"],
