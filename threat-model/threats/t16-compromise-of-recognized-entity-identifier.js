@@ -8,7 +8,7 @@
         "id": "R16",
         "name": "Key Rotation, Revocation Notification, and Hardware Security",
         "type": "Reduce",
-        "desc": "[=E2|Issuers=] SHOULD protect signing keys with hardware security modules or equivalent tamper-resistant key storage. [=E1|List publishers=] SHOULD support rapid key rotation and revocation notification workflows so that a compromised identifier can be removed from recognition without waiting for scheduled [=P7|Update List=] cycles. Governance frameworks SHOULD require [=E2|issuers=] to report suspected key compromise promptly and SHOULD define incident response procedures. [=E4|Verifiers=] SHOULD subscribe to revocation feeds or check revocation status in near-real-time for high-value validation scenarios."
+        "desc": "[=E2|Issuers=] protect signing keys with hardware security modules or equivalent tamper-resistant key storage. [=E1|List publishers=] support rapid key rotation and revocation notification workflows so that a compromised identifier can be removed from recognition without waiting for scheduled [=P7|Update List=] cycles. Governance frameworks require [=E2|issuers=] to report suspected key compromise promptly and define incident response procedures. [=E4|Verifiers=] subscribe to revocation feeds or check revocation status in near-real-time for high-value validation scenarios."
       }
     ],
     "elements": ["O1", "E1", "E2", "E4", "P4", "P6", "P7"],

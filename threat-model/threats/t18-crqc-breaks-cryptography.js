@@ -8,7 +8,7 @@
         "id": "R18",
         "name": "Post-Quantum Cryptography Migration Planning",
         "type": "Reduce",
-        "desc": "[=E1|List publishers=] and [=E2|issuers=] SHOULD monitor the development of post-quantum cryptographic standards (e.g., NIST PQC finalists) and SHOULD adopt algorithm agility in credential formats so that signature suites can be swapped without redesigning the entire system. Governance frameworks SHOULD establish migration timelines for transitioning [=O1|recognized entity credentials=] to post-quantum signature schemes. [=E4|Verifiers=] SHOULD be prepared to support hybrid signature verification (classical + post-quantum) during transition periods. All parties SHOULD be aware that credentials issued today using classical cryptography may be vulnerable to retroactive forgery if harvested and attacked later."
+        "desc": "[=E1|List publishers=] and [=E2|issuers=] monitor the development of post-quantum cryptographic standards (e.g., NIST PQC finalists) and adopt algorithm agility in credential formats so that signature suites can be swapped without redesigning the entire system. Governance frameworks establish migration timelines for transitioning [=O1|recognized entity credentials=] to post-quantum signature schemes. [=E4|Verifiers=] are prepared to support hybrid signature verification (classical + post-quantum) during transition periods. All parties are aware that credentials issued today using classical cryptography might be vulnerable to retroactive forgery if harvested and attacked later."
       }
     ],
     "elements": ["O1", "O2", "E1", "E2", "E4", "P6"],

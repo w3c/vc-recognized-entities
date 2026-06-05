@@ -8,7 +8,7 @@
         "id": "R15",
         "name": "Schema Complexity Limits and Safe Regex Validation",
         "type": "Reduce",
-        "desc": "[=E4|Verifier=] implementations MUST enforce time and memory limits on all JSON schema validation operations performed during [=P6|Validate Credential(s)=]. Implementations SHOULD use schema validation libraries that protect against regex denial-of-service (ReDoS) by using linear-time regex engines or by bounding pattern complexity. [=E1|List publishers=] SHOULD avoid complex or unbounded regular expressions in <code>outputValidation</code> schemas. Governance frameworks SHOULD require schema review as part of the [=P1|Create List=] process to catch pathological patterns before publication."
+        "desc": "[=E4|Verifier=] implementations enforce time and memory limits on all JSON schema validation operations performed during [=P6|Validate Credential(s)=]. Implementations use schema validation libraries that protect against regex denial-of-service (ReDoS) by using linear-time regex engines or by bounding pattern complexity. [=E1|List publishers=] avoid complex or unbounded regular expressions in <code>outputValidation</code> schemas. Governance frameworks require schema review as part of the [=P1|Create List=] process to catch pathological patterns before publication."
       }
     ],
     "elements": ["O1", "E1", "E4", "P1", "P6", "C4"],
