@@ -12,6 +12,7 @@
       }
     ],
     "elements": ["F5", "C1"],
+    "tags": ["privacy"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Information Disclosure"
   };
