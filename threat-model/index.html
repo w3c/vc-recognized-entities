@@ -15,10 +15,16 @@
     // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
     var respecConfig = {
       specStatus: "NOTE",
+      group: "vc",
       github: {
         repoURL: "https://github.com/w3c/vc-recognized-entities",
         branch: "main"
       },
+      editors: [{
+        name: "Manu Sporny",
+        company: "Digital Bazaar",
+        w3cid: 41758
+      }],
       noRecTrack: "true",
       maxTocLevel: 4,
       threatModelTocSelector: "#threat-model-toc",
@@ -94,33 +100,36 @@ the specification depends upon.
     <section id="threat-model-description">
       <h3>Description</h3>
       <p>
-The Recognized Entities ecosystem enables a list publisher (E1) — such as a
-national business register, an accreditation authority, or an industry
-consortium — to issue a <code>RecognizedEntityCredential</code> (O1)
-asserting that one or more issuers (E2) are recognized to perform specific
-actions. A holder (E3) can acquire a dependent verifiable credential (O2)
-from such an issuer and present it to a verifier (E4) alongside the
-recognized entity credential, allowing the verifier to confirm both the
-integrity of the presented credential and the recognized status of its issuer.
+The Recognized Entities ecosystem enables a [=E1|list publisher=] — such as an
+individual, a club or organization, a national business register, an
+accreditation authority, or an industry consortium — to issue a
+<code>RecognizedEntityCredential</code> ([=O1|O1=]) asserting that one or more
+[=E2|issuers=] are recognized to perform specific actions. A [=E3|holder=] can
+acquire a [=O2|dependent verifiable credential=] from such an issuer and
+[=F4|present=] it to a [=E4|verifier=] alongside the
+[=O1|recognized entity credential=], allowing the [=E4|verifier=] to confirm
+both the integrity of the presented credential and the recognized status of its
+issuer.
       </p>
       <p>
-The core challenge is that a verifier receiving a dependent verifiable
-credential from an unknown issuer must be able to determine, in an automated
-and cryptographically-verifiable way, whether that issuer is recognized within
-the relevant ecosystem. The Recognized Entities specification addresses this
-by providing a data model for publishing recognition information as a verifiable
-credential, enabling a verifier to accept dependent verifiable credentials from
-issuers described by recognized entity list publishers.
+The core challenge is that a [=E4|verifier=] receiving a
+[=O2|dependent verifiable credential=] from an unknown [=E2|issuer=] must be
+able to determine, in an automated and cryptographically-verifiable way, whether
+that [=E2|issuer=] is recognized within the relevant ecosystem. The Recognized
+Entities specification addresses this by providing a data model for publishing
+recognition information as a [=O1|recognized entity credential=], enabling a
+[=E4|verifier=] to accept [=O2|dependent verifiable credentials=] from
+[=E2|issuers=] described by [=E1|recognized entity list publishers=].
       </p>
       <p>
 For this threat model, we consider a minimal instantiation of the Recognized
-Entities ecosystem consisting of four roles: the <strong>List Publisher
-(E1)</strong> who issues recognized entity credentials, the
-<strong>Issuer (E2)</strong> who receives recognition and issues dependent
-verifiable credentials, the <strong>Holder (E3)</strong> who receives and
-presents those credentials, and the <strong>Verifier (E4)</strong> who
-validates the credential chain against a configured set of trusted list
-publishers.
+Entities ecosystem consisting of four roles: the <strong>[=E1|List Publisher=]
+(E1)</strong> who issues [=O1|recognized entity credentials=], the
+<strong>[=E2|Issuer=] (E2)</strong> who receives recognition and issues
+[=O2|dependent verifiable credentials=], the <strong>[=E3|Holder=]
+(E3)</strong> who receives and presents those credentials, and the
+<strong>[=E4|Verifier=] (E4)</strong> who validates the credential chain against
+a configured set of trusted list publishers.
       </p>
       <p class="note" role="note">
 <span class="marker">Note:</span> We do NOT model potential attackers as
@@ -135,10 +144,10 @@ bias that is better avoided.
 The data flow diagram below illustrates the key elements and data flows in
 a minimal Recognized Entities ecosystem. The diagram shows how a recognized
 entity credential (O1) is issued by a list publisher (E1) to an issuer (E2),
-how the holder (E3) presents a dependent verifiable credential (O2) alongside
-the recognized entity credential to a verifier (E4), and how the verifier
-retrieves the published list (F5) from publisher storage (S1) to confirm the
-issuer's recognized status.
+how the holder (E3) [=F4|presents=] a dependent verifiable credential (O2)
+alongside the recognized entity credential to a verifier (E4), and how the
+verifier [=F5|retrieves the published list=] from publisher storage (S1) to
+confirm the issuer's recognized status.
       </p>
 
       <img src="diagrams/dfd.svg">
@@ -242,7 +251,7 @@ authoritative.
               <dfn data-lt="P1|Create List">P1 Create List</dfn>
             </td>
             <td>
-The running algorithm by which a list publisher creates and cryptographically
+The process by which a list publisher creates and cryptographically
 signs a new <code>RecognizedEntityCredential</code>, applying the publisher's
 private key material to produce a verifiable proof.
             </td>
@@ -252,7 +261,7 @@ private key material to produce a verifiable proof.
               <dfn data-lt="P2|Publish List">P2 Publish List</dfn>
             </td>
             <td>
-The running algorithm by which a list publisher makes a signed
+The process by which a list publisher makes a signed
 <code>RecognizedEntityCredential</code> publicly available, typically
 via HTTPS or a DID-linked resource, so that verifiers can retrieve it.
             </td>
@@ -262,7 +271,7 @@ via HTTPS or a DID-linked resource, so that verifiers can retrieve it.
               <dfn data-lt="P3|Configure Verifier">P3 Configure Verifier</dfn>
             </td>
             <td>
-The running algorithm by which a verifier is configured with one or more
+The process by which a verifier is configured with one or more
 trust anchors — the URLs or DIDs of list publishers whose recognized
 entity credentials the verifier will accept as authoritative.
             </td>
@@ -272,7 +281,7 @@ entity credentials the verifier will accept as authoritative.
               <dfn data-lt="P4|Credential Issuance">P4 Credential Issuance</dfn>
             </td>
             <td>
-The running algorithm by which an issuer signs and delivers a dependent
+The process by which an issuer signs and delivers a dependent
 verifiable credential to a holder. This process uses the issuer's private
 key material to produce a cryptographic proof over the credential.
             </td>
@@ -283,7 +292,7 @@ key material to produce a cryptographic proof over the credential.
 P5 Credential Presentation</dfn>
             </td>
             <td>
-The running algorithm by which a holder assembles and transmits a
+The process by which a holder assembles and transmits a
 credential presentation — containing the dependent verifiable credential
 and optionally a recognized entity credential — to a verifier.
             </td>
@@ -294,7 +303,7 @@ and optionally a recognized entity credential — to a verifier.
 P6 Validate Credential(s)</dfn>
             </td>
             <td>
-The running algorithm by which a verifier checks the cryptographic proof
+The process by which a verifier checks the cryptographic proof
 of a presented dependent verifiable credential, resolves the issuer's
 recognized entity credential, and confirms that the issuer is recognized
 within a configured list. This process may involve fetching recognized
@@ -306,7 +315,7 @@ entity credentials from external URLs or from holder-provided presentations.
               <dfn data-lt="P7|Update List">P7 Update List</dfn>
             </td>
             <td>
-The running algorithm by which a list publisher modifies an existing
+The process by which a list publisher modifies an existing
 <code>RecognizedEntityCredential</code> — for example to add, remove, or
 revoke recognized entities — and re-publishes the updated credential.
             </td>
@@ -317,7 +326,7 @@ revoke recognized entities — and re-publishes the updated credential.
             </td>
             <td>
 The data flow by which an issuer provides identity and vetting information
-to the list publisher's Create List process (P1), so that the publisher
+to the list publisher's [=P1|Create List=] process, so that the publisher
 can determine whether to include the issuer in a recognized entity
 credential.
             </td>
@@ -353,8 +362,8 @@ F4 Present Credential(s)</dfn>
             <td>
 The data flow by which a holder presents a dependent verifiable credential
 — and optionally a recognized entity credential — to a verifier. This
-flow crosses a security boundary between the holder's system and the
-verifier's validation process.
+flow crosses a security boundary between the [=C3|holder's system=] and the
+[=C4|verifier's system=].
             </td>
           </tr>
           <tr>
@@ -363,7 +372,7 @@ verifier's validation process.
             </td>
             <td>
 The data flow by which a verifier retrieves a recognized entity credential
-directly from the list publisher's server (S1), either to confirm an
+directly from the [=C1|list publisher's server=], either to confirm an
 issuer's current status or to obtain a more recent version of the
 credential than the one provided by the holder.
             </td>
@@ -373,7 +382,7 @@ credential than the one provided by the holder.
               <dfn data-lt="S1|Publisher Storage">S1 Publisher Storage</dfn>
             </td>
             <td>
-The persistent storage within the publisher system where recognized entity
+The persistent storage within the [=C1|publisher system=] where recognized entity
 credentials are kept and made available for retrieval. This store is
 managed by the list publisher and is typically accessible to the public
 via HTTPS.
@@ -384,10 +393,10 @@ via HTTPS.
               <dfn data-lt="S2|Holder Storage">S2 Holder Storage</dfn>
             </td>
             <td>
-The persistent storage within the holder's system where dependent
+The persistent storage within the [=C3|holder's system=] where dependent
 verifiable credentials and recognized entity credentials are kept. This
-storage is accessible only to the holder's software within the holder
-system boundary.
+storage is accessible only to the holder's software within the
+[=C3|holder system=] boundary.
             </td>
           </tr>
           <tr>
@@ -421,9 +430,9 @@ holding a valid recognized entity credential (O1), making it a
             </td>
             <td>
 The container — typically a web server or DID-linked resource host —
-managed by the list publisher. It runs the Create List (P1), Publish
-List (P2), and Update List (P7) processes and maintains Publisher Storage
-(S1) from which recognized entity credentials are served.
+managed by the list publisher. It runs the [=P1|Create List=],
+[=P2|Publish List=], and [=P7|Update List=] processes and maintains
+Publisher Storage (S1) from which recognized entity credentials are served.
             </td>
           </tr>
           <tr>
@@ -433,7 +442,7 @@ List (P2), and Update List (P7) processes and maintains Publisher Storage
             <td>
 The container — typically a server or service operated by the issuer —
 that manages the issuer's credentials, keys, and DID. It runs the
-Credential Issuance process (P4) and holds the recognized entity
+[=P4|Credential Issuance=] process and holds the recognized entity
 credential issued to the issuer.
             </td>
           </tr>
@@ -444,8 +453,8 @@ credential issued to the issuer.
             <td>
 The container — typically a mobile or desktop application — that manages
 the holder's credentials, keys, and DID. All credential storage (S2) and
-presentation logic (P5) runs within this container, which is under the
-holder's control.
+[=P5|Credential Presentation=] logic runs within this container, which is
+under the holder's control.
             </td>
           </tr>
           <tr>
@@ -454,8 +463,8 @@ holder's control.
             </td>
             <td>
 The container — typically an automated verification service or
-human-operated review system — that runs the Configure Verifier (P3) and
-Validate Credential(s) (P6) processes. It is configured with trust
+human-operated review system — that runs the [=P3|Configure Verifier=] and
+[=P6|Validate Credential(s)=] processes. It is configured with trust
 anchors identifying authoritative list publishers.
             </td>
           </tr>
