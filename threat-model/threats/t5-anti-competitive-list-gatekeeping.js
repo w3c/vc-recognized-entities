@@ -12,6 +12,7 @@
       }
     ],
     "elements": ["E1", "F2", "O1"],
+    "tags": ["market competition"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Denial of Service"
   };
