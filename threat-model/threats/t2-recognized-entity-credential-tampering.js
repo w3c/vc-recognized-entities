@@ -12,6 +12,7 @@
       }
     ],
     "elements": ["F4", "O2", "O1"],
+    "tags": ["security"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Tampering"
   };

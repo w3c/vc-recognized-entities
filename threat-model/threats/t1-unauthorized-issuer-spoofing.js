@@ -12,6 +12,7 @@
       }
     ],
     "elements": ["F4", "F5", "O2", "O1"],
+    "tags": ["security"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Spoofing"
   };

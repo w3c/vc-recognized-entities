@@ -12,6 +12,7 @@
       }
     ],
     "elements": ["F5", "C1", "S1"],
+    "tags": ["security"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Denial of Service"
   };
