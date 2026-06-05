@@ -18,10 +18,11 @@
     }
   }
 
-  // Set up globals 
+  // Set up globals
   ///////////////////////////////////////////////////////////////////////
   var threats = [];           // Populated by calling RegisterThreats
   var threatCategories = [];  // Populated by calling RegisterCategories
+  var elementLabels = {};     // Populated by calling registerElements
 
 
   // render(config, document)
@@ -220,7 +221,7 @@
           return "";
 
         return `<tr>
-          <td class="affected-component">Affected Components: ${threat.elements.map(element => `<a>${element}</a>`).join(", ")}</td>
+          <td class="affected-component">Affected Components: ${threat.elements.map(element => `[=${element}|${elementLabels[element] || element}=]`).join(", ")}</td>
         </tr>`;
       }
 
@@ -322,6 +323,11 @@
     threatCategories = categories;
   }
 
+  function registerElements(labels) {
+    console.log("registerElements", labels);
+    elementLabels = labels;
+  }
+
 
   function validate(threat) {
     console.log("validate", threat);
@@ -339,6 +345,7 @@
     renderThreats,
     register,
     registerCategories,
+    registerElements,
     validate
   }
 

@@ -11,7 +11,7 @@
         "desc": "Holders SHOULD present the recognized entity credential directly alongside their verifiable credential (\u201ccredential stapling\u201d), eliminating the need for the verifier to contact the list host at verification time. When direct fetching cannot be avoided, verifiers SHOULD retrieve the full recognized entity credential rather than contacting a per-issuer endpoint, so that any single fetch reveals only that the verifier is interested in some entity in that list, not which specific issuer is being verified. Implementers SHOULD consider using privacy-preserving techniques such as anonymous credentials or blind fetch proxies for particularly sensitive ecosystems."
       }
     ],
-    "elements": ["F3", "C2"],
+    "elements": ["F5", "C1"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Information Disclosure"
   };
