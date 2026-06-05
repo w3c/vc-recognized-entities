@@ -8,17 +8,17 @@
     {
       name: "Implementation Threats",
       id: "threat-model-implementation-threats",
-      threats: ["T3", "T4", "T8", "T9", "T10", "T11", "T12", "T13"]
+      threats: ["T3", "T4", "T8", "T9", "T10", "T11", "T12", "T13", "T14", "T15"]
     },
     {
       name: "External Threats",
       id: "threat-model-external-threats",
-      threats: ["T6", "T7"]
+      threats: ["T6", "T7", "T16", "T17"]
     },
     {
       name: "Dependency Threats",
       id: "threat-model-dependency-threats",
-      threats: ["T5"]
+      threats: ["T5", "T18"]
     }
     ];
 
