@@ -8,7 +8,12 @@
     {
       name: "Implementation Threats",
       id: "threat-model-implementation-threats",
-      threats: ["T3", "T4"]
+      threats: ["T3", "T4", "T8", "T9", "T10", "T11", "T12", "T13"]
+    },
+    {
+      name: "External Threats",
+      id: "threat-model-external-threats",
+      threats: ["T6", "T7"]
     },
     {
       name: "Dependency Threats",
