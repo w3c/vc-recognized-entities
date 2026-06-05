@@ -11,7 +11,7 @@
         "desc": "The specification permits and encourages multiple overlapping and competing recognized entity credential registries. Verifiers SHOULD be configurable with multiple independent trust anchors, so that an entity recognized by any one list from within the configured set is accepted. This prevents any single list publisher from having veto power over ecosystem participation. Ecosystem designers SHOULD actively encourage multiple independent list publishers to publish recognized entity credentials for the same market vertical, reducing systemic dependency on any single authority."
       }
     ],
-    "elements": ["E4", "F4", "O2"],
+    "elements": ["E1", "F2", "O1"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Denial of Service"
   };

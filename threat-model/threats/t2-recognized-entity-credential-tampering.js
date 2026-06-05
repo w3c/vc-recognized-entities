@@ -11,7 +11,7 @@
         "desc": "Recognized entity credentials MUST be cryptographically signed by the list publisher using a verifiable proof. Verifiers MUST confirm that the <code>credentialSubject.id</code> of the recognized entity credential exactly matches the <code>issuer.id</code> (or <code>issuer</code> value) in the presented verifiable credential. Any mismatch MUST cause the verification to fail. Because each recognized entity credential is independently signed, tampering with the binding is detectable through standard proof verification."
       }
     ],
-    "elements": ["F2", "O1", "O2"],
+    "elements": ["F4", "O2", "O1"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Tampering"
   };
