@@ -173,8 +173,8 @@ system boundary)
 <strong>O</strong> — Data Object (self-contained, transferable artifact)
         </li>
         <li>
-<strong>C</strong> — Container (collection of elements under a single
-authority)
+<strong>C</strong> — Contained System Boundary (collection of elements under a
+single authority)
         </li>
       </ul>
     </section>
@@ -200,12 +200,11 @@ authority)
               <dfn data-lt="E1|List Publisher">E1 List Publisher</dfn>
             </td>
             <td>
-An entity — such as a national business register, an accreditation
-authority, or an industry consortium — that issues
-<code>RecognizedEntityCredential</code> resources asserting that one or
-more entities are recognized to perform specific actions. The list
-publisher is the authority for any recognized entity credentials it
-issues.
+An entity — such as an individual, club, organization, accreditation authority,
+national business register, or industry consortium — that issues recognized
+entity credetnials that assert that one or more entities are recognized to
+perform specific actions. The list publisher is the authority for any recognized
+entity credentials it issues.
             </td>
           </tr>
           <tr>
@@ -213,13 +212,13 @@ issues.
               <dfn data-lt="E2|Issuer">E2 Issuer</dfn>
             </td>
             <td>
-An entity — such as a university, a trade exporter, or a conformity
-assessment body — that has been granted a
-<code>RecognizedEntityCredential</code> by a list publisher and uses it
-to issue dependent verifiable credentials to holders. This entity controls
-a DID whose identifier appears as the <code>credentialSubject.id</code>
-of the recognized entity credential and as the <code>issuer</code> of
-the dependent verifiable credentials it produces.
+An entity — such as an individual, club university, trade exporter, or a
+conformity assessment body — that has been granted a recognized entity
+credential by a list publisher and uses it to issue dependent verifiable
+credentials to holders. This entity controls an identifier document, such as a
+CID or a DID, whose identifier appears as the <code>credentialSubject.id</code>
+of the recognized entity credential and as the <code>issuer</code> of the
+dependent verifiable credentials it produces.
             </td>
           </tr>
           <tr>
@@ -227,10 +226,11 @@ the dependent verifiable credentials it produces.
               <dfn data-lt="E3|Holder">E3 Holder</dfn>
             </td>
             <td>
-A person or organization that receives a dependent verifiable credential
-from an issuer and presents it — together with the recognized entity
-credential — to a verifier. The holder stores credentials in a digital
-wallet and controls what is disclosed to verifiers.
+A person or organization that receives a dependent verifiable credential from an
+issuer and presents it — optionally, together with the recognized entity
+credential — to a verifier. The holder stores credentials in a software
+application, such as a digital wallet, and controls what is disclosed to
+verifiers.
             </td>
           </tr>
           <tr>
@@ -238,12 +238,12 @@ wallet and controls what is disclosed to verifiers.
               <dfn data-lt="E4|Verifier">E4 Verifier</dfn>
             </td>
             <td>
-An entity — such as a customs authority, a trade finance lender, or a
-market surveillance authority — that receives a credential presentation
-from a holder and must determine whether the issuer of that credential is
-recognized within the relevant ecosystem. The verifier is configured with
-one or more URLs that identify the list publishers it considers
-authoritative.
+An entity — such as an individual, organization, customs authority, trade
+finance lender, or a market surveillance authority — that receives a credential
+presentation from a holder and must determine whether the issuer of that
+credential is recognized within the relevant ecosystem. The verifier is
+configured with one or more URLs that identify the list publishers, and lists,
+that it considers authoritative.
             </td>
           </tr>
           <tr>
@@ -251,9 +251,10 @@ authoritative.
               <dfn data-lt="P1|Create List">P1 Create List</dfn>
             </td>
             <td>
-The process by which a list publisher creates and cryptographically
-signs a new <code>RecognizedEntityCredential</code>, applying the publisher's
-private key material to produce a verifiable proof.
+The process by which a list publisher vets an issuer to determine whether
+they qualify for inclusion in a list, and, if so, creates and
+cryptographically signs a new <code>RecognizedEntityCredential</code>,
+applying the publisher's private key material to produce a verifiable proof.
             </td>
           </tr>
           <tr>
@@ -263,7 +264,7 @@ private key material to produce a verifiable proof.
             <td>
 The process by which a list publisher makes a signed
 <code>RecognizedEntityCredential</code> publicly available, typically
-via HTTPS or a DID-linked resource, so that verifiers can retrieve it.
+via HTTPS, so that verifiers can retrieve it.
             </td>
           </tr>
           <tr>
@@ -271,9 +272,10 @@ via HTTPS or a DID-linked resource, so that verifiers can retrieve it.
               <dfn data-lt="P3|Configure Verifier">P3 Configure Verifier</dfn>
             </td>
             <td>
-The process by which a verifier is configured with one or more
-trust anchors — the URLs or DIDs of list publishers whose recognized
-entity credentials the verifier will accept as authoritative.
+The process by which a verifier is configured with one or more recognized entity
+list publishers — the URLs or DIDs of list publishers whose recognized entity
+credentials the verifier will accept as authoritative, or recognized entity
+lists.
             </td>
           </tr>
           <tr>
@@ -283,7 +285,9 @@ entity credentials the verifier will accept as authoritative.
             <td>
 The process by which an issuer signs and delivers a dependent
 verifiable credential to a holder. This process uses the issuer's private
-key material to produce a cryptographic proof over the credential.
+key material to produce a cryptographic proof over the credential. The process
+can optionally also result in the delivery of a recognized entity credential
+to the holder.
             </td>
           </tr>
           <tr>
@@ -382,8 +386,8 @@ credential than the one provided by the holder.
               <dfn data-lt="S1|Publisher Storage">S1 Publisher Storage</dfn>
             </td>
             <td>
-The persistent storage within the [=C1|publisher system=] where recognized entity
-credentials are kept and made available for retrieval. This store is
+The persistent storage within the [=C1|publisher system=] where recognized
+entity credentials are kept and made available for retrieval. This store is
 managed by the list publisher and is typically accessible to the public
 via HTTPS.
             </td>
@@ -429,7 +433,7 @@ holding a valid recognized entity credential (O1), making it a
               <dfn data-lt="C1|Publisher System">C1 Publisher System</dfn>
             </td>
             <td>
-The container — typically a web server or DID-linked resource host —
+The system boundary — typically a web server or DID-linked resource host —
 managed by the list publisher. It runs the [=P1|Create List=],
 [=P2|Publish List=], and [=P7|Update List=] processes and maintains
 Publisher Storage (S1) from which recognized entity credentials are served.
@@ -440,7 +444,7 @@ Publisher Storage (S1) from which recognized entity credentials are served.
               <dfn data-lt="C2|Issuer System">C2 Issuer System</dfn>
             </td>
             <td>
-The container — typically a server or service operated by the issuer —
+The system boundary — typically a server or service operated by the issuer —
 that manages the issuer's credentials, keys, and DID. It runs the
 [=P4|Credential Issuance=] process and holds the recognized entity
 credential issued to the issuer.
@@ -451,9 +455,9 @@ credential issued to the issuer.
               <dfn data-lt="C3|Holder System">C3 Holder System</dfn>
             </td>
             <td>
-The container — typically a mobile or desktop application — that manages
+The system boundary — typically a mobile or desktop application — that manages
 the holder's credentials, keys, and DID. All credential storage (S2) and
-[=P5|Credential Presentation=] logic runs within this container, which is
+[=P5|Credential Presentation=] logic runs within this system boundary, which is
 under the holder's control.
             </td>
           </tr>
@@ -462,7 +466,7 @@ under the holder's control.
               <dfn data-lt="C4|Verifier System">C4 Verifier System</dfn>
             </td>
             <td>
-The container — typically an automated verification service or
+The system boundary — typically an automated verification service or
 human-operated review system — that runs the [=P3|Configure Verifier=] and
 [=P6|Validate Credential(s)=] processes. It is configured with trust
 anchors identifying authoritative list publishers.
