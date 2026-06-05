@@ -8,7 +8,7 @@
         "id": "R4",
         "name": "Credential Stapling and Bulk List Retrieval",
         "type": "Reduce",
-        "desc": "[=E3|Holders=] SHOULD present the [=O1|recognized entity credential=] directly alongside their [=O2|verifiable credential=] (\u201ccredential stapling\u201d), eliminating the need for the [=E4|verifier=] to contact the list host at verification time. When direct fetching cannot be avoided, [=E4|verifiers=] SHOULD retrieve the full [=O1|recognized entity credential=] rather than contacting a per-issuer endpoint, so that any single fetch reveals only that the [=E4|verifier=] is interested in some entity in that list, not which specific [=E2|issuer=] is being verified. Implementers SHOULD consider using privacy-preserving techniques such as anonymous credentials or blind fetch proxies for particularly sensitive ecosystems."
+        "desc": "[=E3|Holders=] present the [=O1|recognized entity credential=] directly alongside their [=O2|verifiable credential=] (\u201ccredential stapling\u201d), eliminating the need for the [=E4|verifier=] to contact the list host at verification time. When direct fetching cannot be avoided, [=E4|verifiers=] retrieve the full [=O1|recognized entity credential=] rather than contacting a per-issuer endpoint, so that any single fetch reveals only that the [=E4|verifier=] is interested in some entity in that list, not which specific [=E2|issuer=] is being verified. Implementers consider using privacy-preserving techniques such as anonymous credentials or blind fetch proxies for particularly sensitive ecosystems."
       }
     ],
     "elements": ["F5", "C1"],

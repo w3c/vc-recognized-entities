@@ -8,7 +8,7 @@
         "id": "R5",
         "name": "List Pluralism via Multi-Trust-Anchor Configuration",
         "type": "Reduce",
-        "desc": "The specification permits and encourages multiple overlapping and competing [=O1|recognized entity credential=] registries. [=E4|Verifiers=] SHOULD be configurable with multiple independent trust anchors, so that an entity recognized by any one list from within the configured set is accepted. This prevents any single [=E1|list publisher=] from having veto power over ecosystem participation. Ecosystem designers SHOULD actively encourage multiple independent [=E1|list publishers=] to publish [=O1|recognized entity credentials=] for the same market vertical, reducing systemic dependency on any single authority."
+        "desc": "The specification permits and encourages multiple overlapping and competing [=O1|recognized entity credential=] registries. [=E4|Verifiers=] are configurable with multiple independent trust anchors, so that an entity recognized by any one list from within the configured set is accepted. This prevents any single [=E1|list publisher=] from having veto power over ecosystem participation. Ecosystem designers actively encourage multiple independent [=E1|list publishers=] to publish [=O1|recognized entity credentials=] for the same market vertical, reducing systemic dependency on any single authority."
       }
     ],
     "elements": ["E1", "F2", "O1"],

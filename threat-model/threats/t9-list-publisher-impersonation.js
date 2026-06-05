@@ -8,7 +8,7 @@
         "id": "R9",
         "name": "Out-of-Band Validation of List Publisher Identifiers",
         "type": "Reduce",
-        "desc": "[=E4|Verifiers=] MUST validate the issuer identifier of any [=O1|recognized entity credential=] against a pre-established set of trusted identifiers obtained through independent, out-of-band means before adding it to their configured trust anchors during [=P3|Configure Verifier=]. Display names, logos, and human-readable labels are not sufficient \u2014 the cryptographic identifier (e.g., DID or HTTPS URL) MUST be verified. Governance frameworks SHOULD publish canonical, authoritative identifiers for [=E1|list publishers=] through an independently-secured channel so that [=E4|verifiers=] have a reliable reference to check against."
+        "desc": "[=E4|Verifiers=] validate the issuer identifier of any [=O1|recognized entity credential=] against a pre-established set of trusted identifiers obtained through independent, out-of-band means before adding it to their configured trust anchors during [=P3|Configure Verifier=]. Display names, logos, and human-readable labels are not sufficient \u2014 the cryptographic identifier (e.g., DID or HTTPS URL) is always verified. Governance frameworks publish canonical, authoritative identifiers for [=E1|list publishers=] through an independently-secured channel so that [=E4|verifiers=] have a reliable reference to check against."
       }
     ],
     "elements": ["O1", "E1", "E4", "P3", "P6"],

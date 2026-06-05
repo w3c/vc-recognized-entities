@@ -8,7 +8,7 @@
         "id": "R1",
         "name": "Cryptographic Verification of the Recognized Entity Credential Chain",
         "type": "Reduce",
-        "desc": "[=E4|Verifiers=] MUST cryptographically verify that every [=O1|recognized entity credential=] in a presented chain carries a valid proof, that the <code>credentialSubject.id</code> of the [=O1|recognized entity credential=] matches the <code>issuer.id</code> of the credential under evaluation, and that the outermost [=O1|recognized entity credential=] was issued by an entity within the [=E4|verifier=]\u2019s configured set of trust anchors. The specification requires conforming processors to produce errors when these checks fail, preventing unverified entities from appearing to be recognized."
+        "desc": "[=E4|Verifiers=] cryptographically verify that every [=O1|recognized entity credential=] in a presented chain carries a valid proof, that the <code>credentialSubject.id</code> of the [=O1|recognized entity credential=] matches the <code>issuer.id</code> of the credential under evaluation, and that the outermost [=O1|recognized entity credential=] was issued by an entity within the [=E4|verifier=]\u2019s configured set of trust anchors. The specification requires conforming processors to produce errors when these checks fail, preventing unverified entities from appearing to be recognized."
       }
     ],
     "elements": ["F4", "F5", "O2", "O1"],

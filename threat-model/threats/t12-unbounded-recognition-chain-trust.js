@@ -8,7 +8,7 @@
         "id": "R12",
         "name": "Chain Depth Limits and Per-Link Validation",
         "type": "Reduce",
-        "desc": "[=E4|Verifiers=] MUST enforce a maximum depth limit when traversing recognition chains via <code>recognizedIn</code>. Each link in the chain MUST be independently validated for cryptographic integrity and issuer trust during [=P6|Validate Credential(s)=] \u2014 transitive trust from a higher-level registry does not substitute for independent validation of each link. Ecosystem governance frameworks SHOULD specify maximum permitted chain depths and enumerate the specific registry types that may appear at each level. [=E4|Verifiers=] SHOULD reject chains that exceed the configured depth or that include registry types not explicitly permitted by their governance configuration."
+        "desc": "[=E4|Verifiers=] enforce a maximum depth limit when traversing recognition chains via <code>recognizedIn</code>. Each link in the chain is independently validated for cryptographic integrity and issuer trust during [=P6|Validate Credential(s)=] \u2014 transitive trust from a higher-level registry does not substitute for independent validation of each link. Ecosystem governance frameworks specify maximum permitted chain depths and enumerate the specific registry types that might appear at each level. [=E4|Verifiers=] reject chains that exceed the configured depth or that include registry types not explicitly permitted by their governance configuration."
       }
     ],
     "elements": ["O1", "E1", "E4", "F5", "P6"],
