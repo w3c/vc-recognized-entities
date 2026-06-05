@@ -94,32 +94,33 @@ the specification depends upon.
     <section id="threat-model-description">
       <h3>Description</h3>
       <p>
-The Recognized Entities ecosystem enables a list publisher — such as a
+The Recognized Entities ecosystem enables a list publisher (E1) — such as a
 national business register, an accreditation authority, or an industry
-consortium — to issue a <code>RecognizedEntityCredential</code> asserting
-that one or more entities are recognized to perform specific actions. A
-holder can acquire such a credential and present it to a verifier alongside
-their own verifiable credential, allowing the verifier to confirm both the
+consortium — to issue a <code>RecognizedEntityCredential</code> (O1)
+asserting that one or more issuers (E2) are recognized to perform specific
+actions. A holder (E3) can acquire a dependent verifiable credential (O2)
+from such an issuer and present it to a verifier (E4) alongside the
+recognized entity credential, allowing the verifier to confirm both the
 integrity of the presented credential and the recognized status of its issuer.
       </p>
       <p>
-The core challenge is that a verifier receiving a credential from an
-unknown issuer must be able to determine, in an automated and
-cryptographically-verifiable way, whether that issuer is recognized within
+The core challenge is that a verifier receiving a dependent verifiable
+credential from an unknown issuer must be able to determine, in an automated
+and cryptographically-verifiable way, whether that issuer is recognized within
 the relevant ecosystem. The Recognized Entities specification addresses this
 by providing a data model for publishing recognition information as a verifiable
-credential, enabling a verifier to accept verifiable credentials from
-recognized entities described by recognized entity list publishers.
+credential, enabling a verifier to accept dependent verifiable credentials from
+issuers described by recognized entity list publishers.
       </p>
       <p>
 For this threat model, we consider a minimal instantiation of the Recognized
-Entities ecosystem consisting of five roles: the <strong>List Publisher
-</strong> who issues recognized entity credentials, the <strong>Recognized
-Entity / Issuer</strong> who receives recognition and issues verifiable
-credentials, the <strong>Holder</strong> who receives and presents those
-credentials, the <strong>Verifier</strong> who verifies the credential
-chain, and the <strong>Governance Authority</strong> who sets the policies
-under which recognition is granted.
+Entities ecosystem consisting of four roles: the <strong>List Publisher
+(E1)</strong> who issues recognized entity credentials, the
+<strong>Issuer (E2)</strong> who receives recognition and issues dependent
+verifiable credentials, the <strong>Holder (E3)</strong> who receives and
+presents those credentials, and the <strong>Verifier (E4)</strong> who
+validates the credential chain against a configured set of trusted list
+publishers.
       </p>
       <p class="note" role="note">
 <span class="marker">Note:</span> We do NOT model potential attackers as
@@ -133,10 +134,11 @@ bias that is better avoided.
       <p>
 The data flow diagram below illustrates the key elements and data flows in
 a minimal Recognized Entities ecosystem. The diagram shows how a recognized
-entity credential is issued by a list publisher to a recognized entity,
-how the holder presents that credential alongside a verifiable credential
-to a verifier, and how the verifier resolves the issuer back to the
-recognized entity in a published list known to the verifier.
+entity credential (O1) is issued by a list publisher (E1) to an issuer (E2),
+how the holder (E3) presents a dependent verifiable credential (O2) alongside
+the recognized entity credential to a verifier (E4), and how the verifier
+retrieves the published list (F5) from publisher storage (S1) to confirm the
+issuer's recognized status.
       </p>
 
       <img src="diagrams/dfd.svg">
@@ -186,38 +188,50 @@ authority)
         <tbody>
           <tr>
             <td class="left">
-              <dfn data-lt="E1|E1 Recognized Entity|Recognized Entity">
-E1 Recognized Entity / Issuer</dfn>
+              <dfn data-lt="E1|List Publisher">E1 List Publisher</dfn>
+            </td>
+            <td>
+An entity — such as a national business register, an accreditation
+authority, or an industry consortium — that issues
+<code>RecognizedEntityCredential</code> resources asserting that one or
+more entities are recognized to perform specific actions. The list
+publisher is the authority for any recognized entity credentials it
+issues.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E2|Issuer">E2 Issuer</dfn>
             </td>
             <td>
 An entity — such as a university, a trade exporter, or a conformity
 assessment body — that has been granted a
 <code>RecognizedEntityCredential</code> by a list publisher and uses it
-to issue verifiable credentials to holders. This entity controls a DID
-whose identifier appears as the <code>credentialSubject.id</code> of the
-recognized entity credential and as the <code>issuer</code> of the
-verifiable credentials it produces.
+to issue dependent verifiable credentials to holders. This entity controls
+a DID whose identifier appears as the <code>credentialSubject.id</code>
+of the recognized entity credential and as the <code>issuer</code> of
+the dependent verifiable credentials it produces.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="E2|Holder">E2 Holder</dfn>
+              <dfn data-lt="E3|Holder">E3 Holder</dfn>
             </td>
             <td>
-A person or organization that receives a verifiable credential from a
-recognized entity and presents it — together with the recognized entity
+A person or organization that receives a dependent verifiable credential
+from an issuer and presents it — together with the recognized entity
 credential — to a verifier. The holder stores credentials in a digital
 wallet and controls what is disclosed to verifiers.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="E3|Verifier">E3 Verifier</dfn>
+              <dfn data-lt="E4|Verifier">E4 Verifier</dfn>
             </td>
             <td>
 An entity — such as a customs authority, a trade finance lender, or a
-market surveillance authority — that receives a verifiable credential from
-a holder and must determine whether the issuer of that credential is
+market surveillance authority — that receives a credential presentation
+from a holder and must determine whether the issuer of that credential is
 recognized within the relevant ecosystem. The verifier is configured with
 one or more URLs that identify the list publishers it considers
 authoritative.
@@ -225,186 +239,224 @@ authoritative.
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="E4|List Publisher">
-E4 List Publisher</dfn>
+              <dfn data-lt="P1|Create List">P1 Create List</dfn>
             </td>
             <td>
-An entity — such as a national business register, an accreditation
-authority, or an industry consortium — that issues
-<code>RecognizedEntityCredential</code> resources asserting that one or
-more entities are recognized to perform specific actions. The list
-operator is the authority for any recognized entity credentials it
-issues.
+The running algorithm by which a list publisher creates and cryptographically
+signs a new <code>RecognizedEntityCredential</code>, applying the publisher's
+private key material to produce a verifiable proof.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="E5|Governance Authority">
-E5 Governance Authority</dfn>
+              <dfn data-lt="P2|Publish List">P2 Publish List</dfn>
             </td>
             <td>
-A legal person or consortium that sets the policies, criteria, and rules
-under which a list publisher may grant recognition. Examples include
-government regulators, standards bodies, and industry governance frameworks.
-The governance authority may or may not be the same entity as the list
-operator.
+The running algorithm by which a list publisher makes a signed
+<code>RecognizedEntityCredential</code> publicly available, typically
+via HTTPS or a DID-linked resource, so that verifiers can retrieve it.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="P1|Credential Issuance Process">
-P1 Credential Issuance Process</dfn>
+              <dfn data-lt="P3|Configure Verifier">P3 Configure Verifier</dfn>
             </td>
             <td>
-The running algorithm by which a recognized entity signs and issues a
-verifiable credential to a holder. This process uses the recognized
-entity's private key material to produce a cryptographic proof over the
+The running algorithm by which a verifier is configured with one or more
+trust anchors — the URLs or DIDs of list publishers whose recognized
+entity credentials the verifier will accept as authoritative.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P4|Credential Issuance">P4 Credential Issuance</dfn>
+            </td>
+            <td>
+The running algorithm by which an issuer signs and delivers a dependent
+verifiable credential to a holder. This process uses the issuer's private
+key material to produce a cryptographic proof over the credential.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P5|Credential Presentation">
+P5 Credential Presentation</dfn>
+            </td>
+            <td>
+The running algorithm by which a holder assembles and transmits a
+credential presentation — containing the dependent verifiable credential
+and optionally a recognized entity credential — to a verifier.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P6|Validate Credentials">
+P6 Validate Credential(s)</dfn>
+            </td>
+            <td>
+The running algorithm by which a verifier checks the cryptographic proof
+of a presented dependent verifiable credential, resolves the issuer's
+recognized entity credential, and confirms that the issuer is recognized
+within a configured list. This process may involve fetching recognized
+entity credentials from external URLs or from holder-provided presentations.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P7|Update List">P7 Update List</dfn>
+            </td>
+            <td>
+The running algorithm by which a list publisher modifies an existing
+<code>RecognizedEntityCredential</code> — for example to add, remove, or
+revoke recognized entities — and re-publishes the updated credential.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F1|Identify Entity">F1 Identify Entity</dfn>
+            </td>
+            <td>
+The data flow by which an issuer provides identity and vetting information
+to the list publisher's Create List process (P1), so that the publisher
+can determine whether to include the issuer in a recognized entity
 credential.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="P2|Credential Verification Process">
-P2 Credential Verification Process</dfn>
+              <dfn data-lt="F2|Issue Recognized Entity Credential">
+F2 Issue Recognized Entity Credential</dfn>
             </td>
             <td>
-The running algorithm by which a verifier checks the cryptographic proof
-of a presented verifiable credential, resolves the issuer's recognized
-entity credential, and confirms that the issuer is recognized within a
-configured list. This process may involve fetching recognized entity
-credentials from external URLs or from holder-provided presentations.
+The data flow by which a list publisher delivers a signed
+<code>RecognizedEntityCredential</code> to an issuer. This credential
+asserts that the issuer's DID is recognized to perform one or more
+specific actions within the relevant ecosystem.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="P3|List Publication Process">
-P3 List Publication Process</dfn>
+              <dfn data-lt="F3|Issue Credentials">
+F3 Issue Credential(s)</dfn>
             </td>
             <td>
-The running algorithm by which a list publisher creates, signs, and
-publishes a recognized entity credential. This process applies the
-operator's private key material to produce a cryptographic proof, then
-makes the credential available at a URL or via a DID-linked resource.
+The data flow by which an issuer delivers a signed dependent verifiable
+credential to a holder. The credential contains the issuer's DID as its
+<code>issuer</code> value.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="F1|VC Issuance">
-F1 VC Issuance</dfn>
+              <dfn data-lt="F4|Present Credentials">
+F4 Present Credential(s)</dfn>
             </td>
             <td>
-The data flow by which a recognized entity delivers a signed verifiable
-credential to a holder. The credential contains the recognized entity's
-DID as its <code>issuer</code> value.
+The data flow by which a holder presents a dependent verifiable credential
+— and optionally a recognized entity credential — to a verifier. This
+flow crosses a security boundary between the holder's system and the
+verifier's validation process.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="F2|Credential Presentation">
-F2 Credential Presentation</dfn>
-            </td>
-            <td>
-The data flow by which a holder presents a verifiable credential — and
-optionally a recognized entity credential — to a verifier. This flow
-crosses a security boundary between the holder's wallet and the verifier's
-verification process.
-            </td>
-          </tr>
-          <tr>
-            <td class="left">
-              <dfn data-lt="F3|List Fetch">
-F3 List Fetch</dfn>
+              <dfn data-lt="F5|Retrieve List">F5 Retrieve List</dfn>
             </td>
             <td>
 The data flow by which a verifier retrieves a recognized entity credential
-directly from the list publisher's server, either to confirm an
+directly from the list publisher's server (S1), either to confirm an
 issuer's current status or to obtain a more recent version of the
 credential than the one provided by the holder.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="F4|RecognizedEntityCredential Issuance">
-F4 RecognizedEntityCredential Issuance</dfn>
+              <dfn data-lt="S1|Publisher Storage">S1 Publisher Storage</dfn>
             </td>
             <td>
-The data flow by which a list publisher delivers a signed
-<code>RecognizedEntityCredential</code> to a recognized entity. This
-credential asserts that the entity's DID is recognized to perform one or
-more specific actions.
+The persistent storage within the publisher system where recognized entity
+credentials are kept and made available for retrieval. This store is
+managed by the list publisher and is typically accessible to the public
+via HTTPS.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="S1|Holder Credential Store">
-S1 Holder Credential Store</dfn>
+              <dfn data-lt="S2|Holder Storage">S2 Holder Storage</dfn>
             </td>
             <td>
-The persistent storage within the holder's wallet where verifiable
-credentials and recognized entity credentials are kept. In the holder's
-security boundary, this storage is accessible only to the holder's wallet
-software.
+The persistent storage within the holder's system where dependent
+verifiable credentials and recognized entity credentials are kept. This
+storage is accessible only to the holder's software within the holder
+system boundary.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="S2|List Data Store">
-S2 List Data Store</dfn>
+              <dfn data-lt="O1|Recognized Entity Credential">
+O1 Recognized Entity Credential</dfn>
             </td>
             <td>
-The persistent storage within the list publisher's server where
-recognized entity credentials are kept and made available for retrieval.
-This store is managed by the list publisher and is typically accessible
-to the public via HTTPS.
+A cryptographically-signed data object issued by a list publisher to an
+issuer. It asserts that the issuer's DID is recognized to perform one or
+more actions — such as issuing or verifying specific types of verifiable
+credentials — within the ecosystem governed by the list publisher.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="O1|Verifiable Credential">
-O1 Verifiable Credential</dfn>
+              <dfn data-lt="O2|Dependent Verifiable Credential">
+O2 Dependent Verifiable Credential</dfn>
             </td>
             <td>
-A cryptographically-signed data object issued by a recognized entity to a
+A cryptographically-signed data object issued by a recognized issuer to a
 holder. The credential asserts claims about the holder and is signed with
-the recognized entity's private key, allowing any party to verify its
-integrity and the identity of its issuer.
+the issuer's private key. Its trustworthiness depends on the issuer
+holding a valid recognized entity credential (O1), making it a
+"dependent" verifiable credential.
             </td>
           </tr>
           <tr>
             <td class="left">
-              <dfn data-lt="O2|RecognizedEntityCredential">
-O2 RecognizedEntityCredential</dfn>
-            </td>
-            <td>
-A cryptographically-signed data object issued by a list publisher to a
-recognized entity. It asserts that the entity's DID is recognized to
-perform one or more actions — such as issuing or verifying specific types
-of verifiable credentials — within the ecosystem governed by the list
-operator.
-            </td>
-          </tr>
-          <tr>
-            <td class="left">
-              <dfn data-lt="C1|Holder Wallet">
-C1 Holder Wallet</dfn>
-            </td>
-            <td>
-The container — typically a mobile or desktop application — that manages
-the holder's credentials, keys, and DID. All credential storage (S1) and
-presentation logic runs within this container, which is under the holder's
-control.
-            </td>
-          </tr>
-          <tr>
-            <td class="left">
-              <dfn data-lt="C2|List Server">
-C2 List Server</dfn>
+              <dfn data-lt="C1|Publisher System">C1 Publisher System</dfn>
             </td>
             <td>
 The container — typically a web server or DID-linked resource host —
-managed by the list publisher to store (S2) and serve recognized entity
-credentials. It runs the list publication process (P3) and responds to
-list fetch requests (F3).
+managed by the list publisher. It runs the Create List (P1), Publish
+List (P2), and Update List (P7) processes and maintains Publisher Storage
+(S1) from which recognized entity credentials are served.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C2|Issuer System">C2 Issuer System</dfn>
+            </td>
+            <td>
+The container — typically a server or service operated by the issuer —
+that manages the issuer's credentials, keys, and DID. It runs the
+Credential Issuance process (P4) and holds the recognized entity
+credential issued to the issuer.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C3|Holder System">C3 Holder System</dfn>
+            </td>
+            <td>
+The container — typically a mobile or desktop application — that manages
+the holder's credentials, keys, and DID. All credential storage (S2) and
+presentation logic (P5) runs within this container, which is under the
+holder's control.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C4|Verifier System">C4 Verifier System</dfn>
+            </td>
+            <td>
+The container — typically an automated verification service or
+human-operated review system — that runs the Configure Verifier (P3) and
+Validate Credential(s) (P6) processes. It is configured with trust
+anchors identifying authoritative list publishers.
             </td>
           </tr>
         </tbody>
@@ -415,40 +467,56 @@ list fetch requests (F3).
   <section id="threat-model-stakeholders">
     <h2>Stakeholders</h2>
 
-    <h3>E1 Recognized Entity / Issuer</h3>
+    <h3>E1 List Publisher</h3>
     <p>
-A recognized entity is any person or organization that has been granted a
-<code>RecognizedEntityCredential</code> by a list publisher and uses
-that recognition to issue verifiable credentials to holders. Examples
-include universities issuing academic credentials, national business
-registers issuing trade entity credentials, and conformity assessment
-bodies issuing product certificates.
+A list publisher is an entity that issues
+<code>RecognizedEntityCredential</code> resources. List publishers are
+the authority for any recognized entity credentials they issue. They
+range from national government bodies (such as business registers and
+accreditation authorities) to industry consortia and standards organizations.
     </p>
     <p>
-The recognized entity's primary goal is to issue verifiable credentials
-that will be accepted by verifiers within the relevant ecosystem. They want
-confidence that their recognized status is accurately represented, that
-their recognition credentials are not misappropriated or tampered with,
-and that their DID remains under their control.
+List publishers have a strong interest in ensuring that only properly
+vetted entities appear in their lists, and that their list
+credentials are not forged or misused. They also bear operational
+responsibility for the availability and integrity of the credentials they
+publish.
     </p>
 
-    <h3>E2 Holder</h3>
+    <h3>E2 Issuer</h3>
     <p>
-A holder is a person or organization that receives verifiable credentials
-from recognized entities and presents them to verifiers. In the cross-border
-trade use case, the holder is an importer presenting an exporter's invoice
-credential to customs. In the education use case, the holder is a student
-presenting a university-issued diploma.
+An issuer is any person or organization that has been granted a
+<code>RecognizedEntityCredential</code> by a list publisher and uses
+that recognition to issue dependent verifiable credentials to holders.
+Examples include universities issuing academic credentials, national
+business registers issuing trade entity credentials, and conformity
+assessment bodies issuing product certificates.
+    </p>
+    <p>
+The issuer's primary goal is to issue dependent verifiable credentials
+that will be accepted by verifiers within the relevant ecosystem. They
+want confidence that their recognized status is accurately represented,
+that their recognition credentials are not misappropriated or tampered
+with, and that their DID remains under their control.
+    </p>
+
+    <h3>E3 Holder</h3>
+    <p>
+A holder is a person or organization that receives dependent verifiable
+credentials from issuers and presents them to verifiers. In the
+cross-border trade use case, the holder is an importer presenting an
+exporter's invoice credential to customs. In the education use case,
+the holder is a student presenting a university-issued diploma.
     </p>
     <p>
 The holder's primary goal is to present credentials that will be accepted
 by verifiers, without disclosing more information than necessary. Holders
 have a strong interest in privacy: they do not want their credential
 presentations to leak information about their activities to list
-operators or other third parties.
+publishers or other third parties.
     </p>
 
-    <h3>E3 Verifier</h3>
+    <h3>E4 Verifier</h3>
     <p>
 A verifier is an entity that receives a credential presentation from a
 holder and must determine whether to accept it. Verifiers range from
@@ -463,38 +531,6 @@ relevant ecosystem, and that the credential itself has not been tampered
 with. Verifiers also have a strong interest in availability: a denial of
 service against the lists they depend on directly impairs their
 ability to function.
-    </p>
-
-    <h3>E4 List Publisher</h3>
-    <p>
-A list publisher is an entity that issues
-<code>RecognizedEntityCredential</code> resources. List operators are
-the the authority for any recognized entity credentials they issue. They
-range from national government bodies (such as business registers and
-accreditation authorities) to industry consortia and standards organizations.
-    </p>
-    <p>
-List operators have a strong interest in ensuring that only properly
-vetted entities appear in their lists, and that their list
-credentials are not forged or misused. They also bear operational
-responsibility for the availability and integrity of the credentials they
-publish.
-    </p>
-
-    <h3>E5 Governance Authority</h3>
-    <p>
-Governance authorities set the rules under which list publishers may
-grant recognition. They may be government regulators, international
-standards bodies, or industry governance frameworks. In some ecosystems
-the governance authority and the list publisher are the same entity;
-in others they are distinct.
-    </p>
-    <p>
-Governance authorities have an interest in preventing anti-competitive
-gatekeeping, ensuring that recognition criteria are applied consistently
-and transparently, and that the ecosystem as a whole remains open to
-legitimate new entrants. They may also have law-enforcement interests in
-being able to revoke the recognition of bad actors.
     </p>
   </section>
 

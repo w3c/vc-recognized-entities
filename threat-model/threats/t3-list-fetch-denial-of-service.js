@@ -11,7 +11,7 @@
         "desc": "Holders SHOULD present recognized entity credentials directly to verifiers (\u201ccredential stapling\u201d) rather than requiring verifiers to fetch them from a list. This distributes the load across all holders rather than concentrating it on the list host. When direct fetching is necessary, verifier implementations MUST enforce both connection and read timeouts on all list fetches and MUST enforce maximum payload size limits. Verifiers SHOULD cache resolved recognized entity credentials with appropriate TTLs aligned to the credential\u2019s <code>validUntil</code> period. List publishers SHOULD deploy content delivery network infrastructure and rate limiting."
       }
     ],
-    "elements": ["F3", "C2", "S2"],
+    "elements": ["F5", "C1", "S1"],
     "taxonomyName": "STRIDE",
     "taxonomyClass": "Denial of Service"
   };
