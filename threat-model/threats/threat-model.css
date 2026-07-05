@@ -94,7 +94,7 @@ table.threat {
 table.threat a.self-link {
   left:-35px !important;
 }
-table.threat h3, 
+table.threat h3,
 table.threat h4,
 table.threat h5 {
   color:black;
@@ -140,18 +140,19 @@ section.threatDetail {
 }
 
 span.threat-tag {
-        border-radius: 4px;
+        border-radius: 8px;
         padding: 2px 5px;
         color: white;
         margin: 0px 2px;
-        font-weight: 100;
-        background-color: black;
+        font-weight: normal;
+        color: black;
+        background-color: #a9c9e8;
 }
 
 span.threat-tag.threat-tag-security {
-        background-color: red;
+        background-color: #f4a7a3;
 }
 
 span.threat-tag.threat-tag-privacy {
-  background-color: blue;
+        background-color: #f8c49a;
 }

@@ -8,10 +8,8 @@
       For the three scripts below, if your spec resides on dev.w3 you can check them
       out in the same tree and use relative links so that they'll work offline,
      -->
-    <script
-      src="https://www.w3.org/Tools/respec/respec-w3c"
-      class="remove"
-    ></script>
+    <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+
     <script type="text/javascript" class="remove">
       var respecConfig = {
         // specification status (e.g., WD, LCWD, NOTE, etc.). If in doubt use ED.
@@ -102,7 +100,7 @@
         // Team Contact.
         // wgPatentURI:  "",
         maxTocLevel: 4,
-        /*preProcess: [ webpayments.preProcess ],
+        /*
         alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
         */
         xref: ["URL", "I18N-GLOSSARY", "INFRA", "CID", "VC-DATA-MODEL"],
@@ -125,6 +123,8 @@
         }
       }
     </script>
+    <link rel="stylesheet" href="threat-model/threats/threat-model.css" />
+
     <style>
 code {
   color: rgb(199, 73, 0);
@@ -283,12 +283,8 @@ Section [[[#data-model]]] defines the core data model, including the
 types along with their properties and worked examples.
         </li>
         <li>
-Section [[[#security-considerations]]] discusses security considerations
-relevant to implementers of this specification.
-        </li>
-        <li>
-Section [[[#privacy-considerations]]] discusses privacy considerations
-relevant to implementers of this specification.
+Appendix [[[#threat-model]]] discusses security, privacy, and market competition
+considerations relevant to implementers of this specification.
         </li>
       </ul>
 
@@ -540,8 +536,8 @@ of the [[[VC-DATA-MODEL]]] specification.
         <h3>RecognizedEntity</h3>
 
         <p>
-A <dfn>recognized entity</dfn> is any entity that is recognized by an [=issuer=]
-of a `RecognizedEntityCredential` to perform a specific action.
+A <dfn class="export">recognized entity</dfn> is any entity that is recognized
+by an [=issuer=] of a `RecognizedEntityCredential` to perform a specific action.
         </p>
 
         <table class="simple">
@@ -613,8 +609,8 @@ to this specification.
         <h3>RecognizedAction</h3>
 
         <p>
-A <dfn>recognized action</dfn> is an action that a [=recognized entity=] is
-expected to perform.
+A <dfn class="export">recognized action</dfn> is an action that a [=recognized
+entity=] is expected to perform.
         </p>
 
         <table class="simple">
@@ -668,7 +664,7 @@ property.
         <h3>RecognizedEntityCredential</h3>
 
         <p>
-When a <dfn>recognized entity credential</dfn>
+When a <dfn class="export">recognized entity credential</dfn>
 is published, it MUST be a conforming [=verifiable credential=], as defined in
 [[[VC-DATA-MODEL-2.0]]], that expresses the data model specified in the section
 that follows. It describes the format of a [=verifiable credential=] that
@@ -911,200 +907,194 @@ publishes an European Union ETSI Trust Services list [[ETSI-TRUST-LISTS]].
     </section>
     </section>
 
-    <section>
-      <h2>Privacy Considerations</h2>
+    <section class="appendix informative">
+      <h2>Threat Model</h2>
 
       <p>
-This section details the general privacy considerations and specific privacy
-implications of deploying this specification into production environments.
+This section details the general threat model for this specification
+including security considerations, privacy considerations, and market
+competition considerations.
       </p>
 
       <p>
-Readers are urged to familiarize themselves with the general privacy advice
-provided in the
-<a data-cite="VC-DATA-MODEL#privacy-considerations">
-Privacy Considerations section of the Verifiable Credentials specification</a>
-before reading this section. Implementers are expected to apply the
-general warnings provided in that specification to each specific feature
-provided by this specification.
-      </p>
-
-      <section>
-        <h3>Surveillance of Individuals as Recognized Entities</h3>
-        <p class="issue">
-A `RecognizedEntityCredential` publicly lists named organizations and
-people with their identifiers, legal names, URLs, and images. Aggregating
-these across multiple lists enables profiling and surveillance of
-recognized entities. This section should discuss the risks of publishing
-richly-described entity information, especially for individuals, and guidance
-for issuers on minimizing disclosure. For example, a list of recognized
-entities that is published to a private group can escape that group if any group
-member decides to publish the information outside of the private group.
-Suggest that selective disclosure does not provide much protection here because
-it requires honest actors.
-        </p>
-      </section>
-
-      <section>
-        <h3>Holder-Provided Recognition Credentials</h3>
-        <p class="issue">
-Having holders provide recognized entity credentials preserves privacy better than having
-the verifier reach out to the issuer to retrieve the recognized entity credential.
-        </p>
-      </section>
-
-      <section>
-        <h3>Harms by Association</h3>
-        <p class="issue">
-A `RecognizedEntityCredential` can reveal the membership structure of a
-private or sensitive ecosystem, such as healthcare credential issuers or
-financial service providers. Publishing or widely sharing such credentials
-can expose which entities participate in that ecosystem, which can be
-commercially sensitive or create targeting risks. This section should discuss
-when and how to limit the distribution of recognized entity credentials that
-describe sensitive ecosystems, possibly suggesting that it is not possible
-to limit distribution of recognized entity credentials and thus creating them for
-sensitive ecosystems might be an anti-pattern. In general, if you build
-certain lists with certain memberships, it might have negative effects on
-individuals (harm by association) -- unintended or not.
-        </p>
-      </section>
-
-    </section>
-
-    <section>
-      <h2>Security Considerations</h2>
-
-      <p>
-There are a number of security considerations that implementers should be
-aware of when processing data described by this specification. Ignoring or
-not understanding the implications of this section can result in
-security vulnerabilities.
-      </p>
-
-      <p>
-Readers are urged to familiarize themselves with the general
-security advice provided in the
+Readers are urged to familiarize themselves with the general security and
+privacy advice provided in the
 <a data-cite="VC-DATA-MODEL#security-considerations">
-Security Considerations section of the Verifiable Credentials
-specification</a> before reading this section.
-      </p>
-
-      <p>
-While this section attempts to highlight a broad set of security
-considerations, it is not a complete list. Implementers are urged to seek the
-advice of security and cryptography professionals when implementing mission
-critical systems using the technology outlined in this specification.
+Security Considerations</a> and
+<a data-cite="VC-DATA-MODEL#privacy-considerations">
+Privacy Considerations</a>
+sections of the [[[VC-DATA-MODEL]]] specification before reading this section.
+Implementers are expected to apply the general warnings provided in that
+specification to each specific feature provided by this specification.
       </p>
 
       <section>
-        <h3>Validate Before Sharing</h3>
-        <p>
-When a [=holder=] receives a `RecognizedEntityCredential` and shares it
-with others, there is a risk that the credential has not been properly vetted.
-A malicious or negligent actor could craft a `RecognizedEntityCredential`
-that lists fraudulent or compromised entities as recognized issuers or
-verifiers, and propagate it peer-to-peer across an ecosystem. Recipients who
-accept and act upon such a credential without independent verification might
-unknowingly accept [=verifiable credentials=] from untrustworthy sources,
-exposing themselves and others to fraud, data breaches, or credential
-forgery. The decentralized nature of this specification, while a strength,
-amplifies this risk: a single unvetted credential shared widely can rapidly
-corrupt the trust assumptions of many parties in an ecosystem.
-        </p>
-        <p>
-To mitigate these dangers, deployments are expected to independently verify the
-cryptographic integrity and provenance of any `RecognizedEntityCredential`
-before acting upon it or sharing it further. This includes confirming that the
-[=issuer=] of the credential is a party the implementer has an established
-reason to trust for the given recognition domain, and that the credential has
-not expired or been revoked. Implementers cannot rely solely on the fact
-that a peer has already accepted a credential as evidence of its validity.
-Instead, a [=verifier=] needs to vet the issuer of the recognized entity credential
-as well as the [=recognized action=] independently of receiving the
-`RecognizedEntityCredential` and can only depend on information from the
-credential once trust has been established on the issuing entity.
-        </p>
+        <h3>Target Threats</h3>
+        <ol class="threat-toc">
+          <li value="1">
+            <a href="threat-model#t1-unauthorized-issuer-spoofing">
+Unauthorized Issuer Spoofing</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+An unrecognized entity fabricates, replays, or reuses a stolen [=recognized
+entity credential=] to make its [=verifiable credentials=] appear to come from a
+legitimately recognized [=issuer=].
+          </li>
+          <li value="2">
+            <a href="threat-model#t2-recognized-entity-credential-tampering">
+Recognized Entity Credential Tampering</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A malicious intermediary swaps or modifies the [=recognized entity credential=]
+in a presented bundle so that an unrecognized [=issuer=]'s [=verifiable
+credential=] appears to be covered by a legitimate recognition chain.
+          </li>
+        </ol>
       </section>
 
       <section>
-        <h3>Issuer Impersonation</h3>
-        <p class="issue">
-A malicious actor could create a `RecognizedEntityCredential` that mimics a
-well-known recognizing authority by using a similar `issuer` identifier or name.
-Verifiers who manually add VRCs to their software, that do not independently
-validate the issuer's identifier against a known root of trust, could be deceived
-into accepting fraudulent recognition claims. This section should discuss how to
-detect and prevent issuer impersonation and the importance of verifying issuer
-identifiers through authoritative out-of-band means.<br/><br/>
-
-Note that appropriate bindings to protocols and user interactions (such as an
-individual receiving a request from origin). It would be good if a wallet
-communicates: "I have a recognized entity credential for this origin/issuer from
-someone you trust" (if there is a check made that binds request to origin
--- TLS used, for example) and that's associated with issuer in VRC. It would be
-good for this section to talk about how protocols can bind this sort of
-information together to help individuals not fall for scams.
-        </p>
+        <h3>Implementation Threats</h3>
+        <ol class="threat-toc">
+          <li value="3">
+            <a href="threat-model#t3-list-retrieval-denial-of-service">
+List Retrieval Denial of Service</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A flood of fetch requests, a slow-drip server, or an excessively large list
+exhausts a [=verifier=]'s connections, memory, or CPU when it retrieves and
+processes a [=recognized entity credential=].
+          </li>
+          <li value="4">
+            <a href="threat-model#t4-privacy-leakage-via-list-fetch">
+Privacy Leakage via List Fetch</a>
+            <span class="threat-tag threat-tag-privacy">privacy</span> —
+When a [=verifier=] fetches a [=recognized entity credential=] from the list
+publisher, the publisher learns which [=issuer=] is being verified, enabling
+surveillance of commercial relationships and activity patterns.
+          </li>
+          <li value="8">
+            <a href="threat-model#t8-unvetted-recognized-entity-credential-propagation">
+Unvetted Recognized Entity Credential Propagation</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A [=holder=] shares a [=recognized entity credential=] through peer-to-peer
+channels and a [=verifier=] accepts it without independently verifying its
+integrity against a trust anchor, spreading fraudulent recognition claims.
+          </li>
+          <li value="9">
+            <a href="threat-model#t9-list-publisher-impersonation">
+List Publisher Impersonation</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+An attacker fabricates a list publisher identity using a confusable identifier or
+display name so that a [=verifier=] treats an attacker-controlled registry as an
+authoritative trust anchor.
+          </li>
+          <li value="10">
+            <a href="threat-model#t10-stale-recognition-acceptance">
+Stale Recognition Acceptance</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A revoked or compromised [=issuer=] continues to pass validation because a
+[=recognized entity credential=] has an overly long validity period or because
+the [=verifier=] relies on aggressively cached, out-of-date list data.
+          </li>
+          <li value="11">
+            <a href="threat-model#t11-external-resource-substitution">
+External Resource Substitution</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+An attacker substitutes malicious content for an externally-referenced resource,
+such as a schema file, via server compromise, domain takeover, or DNS hijacking
+when the reference is not integrity-protected.
+          </li>
+          <li value="12">
+            <a href="threat-model#t12-unbounded-recognition-chain-trust">
+Unbounded Recognition Chain Trust</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A compromised entry in a lower-level registry chained via
+<code>recognizedIn</code> is transitively trusted when a [=verifier=] does not
+enforce depth limits or independently validate each link in the chain.
+          </li>
+          <li value="13">
+            <a href="threat-model#t13-abuse-of-recognized-actions">
+Abuse of Recognized Actions</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A [=verifier=] interprets the free-form <code>action</code> value more
+permissively than the list publisher intended, granting a [=recognized entity=]
+broader capabilities than were authorized.
+          </li>
+          <li value="14">
+            <a href="threat-model#t14-overly-permissive-schema-constraints">
+Overly Permissive Schema Constraints</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+Broad, incomplete, or lax <code>outputValidation</code> schema rules let a
+recognized [=issuer=] produce a wider class of [=verifiable credentials=] than
+the list publisher intended to authorize.
+          </li>
+          <li value="15">
+            <a href="threat-model#t15-json-schema-attack">
+JSON Schema Attack</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A maliciously crafted or poorly-written <code>outputValidation</code> schema
+containing pathological regular expressions or deeply nested structures causes
+catastrophic backtracking or memory exhaustion in the [=verifier=].
+          </li>
+        </ol>
       </section>
 
       <section>
-        <h3>Selecting Appropriate Validity Periods</h3>
-        <p class="issue">
-Recognition credentials with excessively long `validUntil` periods may remain in
-circulation long after a recognized entity has been suspended, revoked, or
-compromised. Conversely, overly short validity periods create operational
-burden. This section should discuss appropriate selection of validity periods and
-the importance of pairing validity periods with robust revocation mechanisms.
-The section should speak to organization/individual end of life as well. How long
-a period should be is dependent on list size and diversity -- the larger the list,
-the shorter the timeline (24-48 hours?); the smaller the list, the longer the
-timeline (weeks to months). Want to be able to add entities on reasonable
-timeframes. Ecosystems might desire list aggregators -- accreditation bodies might
-have longer periods. The section should explain the justification for having a
-longer period -- why go longer than 24-48 hours?
-        </p>
+        <h3>External Threats</h3>
+        <ol class="threat-toc">
+          <li value="6">
+            <a href="threat-model#t6-surveillance-of-recognized-entity-identifiers">
+Surveillance of Recognized Entity Identifiers</a>
+            <span class="threat-tag threat-tag-privacy">privacy</span> —
+Because a [=recognized entity credential=] publicly names [=issuers=] with their
+identifiers and attributes, aggregating credentials across lists enables
+systematic profiling and surveillance of [=recognized entities=].
+          </li>
+          <li value="7">
+            <a href="threat-model#t7-harms-by-association">
+Harms by Association</a>
+            <span class="threat-tag threat-tag-privacy">privacy</span> —
+A [=recognized entity credential=] reveals the membership of an ecosystem, and a
+single onward disclosure can expose participants to targeting, discrimination, or
+reputational harm even when the ecosystem was intended to remain private.
+          </li>
+          <li value="16">
+            <a href="threat-model#t16-compromise-of-recognized-entity-identifier">
+Compromise of Recognized Entity Identifier</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+An attacker who compromises the private key material of a recognized
+[=issuer=]'s identifier can impersonate that genuinely-enrolled [=issuer=],
+producing fraudulent [=verifiable credentials=] that pass validation.
+          </li>
+          <li value="17">
+            <a href="threat-model#t17-verifier-trust-anchor-misconfiguration">
+Verifier Trust Anchor Misconfiguration</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A [=verifier=] operator accidentally configures the wrong [=recognized entity
+credential=] as a trust anchor, causing the [=verifier=] to accept
+[=issuers=] vetted by an unintended governance authority.
+          </li>
+        </ol>
       </section>
 
       <section>
-        <h3>External Resource Tampering</h3>
-        <p class="issue">
-The `outputValidation` property references external schema files via URL. If
-those URLs are not protected by `digestMultibase` or other integrity checks, an
-attacker who compromises the schema host can alter validation rules without
-invalidating the recognized entity credential, causing verifiers to accept credentials
-that no longer conform to the intended schema. This section should discuss the
-importance of using content integrity protection for all externally referenced
-resources.
-        </p>
+        <h3>Dependency Threats</h3>
+        <ol class="threat-toc">
+          <li value="5">
+            <a href="threat-model#t5-anti-competitive-list-gatekeeping">
+Anti-Competitive List Gatekeeping</a>
+            <span class="threat-tag threat-tag-market competition">market competition</span> —
+A first-mover list publisher selectively denies registration to competitors, or
+is coerced into revoking legitimate entities, creating anti-competitive lock-in
+for [=verifiers=] that rely on a single list.
+          </li>
+          <li value="18">
+            <a href="threat-model#t18-cryptographically-relevant-quantum-computer-breaks-cryptography">
+Cryptographically Relevant Quantum Computer Breaks Cryptography</a>
+            <span class="threat-tag threat-tag-security">security</span> —
+A cryptographically relevant quantum computer breaks the signature schemes in
+common use, letting an attacker forge proofs on [=recognized entity credentials=]
+and [=verifiable credentials=] and collapsing the chain of trust.
+          </li>
+        </ol>
       </section>
-
-      <section>
-        <h3>Verifying Recognition Chains</h3>
-        <p class="issue">
-The `recognizedIn` property allows recognized entity credentials to chain to other
-registries such as ETSI Trust Service Lists, X.509 certificate authority lists,
-or other `RecognizedEntityCredential`s. A compromised or malicious entry
-in a lower-level registry could be transitively trusted if verifiers do not
-enforce depth limits or validate each link in the chain independently. This
-section should discuss safe practices for traversing chained recognition
-structures and the risks of unbounded transitive trust.
-        </p>
-      </section>
-
-      <section>
-        <h3>Abuse of Recognized Actions</h3>
-        <p class="issue">
-The `action` property is a free-form string (e.g., `issue`, `verify`). Without
-strict governance of allowable action values within an ecosystem, recognized
-entities may present credentials claiming broad or undefined actions that
-verifiers interpret more permissively than intended, leading to unauthorized use
-beyond the issuer's intent. This section should discuss the importance of
-ecosystem-level governance of action vocabularies and how verifiers should
-handle unrecognized action values.
-        </p>
-      </section>
-
     </section>
 
     <section class="appendix informative">
