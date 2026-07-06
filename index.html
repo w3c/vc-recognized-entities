@@ -743,11 +743,16 @@ value.
             <tr>
               <td>issuer</td>
               <td>
-The [=issuer=] of the [=verifiable credential=] as
-defined in the Verifiable Credentials Data Model specification in
+The [=issuer=] of the [=verifiable credential=] as defined in the Verifiable
+Credentials Data Model specification in
 <a href="https://www.w3.org/TR/vc-data-model-2.0/#issuer">
 Section 4.76: Issuer</a>. This object MAY also include other properties listed
-in Section [[[#general-properties]]].
+in Section [[[#general-properties]]]. This object MAY include a `recognizedIn`
+property, as defined in Section [[[#recognizedentity]]], that references a
+document of recognized entities in which the [=issuer=] itself appears; this
+enables the [=credential-based discovery=] process described in Section
+[[[#credential-based-discovery]]], allowing a [=verifier=] to traverse the
+recognition hierarchy until it reaches an [=issuer=] it recognizes.
               </td>
             </tr>
             <tr>
@@ -940,6 +945,172 @@ publishes an European Union ETSI Trust Services list [[ETSI-TRUST-LISTS]].
       </pre>
 
     </section>
+    </section>
+
+    <section>
+      <h2>Algorithms</h2>
+
+      <p>
+This section describes algorithms that a [=verifier=] can use when processing
+[=verifiable credentials=] and [=recognized entity credentials=] defined by this
+specification.
+      </p>
+
+      <section>
+        <h3>Credential-based Discovery</h3>
+
+        <p>
+<dfn class="export">Credential-based discovery</dfn> is the process by which a
+[=verifier=] that receives a [=verifiable credential=] from an unknown
+[=issuer=] locates a [=recognized entity credential=] that recognizes that
+[=issuer=], and, if necessary, traverses a hierarchy of [=recognized entity
+credentials=] until it reaches one whose own [=issuer=] the [=verifier=]
+recognizes.
+        </p>
+
+        <p>
+The mechanism relies on the `recognizedIn` property. When present on the
+`issuer` object of a [=verifiable credential=], including on the `issuer` object
+of a [=recognized entity credential=], the `recognizedIn` property references a
+[=verifiable credential=] of recognized entities that lists that [=issuer=] as a
+[=recognized entity=]. A [=verifier=] can fetch the referenced [=verifiable
+credential=] and inspect the [=issuer=] of <em>that</em>
+[=verifiable credential=]. If the [=verifier=] recognizes that [=issuer=],
+discovery succeeds. If it does not, the [=verifier=] can follow the
+`recognizedIn` property on the fetched [=verifiable credential=]'s `issuer`
+object to move one level up the hierarchy, repeating the process until it
+reaches an [=issuer=] it recognizes or a configured limit is reached.
+        </p>
+
+        <p>
+A [=holder=] MAY pre-fetch the [=recognized entity credentials=] along this
+hierarchy and provide them to the [=verifier=] alongside the [=verifiable
+credential=], using the "certificate stapling" mechanism described in Section
+[[[#recognizedentitycredential]]]. When the [=holder=] provides these
+[=verifiable credentials=], the [=verifier=] does not need to fetch them itself,
+provided that the [=verifier=] is satisfied with the freshness of the provided
+[=verifiable credentials=]. A [=verifier=] that requires more recent information
+MAY ignore the [=holder=]-provided [=verifiable credentials=] and fetch the
+[=recognized entity credentials=] directly.
+        </p>
+
+        <p>
+To perform [=credential-based discovery=] on a [=verifiable credential=]
+(<var>credential</var>) against a configured set of recognized [=issuers=]
+(<var>recognizedIssuers</var>) and an optional set of [=holder=]-provided
+[=verifiable credentials=] (<var>providedDocuments</var>), a [=verifier=] runs
+the following algorithm. The algorithm returns a list representing the
+recognition chain on success, or an error if no recognized [=issuer=] can be
+reached.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Let <var>current</var> be <var>credential</var> and let <var>chain</var> be an
+empty list.
+          </li>
+          <li>
+Let <var>maxDepth</var> be the maximum recognition chain depth the [=verifier=]
+is configured to traverse. If the length of <var>chain</var> exceeds
+<var>maxDepth</var>, return an error.
+          </li>
+          <li>
+Let <var>issuer</var> be the value of the `issuer` property of
+<var>current</var>, and let <var>issuerId</var> be its identifier.
+          </li>
+          <li>
+If <var>issuerId</var> is a member of <var>recognizedIssuers</var>, append
+<var>current</var> to <var>chain</var> and return <var>chain</var>; discovery has
+succeeded.
+          </li>
+          <li>
+If <var>issuer</var> does not contain a `recognizedIn` property, return an error;
+the recognition hierarchy cannot be traversed any further.
+          </li>
+          <li>
+Let <var>listReference</var> be the value of the `recognizedIn` property and let
+<var>listId</var> be its `id`.
+          </li>
+          <li>
+Let <var>list</var> be the [=recognized entity credential=] identified by
+<var>listId</var>, obtained from <var>providedDocuments</var> if present and
+sufficiently fresh, or otherwise retrieved from <var>listId</var>.
+          </li>
+          <li>
+Verify the proof on <var>list</var>, confirm that it is currently valid, and
+confirm that <var>issuerId</var> appears as the `id` of a [=recognized entity=]
+in the `credentialSubject` of <var>list</var>. If any check fails, return an
+error.
+          </li>
+          <li>
+Append <var>current</var> to <var>chain</var>, set <var>current</var> to
+<var>list</var>, and return to step 2 to evaluate the [=issuer=] of the list.
+          </li>
+        </ol>
+
+        <p>
+The example below shows a diploma [=verifiable credential=] issued by a state
+university whose own `issuer` object carries a `recognizedIn` property. A
+[=verifier=] that does not directly recognize the state university can follow
+that `recognizedIn` reference to the state's list of recognized universities,
+issued by the state department of education, to determine whether the state
+university is itself a [=recognized entity=].
+        </p>
+
+        <pre class="example" title="A diploma verifiable credential that supports credential-based discovery">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "ExampleDegreeCredential"
+  ],
+  "issuer": {
+    "id": "did:web:university.example",
+    "name": "Example State University",
+    "recognizedIn": {
+      "id": "https://education.state.example/lists/recognized-universities.json",
+      "type": "RecognizedEntityCredential",
+      "name": "State List of Recognized Universities"
+    }
+  },
+  "validFrom": "2025-06-01T00:00:00Z",
+  "credentialSubject": {
+    "id": "did:example:student-123",
+    "name": "Alex Example",
+    "degree": {
+      "type": "ExampleBachelorDegree",
+      "name": "Bachelor of Science in Computer Science"
+    }
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2025-06-01T20:08:22Z",
+    "verificationMethod": "did:web:university.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+        </pre>
+
+        <p>
+In this example, a [=verifier=] evaluating the diploma issued by
+`did:web:university.example` inspects the credential's `issuer` object. If the
+[=verifier=] already recognizes `did:web:university.example`, discovery
+succeeds. If not, the [=verifier=] follows the `recognizedIn` reference on the
+`issuer` object to
+`https://education.state.example/lists/recognized-universities.json` and checks
+whether that [=recognized entity credential=] lists Example State University as
+a [=recognized entity=]. If the [=verifier=] recognizes the state department of
+education that issued that list, discovery succeeds; otherwise, the [=verifier=]
+continues up the recognition hierarchy via the list's own `issuer` object until
+it reaches an [=issuer=] it recognizes, thereby completing the recognition
+chain.
+        </p>
+      </section>
     </section>
 
     <section class="appendix informative">
