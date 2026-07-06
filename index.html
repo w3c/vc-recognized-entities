@@ -103,7 +103,8 @@
         /*
         alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
         */
-        xref: ["URL", "I18N-GLOSSARY", "INFRA", "CID", "VC-DATA-MODEL"],
+        xref: ["URL", "I18N-GLOSSARY", "INFRA", "CID", "DID", "VC-DATA-MODEL"],
+        lint: { "informative-dfn": false },
         otherLinks: [{
           key: "Meetings:",
           data: [{
@@ -1126,6 +1127,244 @@ continues up the recognition hierarchy via the list's own `issuer` object until
 it reaches an [=issuer=] it recognizes, thereby completing the recognition
 chain.
         </p>
+      </section>
+
+      <section>
+        <h3>Identifier-based Discovery</h3>
+
+        <p>
+<dfn class="export">Identifier-based discovery</dfn> is the process by which a
+[=verifier=] that receives a [=verifiable credential=] from an unknown
+[=issuer=] starts from the [=issuer=]'s identifier, resolves that identifier to
+a [=controlled identifier document=], and uses a service declared in that
+document to retrieve a [=verifiable presentation=] that might contain a
+[=recognized entity credential=] recognizing the [=issuer=]. Whereas
+[=credential-based discovery=] relies on a `recognizedIn` reference being
+present on the `issuer` object, identifier-based discovery makes no such
+assumption; it instead obtains recognition information by dereferencing the
+[=issuer=]'s identifier itself.
+        </p>
+
+        <p>
+The mechanism relies on the [=issuer=] publishing recognition information at a
+service endpoint that is discoverable from its identifier. The [=issuer=]'s
+identifier, typically expressed as the `id` of the `issuer` object (for example,
+`issuer.id`), is a [=URL=] that can be resolved or dereferenced to a
+[=controlled identifier document=], such as a [=DID document=]. That document
+MAY declare a service whose `type` array includes both `WhoisService` and
+`PathService`; the service's `serviceEndpoint` identifies the location at which
+the [=issuer=] publishes a [=verifiable presentation=] describing itself. The
+published [=verifiable presentation=] is signed by the [=issuer=] and contains
+[=verifiable credentials=] for which the [=issuer=]'s identifier is the
+`credentialSubject`. Among these MAY be a [=recognized entity credential=] in
+which the [=issuer=] appears as a [=recognized entity=].
+        </p>
+
+        <p>
+A [=verifier=] that obtains a [=recognized entity credential=] this way
+processes it exactly as in [=credential-based discovery=]. If the [=verifier=]
+recognizes the [=issuer=] of that [=recognized entity credential=], discovery
+succeeds. If it does not, and the [=recognized entity credential=] carries a
+`recognizedIn` property on its own `issuer` object, the [=verifier=] MAY
+continue with [=credential-based discovery=] to traverse the recognition
+hierarchy until it reaches an [=issuer=] it recognizes.
+        </p>
+
+        <p>
+To perform [=identifier-based discovery=] on a [=verifiable credential=]
+(<var>credential</var>) for a specific action (<var>action</var>, for example
+`issue`) against a configured set of recognized [=issuers=]
+(<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
+algorithm returns a result with two boolean outcomes: <var>recognized</var>,
+indicating whether the [=issuer=] of <var>credential</var> is ultimately
+recognized by a member of <var>recognizedIssuers</var>, and
+<var>actionRecognized</var>, indicating whether that [=issuer=] is recognized to
+perform <var>action</var> and, where a [=recognized action=] declares an
+`outputValidation`, whether <var>credential</var> conforms to it. On success the
+result also includes the recognition chain that established the outcome.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Let <var>result</var> be a structure with <var>recognized</var> set to
+`false`, <var>actionRecognized</var> set to `false`, and <var>chain</var> set to
+an empty list.
+          </li>
+          <li>
+Let <var>issuer</var> be the value of the `issuer` property of
+<var>credential</var>, and let <var>issuerId</var> be its identifier.
+          </li>
+          <li>
+Resolve or dereference <var>issuerId</var> to obtain a controlled identifier
+document, <var>idDocument</var>. If <var>issuerId</var> cannot be resolved,
+return <var>result</var>.
+          </li>
+          <li>
+Let <var>service</var> be a service in the `service` array of
+<var>idDocument</var> whose `type` includes both `WhoisService` and
+`PathService`. If no such service is present, return <var>result</var>;
+identifier-based discovery is not supported for this [=issuer=].
+          </li>
+          <li>
+Let <var>endpoint</var> be the `serviceEndpoint` of <var>service</var> and
+retrieve the [=verifiable presentation=], <var>presentation</var>, published at
+<var>endpoint</var>. If retrieval fails, return <var>result</var>.
+          </li>
+          <li>
+Verify the proof on <var>presentation</var> and confirm that it is bound to
+<var>issuerId</var>. If verification fails, return <var>result</var>.
+          </li>
+          <li>
+Let <var>candidates</var> be the [=recognized entity credentials=] contained in
+<var>presentation</var> in which <var>issuerId</var> appears as the `id` of a
+[=recognized entity=] in the `credentialSubject`. If <var>candidates</var> is
+empty, return <var>result</var>.
+          </li>
+          <li>
+For each <var>list</var> in <var>candidates</var>, verify the proof on
+<var>list</var> and confirm that it is currently valid, discarding any
+<var>list</var> that fails either check.
+          </li>
+          <li>
+For each valid <var>list</var>, let <var>anchor</var> be the result of
+determining whether the [=issuer=] of <var>list</var> is recognized: if the
+[=issuer=] of <var>list</var> is a member of <var>recognizedIssuers</var>, then
+<var>anchor</var> is a list containing <var>list</var>; otherwise, if the
+`issuer` object of <var>list</var> contains a `recognizedIn` property, then
+<var>anchor</var> is the recognition chain returned by performing
+[=credential-based discovery=] on <var>list</var> against
+<var>recognizedIssuers</var>, or nothing if that process does not succeed.
+          </li>
+          <li>
+If no valid <var>list</var> produces an <var>anchor</var>, return
+<var>result</var>; the [=issuer=] is not recognized.
+          </li>
+          <li>
+Otherwise, select a valid <var>list</var> that produced an <var>anchor</var>,
+set <var>result.recognized</var> to `true`, and set <var>result.chain</var> to
+<var>credential</var> followed by <var>list</var> followed by the elements of
+its <var>anchor</var>.
+          </li>
+          <li>
+Let <var>entity</var> be the [=recognized entity=] in the `credentialSubject` of
+the selected <var>list</var> whose `id` is <var>issuerId</var>, and let
+<var>actions</var> be the [=recognized actions=] declared by its `recognizedTo`
+property.
+          </li>
+          <li>
+If any [=recognized action=] in <var>actions</var> has an `action` value equal
+to <var>action</var>, and either that [=recognized action=] declares no
+`outputValidation` or <var>credential</var> conforms to every schema referenced
+by its `outputValidation`, set <var>result.actionRecognized</var> to `true`.
+          </li>
+          <li>
+Return <var>result</var>.
+          </li>
+        </ol>
+
+        <p>
+The example below shows a controlled identifier document for the [=issuer=]
+`did:web:university.example` that declares a `WhoisService`. A [=verifier=] that
+does not directly recognize the university resolves this document, retrieves the
+[=verifiable presentation=] published at the service endpoint, and inspects the
+[=recognized entity credentials=] it contains to determine whether the
+university is recognized.
+        </p>
+
+        <pre class="example" title="A controlled identifier document that supports identifier-based discovery">
+{
+  "@context": [
+    "https://www.w3.org/ns/cid/v1"
+  ],
+  "id": "did:web:university.example",
+  "assertionMethod": [{
+    "id": "#issuance-key-1",
+    "type": "Multikey",
+    "controller": "did:web:university.example",
+    "publicKeyMultibase": "z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+  }],
+  "service": [{
+    "id": "#whois",
+    "type": ["WhoisService", "PathService"],
+    "serviceEndpoint": "https://university.example/whois.vp"
+  }]
+}
+        </pre>
+
+        <p>
+The [=verifiable presentation=] retrieved from the `serviceEndpoint` is signed
+by `did:web:university.example` and contains a [=recognized entity credential=],
+as shown below, issued by the state department of education that lists the
+university as a [=recognized entity=] recognized to `issue` credentials
+conforming to a computer science bachelor's degree schema. If the [=verifier=]
+recognizes `did:web:education.state.example`, the [=issuer=] is recognized;
+otherwise, the [=verifier=] establishes recognition through
+[=credential-based discovery=] using the `recognizedIn` reference on that
+credential's `issuer` object. Once recognition is established, the [=verifier=]
+additionally determines whether the university is recognized to perform the
+intended `issue` action and whether the diploma conforms to the schema named by
+that [=recognized action=]'s `outputValidation`.
+        </p>
+
+        <pre class="example" title="A verifiable presentation published at the whois service endpoint">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": "VerifiablePresentation",
+  "holder": "did:web:university.example",
+  "verifiableCredential": [{
+    "@context": [
+      "https://www.w3.org/ns/credentials/v2",
+      "https://www.w3.org/ns/credentials/examples/v2"
+    ],
+    "type": [
+      "VerifiableCredential",
+      "RecognizedEntityCredential"
+    ],
+    "issuer": {
+      "id": "did:web:education.state.example",
+      "type": "RecognizedIssuer",
+      "name": "State Department of Education"
+    },
+    "validFrom": "2025-01-01T00:00:00Z",
+    "validUntil": "2030-01-01T00:00:00Z",
+    "credentialSubject": [{
+      "id": "did:web:university.example",
+      "type": "RecognizedEntity",
+      "name": "Example State University",
+      "url": "https://www.university.example/",
+      "recognizedTo": {
+        "type": "RecognizedAction",
+        "action": "issue",
+        "recognizedBy": "did:web:education.state.example",
+        "outputValidation": {
+          "id": "https://education.state.example/credentials/cs-bachelors.json",
+          "type": "JsonSchema",
+          "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
+        }
+      }
+    }],
+    "proof": {
+      "type": "DataIntegrityProof",
+      "created": "2026-04-10T20:08:22Z",
+      "verificationMethod": "did:web:education.state.example#issuance-key-1",
+      "cryptosuite": "ecdsa-rdfc-2019",
+      "proofPurpose": "assertionMethod",
+      "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-04-10T20:10:00Z",
+    "verificationMethod": "did:web:university.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "authentication",
+    "proofValue": "z3FXQjBHwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoHPGByaH"
+  }
+}
+        </pre>
       </section>
     </section>
 
