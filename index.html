@@ -1567,6 +1567,229 @@ and [=verifiable credentials=] and collapsing the chain of trust.
     </section>
 
     <section class="appendix informative">
+      <h2>Ecosystem Examples</h2>
+
+      <p>
+This section demonstrates how the data model defined by this specification can
+be applied in existing credential ecosystems.
+      </p>
+
+      <section>
+        <h3>GS1 Federated Identifier Example</h3>
+
+      <p>
+GS1 operates one of the world's largest federated identifier schemes, in which
+a Global Trade Item Number (GTIN) is composed of a GS1 Company Prefix, an item
+reference, and a check digit. The GS1 Global Office allocates GS1 Prefixes to
+GS1 Member Organizations; each Member Organization licenses GS1 Company
+Prefixes, which extend its GS1 Prefix, to its member companies; and each member
+company assigns item references to create GTINs for its trade items. A detailed
+description of this use case is available in the
+<a data-cite="VC-USE-CASES#chain-of-gs1-credentials-to-identify-a-trade-item">
+Chain of GS1 Credentials to Identify a Trade Item</a> section of the
+[[?VC-USE-CASES]] document.
+      </p>
+
+      <p>
+This appendix demonstrates how that delegation chain can be expressed using the
+data model defined by this specification. Each level of the hierarchy publishes
+a [=recognized entity credential=] describing the entities one level below it,
+and each credential's `issuer` object carries a `recognizedIn` property
+referencing the [=recognized entity credential=] one level above it. The
+`recognizedIn` property plays a role analogous to the `extendsCredential`
+property used in GS1's own credential chain: it allows a [=verifier=] to
+traverse the hierarchy upward, using the [=credential-based discovery=]
+algorithm described in Section [[[#credential-based-discovery]]], until it
+reaches an [=issuer=] it recognizes. The examples below are illustrative;
+GS1's production systems use their own credential types and schemas.
+      </p>
+
+      <p>
+In the first example below, the GS1 Global Office publishes a [=recognized
+entity credential=] recognizing a Member Organization, GS1 Utopia, as the
+licensee of GS1 Prefix `950`. The `outputValidation` property constrains GS1
+Utopia to issuing credentials that conform to a Company Prefix License schema
+specific to GS1 Prefix `950`.
+      </p>
+
+      <pre class="example" title="GS1 Global Office recognizes a GS1 Member Organization">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:id.gs1.org",
+    "type": "RecognizedIssuer",
+    "name": "GS1 Global Office",
+    "url": "https://www.gs1.org/"
+  },
+  "validFrom": "2025-01-01T00:00:00Z",
+  "validUntil": "2030-01-01T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:id.gs1utopia.example",
+    "type": "RecognizedEntity",
+    "name": "GS1 Utopia",
+    "legalName": "GS1 Utopia Member Organization",
+    "url": "https://gs1utopia.example/",
+    "description": "The GS1 Member Organization for Utopia, licensee of GS1 Prefix 950.",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:id.gs1.org",
+      "outputValidation": {
+        "id": "https://id.gs1.org/schemas/company-prefix-license/950.json",
+        "type": "JsonSchema",
+        "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
+      }
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-04-10T20:08:22Z",
+    "verificationMethod": "did:web:id.gs1.org#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+      </pre>
+
+      <p>
+In the next example, GS1 Utopia publishes a [=recognized entity credential=]
+recognizing one of its member companies, Healthy Tots, as the licensee of GS1
+Company Prefix `9506000`. Healthy Tots is recognized to issue key credentials
+that conform to a schema specific to that company prefix. The `issuer` object
+carries a `recognizedIn` property referencing the GS1 Global Office credential
+from the previous example, allowing a [=verifier=] that does not directly
+recognize GS1 Utopia to continue up the hierarchy.
+      </p>
+
+      <pre class="example" title="A GS1 Member Organization recognizes a member company">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:id.gs1utopia.example",
+    "type": "RecognizedIssuer",
+    "name": "GS1 Utopia",
+    "recognizedIn": {
+      "id": "https://id.gs1.org/lists/recognized-member-organizations.vc",
+      "type": "RecognizedEntityCredential",
+      "name": "GS1 Register of Member Organizations"
+    }
+  },
+  "validFrom": "2025-01-01T00:00:00Z",
+  "validUntil": "2030-01-01T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:healthytots.example",
+    "type": "RecognizedEntity",
+    "name": "Healthy Tots",
+    "legalName": "Healthy Tots Baby Food, Inc.",
+    "url": "https://healthytots.example/",
+    "description": "A manufacturer of baby food, licensee of GS1 Company Prefix 9506000.",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:id.gs1utopia.example",
+      "outputValidation": {
+        "id": "https://id.gs1utopia.example/schemas/key-credential/9506000.json",
+        "type": "JsonSchema",
+        "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
+      }
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-04-10T20:08:22Z",
+    "verificationMethod": "did:web:id.gs1utopia.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+      </pre>
+
+      <p>
+In the final example, Healthy Tots issues a key credential whose subject is a
+GTIN expressed as a GS1 Digital Link URI. The GTIN `09506000134352` is
+constructed from the GS1 Company Prefix `9506000` licensed in the previous
+example. As in the diploma example in Section
+[[[#credential-based-discovery]]], the `issuer` object carries a
+`recognizedIn` property referencing the GS1 Utopia credential from the
+previous example.
+      </p>
+
+      <pre class="example" title="A key credential for a trade item, issued by a member company">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "ExampleKeyCredential"
+  ],
+  "issuer": {
+    "id": "did:web:healthytots.example",
+    "name": "Healthy Tots",
+    "recognizedIn": {
+      "id": "https://id.gs1utopia.example/lists/recognized-companies.vc",
+      "type": "RecognizedEntityCredential",
+      "name": "GS1 Utopia Register of Licensed Companies"
+    }
+  },
+  "validFrom": "2026-01-15T00:00:00Z",
+  "credentialSubject": {
+    "id": "https://id.gs1.org/01/09506000134352",
+    "name": "Healthy Tots Apple & Carrot Puree"
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-01-15T09:30:00Z",
+    "verificationMethod": "did:web:healthytots.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+      </pre>
+
+      <p>
+A [=verifier=] receiving the key credential — for example, an online
+marketplace evaluating a product listing — processes the chain bottom-up using
+[=credential-based discovery=]. If the [=verifier=] does not directly
+recognize `did:web:healthytots.example`, it follows the `recognizedIn`
+reference on the key credential's `issuer` object, verifies the proof on the
+GS1 Utopia credential, and confirms that Healthy Tots appears there as a
+[=recognized entity=]. It also confirms, via the `recognizedTo` property, that
+Healthy Tots is recognized to `issue` and that the key credential conforms to
+the schema referenced by `outputValidation` — the schema-level counterpart of
+GS1's rule that an identification key be properly based on the licensed GS1
+Company Prefix. If the [=verifier=] does not recognize GS1 Utopia either, it
+repeats the process one level up, following the `recognizedIn` reference on
+the GS1 Utopia credential's `issuer` object to the GS1 Global Office
+credential. Because the GS1 Global Office is a well-known trust anchor,
+discovery terminates there, completing a recognition chain from a single trade
+item to the root of the GS1 federation. A [=holder=], such as the product's
+distributor, might staple all three credentials into a single presentation so
+that the [=verifier=] does not need to fetch any of them.
+      </p>
+
+      </section>
+    </section>
+
+    <section class="appendix informative">
       <h2>Relationship to Other Technologies</h2>
 
       <p>
