@@ -573,9 +573,20 @@ Each value MUST be a [=URL=].
               <td>description</td>
               <td>
 A human-readable description providing details about the entity. The value for
-this property is defined in
-<a data-cite="VC-DATA-MODEL#names-and-descriptions">Section 4.6: Names and Descriptions</a>
-of the [[[VC-DATA-MODEL]]] specification.
+this property is defined in the
+<a data-cite="VC-DATA-MODEL#names-and-descriptions">Names and Descriptions</a>
+section of the [[[VC-DATA-MODEL]]] specification.
+              </td>
+            </tr>
+            <tr>
+              <td>digestSRI</td>
+              <td>
+One or more cryptographic digests, as defined by the `hash-expression` ABNF
+grammar defined in the [[[SRI]]] specification, used to verify the integrity
+of resources associated with the entity. The values for this property are
+defined in the
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Integrity of
+Related Resources</a> section of the [[[VC-DATA-MODEL]]] specification.
               </td>
             </tr>
             <tr>
