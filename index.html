@@ -1608,15 +1608,16 @@ GS1's production systems use their own credential types and schemas.
 In the first example below, the GS1 Global Office publishes a [=recognized
 entity credential=] recognizing a Member Organization, GS1 Utopia, as the
 licensee of GS1 Prefix `950`. The `outputValidation` property constrains GS1
-Utopia to issuing credentials that conform to a Company Prefix License schema
-specific to GS1 Prefix `950`.
+Utopia to issuing credentials that conform to a GS1 Company Prefix Licence
+credential schema specific to GS1 Prefix `950`.
       </p>
 
       <pre class="example" title="GS1 Global Office recognizes a GS1 Member Organization">
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
-    "https://www.w3.org/ns/credentials/examples/v2"
+    "https://www.w3.org/ns/credentials/examples/v2",
+    "https://ref.gs1.org/gs1/vc/licence-context"
   ],
   "type": [
     "VerifiableCredential",
@@ -1637,6 +1638,7 @@ specific to GS1 Prefix `950`.
     "legalName": "GS1 Utopia Member Organization",
     "url": "https://gs1utopia.example/",
     "description": "The GS1 Member Organization for Utopia, licensee of GS1 Prefix 950.",
+    "licenceValue": "950",
     "recognizedTo": {
       "type": "RecognizedAction",
       "action": "issue",
@@ -1673,7 +1675,8 @@ recognize GS1 Utopia to continue up the hierarchy.
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
-    "https://www.w3.org/ns/credentials/examples/v2"
+    "https://www.w3.org/ns/credentials/examples/v2",
+    "https://ref.gs1.org/gs1/vc/licence-context"
   ],
   "type": [
     "VerifiableCredential",
@@ -1698,6 +1701,7 @@ recognize GS1 Utopia to continue up the hierarchy.
     "legalName": "Healthy Tots Baby Food, Inc.",
     "url": "https://healthytots.example/",
     "description": "A manufacturer of baby food, licensee of GS1 Company Prefix 9506000.",
+    "licenceValue": "9506000",
     "recognizedTo": {
       "type": "RecognizedAction",
       "action": "issue",
@@ -1734,11 +1738,12 @@ previous example.
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
-    "https://www.w3.org/ns/credentials/examples/v2"
+    "https://www.w3.org/ns/credentials/examples/v2",
+    "https://ref.gs1.org/gs1/vc/declaration-context"
   ],
   "type": [
     "VerifiableCredential",
-    "ExampleKeyCredential"
+    "KeyCredential"
   ],
   "issuer": {
     "id": "did:web:healthytots.example",
