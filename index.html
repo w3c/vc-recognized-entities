@@ -1822,6 +1822,399 @@ that the [=verifier=] does not need to fetch any of them.
       </p>
 
       </section>
+
+      <section>
+        <h3>UN GRID Cross-Border Trade Example</h3>
+
+      <p>
+The United Nations Global Registrar Information Directory (GRID) is a
+publicly accessible digital directory, hosted by the United Nations under
+the auspices of UN/CEFACT, that lists authoritative registrars, including
+national business registers, land registers, and trademark registers, from
+participating UN Member States. GRID addresses a verification gap in global
+trade: when a customs authority or trade finance lender receives a commercial
+invoice issued by a foreign exporter as a [=verifiable credential=], it
+typically has no direct relationship with the exporter and cannot independently
+determine whether the exporter is a legitimately registered entity. Because
+roughly five billion commercial invoices are issued annually from approximately
+fifty million trading entities to their counterparts, manual verification is
+not feasible at scale.
+      </p>
+
+      <p>
+The resulting verification chain involves three tiers of credential, each
+issued at a different time, with a different lifecycle, and by a different
+issuer:
+      </p>
+
+      <ul>
+        <li>
+A trade document [=verifiable credential=], such as a commercial invoice,
+issued by the exporter's DID, with a lifecycle of weeks to a few months and
+issued in volumes of billions per year.
+        </li>
+        <li>
+A `RecognizedEntityCredential` issued by the national registrar's DID to the
+individual exporter, attesting that the exporter's DID is controlled by the
+registered legal entity, with a lifecycle spanning years to decades and one
+credential per registered entity.
+        </li>
+        <li>
+A `RecognizedEntityCredential` issued by GRID's DID to the national registrar,
+attesting that the registrar is a recognized, sovereign authority, with a
+lifecycle measured in decades. There are roughly one thousand such
+authoritative national registers worldwide.
+        </li>
+      </ul>
+
+      <p>
+The discovery process runs from the trade document toward the trust anchor
+using [=identifier-based discovery=] at each step, because publishing a
+single credential that lists all registered entities in a national register,
+potentially two million entities updated hundreds of times per day, would be
+impractical and would expose a large identity-theft attack surface. Instead,
+each registered entity holds its own individual `RecognizedEntityCredential`
+and publishes it at a `WhoisService` endpoint in its DID document. The
+national registrar likewise publishes the `RecognizedEntityCredential` that
+GRID issued to it at its own `WhoisService` endpoint. The diagram below
+illustrates the relationships:
+      </p>
+
+<figure>
+  <pre class="diagram mermaid" style="max-width:55%">
+flowchart TD
+    GRID["UN GRID\n(trust anchor)"]
+    NAT["Utopian Business Register\n(national registrar)"]
+    ACME["ACME Exports Ltd.\n(registered exporter)"]
+
+    REC1["RecognizedEntityCredential\nsubject: Utopian Business Register\nrecognizedTo: issue"]
+    REC2["RecognizedEntityCredential\nsubject: ACME Exports Ltd.\nrecognizedTo: issue"]
+    INV["CommercialInvoiceCredential\nissued by ACME's DID"]
+
+    DID_ACME["ACME DID Document\nWhoisService endpoint"]
+    VP_ACME["VP signed by ACME\ncontains REC2"]
+    DID_NAT["Registrar DID Document\nWhoisService endpoint"]
+    VP_NAT["VP signed by Registrar\ncontains REC1"]
+
+    GRID -->|issues| REC1
+    NAT -->|issues| REC2
+    ACME -->|issues| INV
+
+    INV -.->|"resolve issuer DID"| DID_ACME
+    DID_ACME -.->|"WhoisService"| VP_ACME
+    VP_ACME -.->|"contains"| REC2
+    REC2 -.->|"resolve issuer DID"| DID_NAT
+    DID_NAT -.->|"WhoisService"| VP_NAT
+    VP_NAT -.->|"contains"| REC1
+
+    style GRID fill:#005a9c,color:#fff
+    style REC1 fill:darkgray,color:white
+    style REC2 fill:darkgray,color:white
+    style INV fill:teal
+    style DID_ACME fill:#e8e8e8
+    style VP_ACME fill:#e8e8e8
+    style DID_NAT fill:#e8e8e8
+    style VP_NAT fill:#e8e8e8
+  </pre>
+  <figcaption>
+    Relationship of organizations and credentials in the UN GRID ecosystem
+  </figcaption>
+</figure>
+
+      <p>
+This appendix demonstrates how that three-tier chain can be expressed using
+the data model defined by this specification. The GRID credential at the top
+of the hierarchy is a `RecognizedEntityCredential` that recognizes national
+registrars as [=recognized entities=]. Each national registrar then issues an
+individual `RecognizedEntityCredential` to each of its registered members.
+Each member exporter, and the national registrar itself, publishes its
+credential at a `WhoisService` endpoint in its DID document, enabling
+[=identifier-based discovery=] as described in Section
+[[[#identifier-based-discovery]]]. The examples below are illustrative; UNTP's
+production systems use vocabulary defined by [[?UNTP-DIA]].
+      </p>
+
+      <p>
+In the first example below, GRID publishes a `RecognizedEntityCredential`
+recognizing the Utopian Business Register as an authoritative national
+registrar. GRID's `issuer` DID is the trust anchor that verifiers configure
+explicitly. The `outputValidation` property constrains the Utopian Business
+Register to issuing credentials that conform to the UNTP-defined schema for
+registrar-issued entity recognition credentials.
+      </p>
+
+      <pre class="example"
+        title="UN GRID recognizes a national business register">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2",
+    "https://vocabulary.uncefact.org/untp/"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:grid.un.org",
+    "type": "RecognizedIssuer",
+    "name": "United Nations Global Registrar Information Directory",
+    "url": "https://grid.un.org/"
+  },
+  "validFrom": "2025-01-01T00:00:00Z",
+  "validUntil": "2035-01-01T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:register.business.utopia.example",
+    "type": "RecognizedEntity",
+    "name": "Utopian Business Register",
+    "legalName": "Utopian Ministry of Commerce, Business Registry",
+    "url": "https://register.business.utopia.example/",
+    "description": "The national authoritative business register for
+      Utopia, operated by the Ministry of Commerce.",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:grid.un.org",
+      "outputValidation": {
+        "id": "https://vocabulary.uncefact.org/untp/schema/
+          entity-recognition-credential.json",
+        "type": "JsonSchema",
+        "digestMultibase":
+          "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
+      }
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-04-10T20:08:22Z",
+    "verificationMethod": "did:web:grid.un.org#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo
+      5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+      </pre>
+
+      <p>
+The Utopian Business Register publishes that credential at its own
+`WhoisService` endpoint, as shown in the DID document below. A verifier
+performing [=identifier-based discovery=] on the Utopian Business Register's
+DID resolves this document and retrieves the verifiable presentation at the
+service endpoint, which contains the GRID-issued credential recognizing the
+Utopian Business Register.
+      </p>
+
+      <pre class="example"
+        title="Utopian Business Register DID document with WhoisService">
+{
+  "@context": [
+    "https://www.w3.org/ns/cid/v1"
+  ],
+  "id": "did:web:register.business.utopia.example",
+  "assertionMethod": [{
+    "id": "#issuance-key-1",
+    "type": "Multikey",
+    "controller": "did:web:register.business.utopia.example",
+    "publicKeyMultibase":
+      "z6Mkf5rGMoatrSj1f4CyvuHBeXJELe9RPdzo2PKGNCKVtZxP"
+  }],
+  "service": [{
+    "id": "#whois",
+    "type": ["WhoisService", "PathService"],
+    "serviceEndpoint":
+      "https://register.business.utopia.example/whois.vp"
+  }]
+}
+      </pre>
+
+      <p>
+In the next example, the Utopian Business Register issues a
+`RecognizedEntityCredential` to one of its registered entities, ACME Exports
+Ltd. The credential asserts that the company's corporate registration number,
+`UTB-2019-041872`, is bound to the DID
+`did:web:acme-exports.utopia.example`. Before issuing this credential, the
+Utopian Business Register verified that ACME controls that DID.
+      </p>
+
+      <pre class="example"
+        title="A national business register issues a recognized entity
+          credential to a registered exporter">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2",
+    "https://vocabulary.uncefact.org/untp/"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:register.business.utopia.example",
+    "type": "RecognizedIssuer",
+    "name": "Utopian Business Register"
+  },
+  "validFrom": "2025-03-15T00:00:00Z",
+  "validUntil": "2030-03-15T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:acme-exports.utopia.example",
+    "type": "RecognizedEntity",
+    "name": "ACME Exports",
+    "legalName": "ACME Exports Ltd.",
+    "url": "https://acme-exports.utopia.example/",
+    "description": "A registered exporter in Utopia, corporate
+      registration number UTB-2019-041872.",
+    "registeredId": "UTB-2019-041872",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:register.business.utopia.example",
+      "outputValidation": {
+        "id": "https://vocabulary.uncefact.org/untp/schema/
+          commercial-invoice.json",
+        "type": "JsonSchema",
+        "digestMultibase":
+          "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
+      }
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-04-10T20:08:22Z",
+    "verificationMethod":
+      "did:web:register.business.utopia.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo
+      5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+      </pre>
+
+      <p>
+ACME Exports publishes that credential at a `WhoisService` endpoint in its
+own DID document, as shown below.
+      </p>
+
+      <pre class="example"
+        title="ACME Exports DID document with WhoisService">
+{
+  "@context": [
+    "https://www.w3.org/ns/cid/v1"
+  ],
+  "id": "did:web:acme-exports.utopia.example",
+  "assertionMethod": [{
+    "id": "#issuance-key-1",
+    "type": "Multikey",
+    "controller": "did:web:acme-exports.utopia.example",
+    "publicKeyMultibase":
+      "z6MkrJVnaZkeFzdQyMZu1cgjg7k1pZZ6x5GGnsfSbwqbUXwo"
+  }],
+  "service": [{
+    "id": "#whois",
+    "type": ["WhoisService", "PathService"],
+    "serviceEndpoint":
+      "https://acme-exports.utopia.example/whois.vp"
+  }]
+}
+      </pre>
+
+      <p>
+In the final example, ACME Exports issues a commercial invoice as a
+[=verifiable credential=] using its registered DID as the issuer.
+      </p>
+
+      <pre class="example"
+        title="A commercial invoice verifiable credential issued by a
+          registered exporter">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2",
+    "https://vocabulary.uncefact.org/untp/"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "CommercialInvoiceCredential"
+  ],
+  "issuer": {
+    "id": "did:web:acme-exports.utopia.example",
+    "name": "ACME Exports"
+  },
+  "validFrom": "2026-05-01T00:00:00Z",
+  "validUntil": "2026-07-31T00:00:00Z",
+  "credentialSubject": {
+    "id":
+      "https://acme-exports.utopia.example/invoices/INV-2026-00431",
+    "invoiceNumber": "INV-2026-00431",
+    "invoiceDate": "2026-05-01",
+    "seller": {
+      "id": "did:web:acme-exports.utopia.example",
+      "name": "ACME Exports Ltd.",
+      "registeredId": "UTB-2019-041872"
+    },
+    "buyer": {
+      "name": "Acme Importer GmbH",
+      "registeredId": "DE-HRB-123456"
+    },
+    "totalAmount": {
+      "value": "45200.00",
+      "currency": "USD"
+    }
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-05-01T10:15:00Z",
+    "verificationMethod":
+      "did:web:acme-exports.utopia.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo
+      5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+      </pre>
+
+      <p>
+A [=verifier=] receiving the commercial invoice, such as an importing customs
+authority or a trade finance lender, performs [=identifier-based discovery=]
+to validate the invoice issuer. The [=verifier=] resolves
+`did:web:acme-exports.utopia.example` to ACME's DID document, locates the
+`WhoisService` endpoint, and retrieves the verifiable presentation published
+there. That presentation, signed by ACME's DID, contains the
+`RecognizedEntityCredential` issued by the Utopian Business Register in which
+ACME appears as a [=recognized entity=] recognized to `issue` credentials
+conforming to the UNTP commercial invoice schema. The [=verifier=] confirms
+that the invoice's `issuer.id` matches the `credentialSubject.id` in that
+credential and validates the `outputValidation` schema constraint against the
+invoice.
+      </p>
+
+      <p>
+If the [=verifier=] does not directly recognize the Utopian Business Register,
+it performs [=identifier-based discovery=] on the Utopian Business Register's
+DID in turn. The [=verifier=] resolves
+`did:web:register.business.utopia.example`, locates its `WhoisService`
+endpoint, and retrieves the verifiable presentation published there. That
+presentation, signed by the Utopian Business Register's DID, contains the
+`RecognizedEntityCredential` issued by GRID in which the Utopian Business
+Register appears as a [=recognized entity=]. Because GRID is a well-known
+trust anchor operated by the United Nations, discovery terminates there,
+completing a recognition chain from the commercial invoice to the root of the
+global trade identity infrastructure.
+      </p>
+
+      <p class="note">
+The `registeredId` property used in the examples above is an
+ecosystem-specific extension defined by UNTP vocabulary [[?UNTP-DIA]] and
+carries the registrar-assigned corporate registration number. That property is
+not defined by this specification; it appears in the examples solely to
+illustrate the kind of information a registrar-issued
+`RecognizedEntityCredential` would carry in practice.
+      </p>
+
+      </section>
     </section>
 
     <section class="appendix informative">
