@@ -9,6 +9,7 @@
       out in the same tree and use relative links so that they'll work offline,
      -->
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+    <script class="remove" src="https://cdn.jsdelivr.net/gh/w3c/respec-mermaid@1.3.0/dist/main.js"></script>
 
     <script type="text/javascript" class="remove">
       var respecConfig = {
@@ -105,6 +106,7 @@
         */
         xref: ["URL", "I18N-GLOSSARY", "INFRA", "CID", "DID", "VC-DATA-MODEL"],
         lint: { "informative-dfn": false },
+        preProcess: [window.respecMermaid.createFigures],
         otherLinks: [{
           key: "Meetings:",
           data: [{
@@ -1587,8 +1589,36 @@ company assigns item references to create GTINs for its trade items. A detailed
 description of this use case is available in the
 <a data-cite="VC-USE-CASES#chain-of-gs1-credentials-to-identify-a-trade-item">
 Chain of GS1 Credentials to Identify a Trade Item</a> section of the
-[[?VC-USE-CASES]] document.
+[[?VC-USE-CASES]] document. An example diagram of this scenario is shown below:
       </p>
+
+<figure>
+  <pre class="diagram mermaid" style="max-width:40%">
+flowchart TD
+    GS1["GS1 Global Office\n(trust anchor)"]
+    MO["GS1 Utopia\nMember Organization"]
+    HT["Healthy Tots\nmember company"]
+
+    REC1["RecognizedEntityCredential\nsubject: GS1 Utopia\nrecognizedTo: issue"]
+    REC2["RecognizedEntityCredential\nsubject: Healthy Tots\nrecognizedTo: issue"]
+    KEY["KeyCredential\nsubject: GTIN as GS1 Digital Link"]
+
+    GS1 -->|issues| REC1
+    REC1 -->|recognizes| MO
+    MO -->|issues| REC2
+    REC2 -->|recognizes| HT
+    HT -->|issues| KEY
+
+    KEY -.->|"issuer.recognizedIn"| REC2
+    REC2 -.->|"issuer.recognizedIn"| REC1
+
+    style GS1 fill:#005a9c,color:#fff
+    style REC1 fill:darkgray, color:white
+    style REC2 fill:darkgray, color:white
+    style KEY fill:teal
+  </pre>
+  <figcaption>Relationship of organizations and credentials in the GS1 ecosystem</figcaption>
+</figure>
 
       <p>
 This appendix demonstrates how that delegation chain can be expressed using the
