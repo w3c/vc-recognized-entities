@@ -1187,6 +1187,51 @@ continue with [=credential-based discovery=] to traverse the recognition
 hierarchy until it reaches an [=issuer=] it recognizes.
         </p>
 
+      <p>
+The diagram below shows the [=identifier-based discovery=] process from the
+[=verifier=]'s perspective. The same steps repeat at each level of the
+hierarchy until a recognized trust anchor is reached.
+      </p>
+
+      <figure>
+        <pre class="diagram mermaid" style="max-width:65%">
+%%{init: {"flowchart": {"wrappingWidth": 500}}}%%
+flowchart TD
+    VC["Verifiable Credential\n(any type)"]
+    Q1{{"Issuer DID\nrecognized?"}}
+    DID["Issuer DID Document"]
+    WS{{"WhoisService\nendpoint found?"}}
+    VP["Verifiable Presentation\nat WhoisService endpoint"]
+    RecognizedEntityCredential["RecognizedEntityCredential\nfor the issuer"]
+    Q2{{"Issuer of RecognizedEntityCredential\nrecognized?"}}
+    SUCCESS(["Discovery succeeded"])
+    FAIL(["Discovery failed"])
+
+    VC --> Q1
+    Q1 -->|"yes"| SUCCESS
+    Q1 -->|"no"| DID
+    DID --> WS
+    WS -->|"no"| FAIL
+    WS -->|"yes"| VP
+    VP --> RecognizedEntityCredential
+    RecognizedEntityCredential --> Q2
+    Q2 -->|"yes"| SUCCESS
+    Q2 -->|"no, repeat"| DID
+
+    style VC fill:#b6d9b0,color:#000
+    style RecognizedEntityCredential fill:#b6d9b0,color:#000
+    style DID fill:#fef3a0,color:#000
+    style VP fill:#fef3a0,color:#000
+    style Q1 fill:#eee,color:#000
+    style Q2 fill:#eee,color:#000
+    style SUCCESS fill:#005a9c,color:#fff
+    style FAIL fill:#c0392b,color:#fff
+          </pre>
+          <figcaption>
+            Identifier-based discovery from the verifier's perspective
+          </figcaption>
+        </figure>
+
         <p>
 To perform [=identifier-based discovery=] on a [=verifiable credential=]
 (<var>credential</var>) for a specific action (<var>action</var>, for example
@@ -1606,8 +1651,8 @@ flowchart TD
     MO["GS1 Utopia\nMember Organization"]
     HT["Healthy Tots\nmember company"]
 
-    REC1["RecognizedEntityCredential\nsubject: GS1 Utopia\nrecognizedTo: issue"]
-    REC2["RecognizedEntityCredential\nsubject: Healthy Tots\nrecognizedTo: issue"]
+    REC1["RecognizedEntityCredential\nsubject: GS1 Utopia"]
+    REC2["RecognizedEntityCredential\nsubject: Healthy Tots"]
     KEY["KeyCredential\nsubject: GTIN as GS1 Digital Link"]
 
     GS1 -->|issues| REC1
@@ -1894,39 +1939,31 @@ the relationships:
 
 <figure>
   <pre class="diagram mermaid" style="max-width:55%">
+%%{init: {"flowchart": {"wrappingWidth": 500}}}%%
 flowchart TD
-    GRID["UN GRID\n(trust anchor)"]
-    NAT["Utopian Business Register\n(national registrar)"]
-    ACME["ACME Exports Ltd.\n(registered exporter)"]
+    GRID["UN GRID\n[Trust Anchor]"]
+    NAT["Utopian Business Register\n[National Registrar]"]
+    ACME["ACME Exports Ltd.\n[Registered Exporter]"]
 
-    REC1["RecognizedEntityCredential\nsubject: Utopian Business Register\nrecognizedTo: issue"]
-    REC2["RecognizedEntityCredential\nsubject: ACME Exports Ltd.\nrecognizedTo: issue"]
-    INV["CommercialInvoiceCredential\nissued by ACME's DID"]
+    GRID_REC["RecognizedEntityCredential\nsubject: Utopian Business Register"]
+    NAT_REC["RecognizedEntityCredential\nsubject: ACME Exports Ltd."]
+    INV["CommercialInvoiceCredential\nissued by ACME Exports' DID"]
 
-    DID_ACME["ACME DID Document\nWhoisService endpoint"]
-    VP_ACME["VP signed by ACME\ncontains REC2"]
-    DID_NAT["Registrar DID Document\nWhoisService endpoint"]
-    VP_NAT["VP signed by Registrar\ncontains REC1"]
-
-    GRID -->|issues| REC1
-    NAT -->|issues| REC2
+    GRID -->|issues| GRID_REC
+    GRID_REC -->|recognizes| NAT
+    NAT -->|issues| NAT_REC
+    NAT_REC -->|recognizes| ACME
     ACME -->|issues| INV
 
-    INV -.->|"resolve issuer DID"| DID_ACME
-    DID_ACME -.->|"WhoisService"| VP_ACME
-    VP_ACME -.->|"contains"| REC2
-    REC2 -.->|"resolve issuer DID"| DID_NAT
-    DID_NAT -.->|"WhoisService"| VP_NAT
-    VP_NAT -.->|"contains"| REC1
+    INV -.->|"identifier-based discovery"| NAT_REC
+    NAT_REC -.->|"identifier-based discovery"| GRID_REC
 
     style GRID fill:#005a9c,color:#fff
-    style REC1 fill:darkgray,color:white
-    style REC2 fill:darkgray,color:white
-    style INV fill:teal
-    style DID_ACME fill:#e8e8e8
-    style VP_ACME fill:#e8e8e8
-    style DID_NAT fill:#e8e8e8
-    style VP_NAT fill:#e8e8e8
+    style NAT fill:#aec6e8,color:#000
+    style ACME fill:#aec6e8,color:#000
+    style GRID_REC fill:#b6d9b0,color:#000,min-width:500px
+    style NAT_REC fill:#b6d9b0,color:#000,min-width:500px
+    style INV fill:#b6d9b0,color:#000,min-width:500px
   </pre>
   <figcaption>
     Relationship of organizations and credentials in the UN GRID ecosystem
@@ -1943,7 +1980,8 @@ Each member exporter, and the national registrar itself, publishes its
 credential at a `WhoisService` endpoint in its DID document, enabling
 [=identifier-based discovery=] as described in Section
 [[[#identifier-based-discovery]]]. The examples below are illustrative; UNTP's
-production systems use vocabulary defined by [[?UNTP-DIA]].
+production systems use vocabulary defined by the United Nations Transparency
+Protocol [[?UNTP-DIA]].
       </p>
 
       <p>
@@ -1956,7 +1994,7 @@ registrar-issued entity recognition credentials.
       </p>
 
       <pre class="example"
-        title="UN GRID recognizes a national business register">
+        title="UN GRID recognizes the Utopian National Business Register">
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
@@ -1988,11 +2026,9 @@ registrar-issued entity recognition credentials.
       "action": "issue",
       "recognizedBy": "did:web:grid.un.org",
       "outputValidation": {
-        "id": "https://vocabulary.uncefact.org/untp/schema/
-          entity-recognition-credential.json",
+        "id": "https://grid.un.org/schemas/erc-utopia.json",
         "type": "JsonSchema",
-        "digestMultibase":
-          "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
+        "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
       }
     }
   }],
@@ -2020,16 +2056,13 @@ Utopian Business Register.
       <pre class="example"
         title="Utopian Business Register DID document with WhoisService">
 {
-  "@context": [
-    "https://www.w3.org/ns/cid/v1"
-  ],
+  "@context": "https://www.w3.org/ns/did/v1.1",
   "id": "did:web:register.business.utopia.example",
   "assertionMethod": [{
     "id": "#issuance-key-1",
     "type": "Multikey",
     "controller": "did:web:register.business.utopia.example",
-    "publicKeyMultibase":
-      "z6Mkf5rGMoatrSj1f4CyvuHBeXJELe9RPdzo2PKGNCKVtZxP"
+    "publicKeyMultibase": "z6Mkf5rGMoatrSj1f4CyvuHBeXJELe9RPdzo2PKGNCKVtZxP"
   }],
   "service": [{
     "id": "#whois",
@@ -2046,7 +2079,7 @@ In the next example, the Utopian Business Register issues a
 Ltd. The credential asserts that the company's corporate registration number,
 `UTB-2019-041872`, is bound to the DID
 `did:web:acme-exports.utopia.example`. Before issuing this credential, the
-Utopian Business Register verified that ACME controls that DID.
+Utopian Business Register verified that ACME Exports controls that DID.
       </p>
 
       <pre class="example"
@@ -2056,7 +2089,7 @@ Utopian Business Register verified that ACME controls that DID.
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
     "https://www.w3.org/ns/credentials/examples/v2",
-    "https://vocabulary.uncefact.org/untp/"
+    "https://vocabulary.uncefact.org/untp/v2"
   ],
   "type": [
     "VerifiableCredential",
@@ -2071,25 +2104,13 @@ Utopian Business Register verified that ACME controls that DID.
   "validUntil": "2030-03-15T00:00:00Z",
   "credentialSubject": [{
     "id": "did:web:acme-exports.utopia.example",
-    "type": "RecognizedEntity",
+    "type": ["RecognizedEntity", "Party"]
     "name": "ACME Exports",
     "legalName": "ACME Exports Ltd.",
     "url": "https://acme-exports.utopia.example/",
-    "description": "A registered exporter in Utopia, corporate
-      registration number UTB-2019-041872.",
+    "description": "A registered exporter in Utopia, corporate registration number UTB-2019-041872.",
     "registeredId": "UTB-2019-041872",
-    "recognizedTo": {
-      "type": "RecognizedAction",
-      "action": "issue",
-      "recognizedBy": "did:web:register.business.utopia.example",
-      "outputValidation": {
-        "id": "https://vocabulary.uncefact.org/untp/schema/
-          commercial-invoice.json",
-        "type": "JsonSchema",
-        "digestMultibase":
-          "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
-      }
-    }
+    "registrationCountry": "UTO"
   }],
   "proof": {
     "type": "DataIntegrityProof",
@@ -2112,16 +2133,13 @@ own DID document, as shown below.
       <pre class="example"
         title="ACME Exports DID document with WhoisService">
 {
-  "@context": [
-    "https://www.w3.org/ns/cid/v1"
-  ],
+  "@context": "https://www.w3.org/ns/did/v1.1",
   "id": "did:web:acme-exports.utopia.example",
   "assertionMethod": [{
     "id": "#issuance-key-1",
     "type": "Multikey",
     "controller": "did:web:acme-exports.utopia.example",
-    "publicKeyMultibase":
-      "z6MkrJVnaZkeFzdQyMZu1cgjg7k1pZZ6x5GGnsfSbwqbUXwo"
+    "publicKeyMultibase": "z6MkrJVnaZkeFzdQyMZu1cgjg7k1pZZ6x5GGnsfSbwqbUXwo"
   }],
   "service": [{
     "id": "#whois",
@@ -2144,7 +2162,7 @@ In the final example, ACME Exports issues a commercial invoice as a
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
     "https://www.w3.org/ns/credentials/examples/v2",
-    "https://vocabulary.uncefact.org/untp/"
+    "https://vocabulary.uncefact.org/untp/v2"
   ],
   "type": [
     "VerifiableCredential",
@@ -2157,8 +2175,7 @@ In the final example, ACME Exports issues a commercial invoice as a
   "validFrom": "2026-05-01T00:00:00Z",
   "validUntil": "2026-07-31T00:00:00Z",
   "credentialSubject": {
-    "id":
-      "https://acme-exports.utopia.example/invoices/INV-2026-00431",
+    "id": "https://acme-exports.utopia.example/invoices/INV-2026-00431",
     "invoiceNumber": "INV-2026-00431",
     "invoiceDate": "2026-05-01",
     "seller": {
@@ -2182,8 +2199,7 @@ In the final example, ACME Exports issues a commercial invoice as a
       "did:web:acme-exports.utopia.example#issuance-key-1",
     "cryptosuite": "ecdsa-rdfc-2019",
     "proofPurpose": "assertionMethod",
-    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo
-      5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
   }
 }
       </pre>
@@ -2217,13 +2233,14 @@ completing a recognition chain from the commercial invoice to the root of the
 global trade identity infrastructure.
       </p>
 
-      <p class="note">
-The `registeredId` property used in the examples above is an
-ecosystem-specific extension defined by UNTP vocabulary [[?UNTP-DIA]] and
-carries the registrar-assigned corporate registration number. That property is
-not defined by this specification; it appears in the examples solely to
-illustrate the kind of information a registrar-issued
-`RecognizedEntityCredential` would carry in practice.
+      <p class="note"
+        title="A credential subject can contain ecosystem-specific information">
+The `registeredId` and `registrationCountry` properties used in the examples
+above are ecosystem-specific extensions defined by UNTP vocabulary [[?UNTP-DIA]]
+and carries the registrar-assigned corporate registration number and country.
+Those properties are not defined by this specification; they appear in the
+examples solely to illustrate the kind of information a registrar-issued
+`RecognizedEntityCredential` might carry in practice.
       </p>
 
       </section>
