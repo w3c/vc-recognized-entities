@@ -1877,16 +1877,19 @@ authoritative national registers worldwide.
       </ul>
 
       <p>
-The discovery process runs from the trade document toward the trust anchor
-using [=identifier-based discovery=] at each step, because publishing a
-single credential that lists all registered entities in a national register,
-potentially two million entities updated hundreds of times per day, would be
-impractical and would expose a large identity-theft attack surface. Instead,
-each registered entity holds its own individual `RecognizedEntityCredential`
-and publishes it at a `WhoisService` endpoint in its DID document. The
-national registrar likewise publishes the `RecognizedEntityCredential` that
-GRID issued to it at its own `WhoisService` endpoint. The diagram below
-illustrates the relationships:
+The discovery process runs from the trade document toward the trust anchor using
+[=identifier-based discovery=] at each step, because publishing a single
+credential that lists all registered entities in a national register, with
+potentially two million entities updated hundreds of times per day, and tens of
+millions of verifiers retrieving the list multiple times per day, might be a
+scale that is impractical for the national register to achieve. Instead, each
+registered entity holds its own individual `RecognizedEntityCredential` and
+publishes it at a `WhoisService` endpoint in its DID document. The national
+registrar likewise publishes the `RecognizedEntityCredential` that GRID issued
+to it at its own `WhoisService` endpoint. This approach decentralizes the
+publication of the list such that each recognized entity in the ecosystem
+shares the burden of distributing the information. The diagram below illustrates
+the relationships:
       </p>
 
 <figure>
