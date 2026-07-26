@@ -1,2 +1,2 @@
-index.html?specStatus=CR&shortName=payment-request respec
-images/state-transitions.svg
+index.html?specStatus=WD&shortName=vc-recognized-entities-1.0 respec
+threat-model/index.html

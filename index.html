@@ -14,7 +14,7 @@
     <script type="text/javascript" class="remove">
       var respecConfig = {
         // specification status (e.g., WD, LCWD, NOTE, etc.). If in doubt use ED.
-        specStatus: "ED",
+        specStatus: "WD",
 
         // the specification's short name, as in http://www.w3.org/TR/short-name/
         shortName: "vc-recognized-entities-1.0",
@@ -48,7 +48,8 @@
         editors: [{
           name: "Isaac Henderson Johnson Jeyakumar",
           company: "Fraunhofer IAO, Germany",
-          note: "v1.0"
+          note: "v1.0",
+          w3cid: 41758
         }, {
           name: "Manu Sporny",
           company: "Digital Bazaar",
@@ -57,28 +58,36 @@
 
         authors: [{
           name: "Isaac Henderson Johnson Jeyakumar",
-          company: "Fraunhofer IAO, Germany"
+          company: "Fraunhofer IAO, Germany",
+          w3cid: 41758
         }, {
           name: "David Chadwick",
-          company: "Truetrust Ltd"
+          company: "Truetrust Ltd",
+          w3cid: 41758
         },{
           name: "Manu Sporny",
-          company: "Digital Bazaar"
+          company: "Digital Bazaar",
+          w3cid: 41758
         }, {
           name: "Oskar van Deventer",
-          company: "TNO"
+          company: "TNO",
+          w3cid: 41758
         }, {
           name: "Shigeya Suzuki",
-          company: "Keio University"
+          company: "Keio University",
+          w3cid: 41758
         }, {
           name: "Konstantin Tsabolov",
-          company: "Spherity"
+          company: "Spherity",
+          w3cid: 41758
         }, {
           name: "Line Kofoed",
-          company: "Bloqzone"
+          company: "Bloqzone",
+          w3cid: 41758
         }, {
           name: "Rieks Joosten",
-          company: "TNO"
+          company: "TNO",
+          w3cid: 41758
         }],
 
         //wg: "Credentials Community Group",
@@ -1403,7 +1412,7 @@ specification to each specific feature provided by this specification.
         <h3>Target Threats</h3>
         <ol class="threat-toc">
           <li value="1">
-            <a href="threat-model#t1-unauthorized-issuer-spoofing">
+            <a href="threat-model/index.html#t1-unauthorized-issuer-spoofing">
 Unauthorized Issuer Spoofing</a>
             <span class="threat-tag threat-tag-security">security</span> —
 An unrecognized entity fabricates, replays, or reuses a stolen [=recognized
@@ -1411,7 +1420,7 @@ entity credential=] to make its [=verifiable credentials=] appear to come from a
 legitimately recognized [=issuer=].
           </li>
           <li value="2">
-            <a href="threat-model#t2-recognized-entity-credential-tampering">
+            <a href="threat-model/index.html#t2-recognized-entity-credential-tampering">
 Recognized Entity Credential Tampering</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A malicious intermediary swaps or modifies the [=recognized entity credential=]
@@ -1425,7 +1434,7 @@ credential=] appears to be covered by a legitimate recognition chain.
         <h3>Implementation Threats</h3>
         <ol class="threat-toc">
           <li value="3">
-            <a href="threat-model#t3-list-retrieval-denial-of-service">
+            <a href="threat-model/index.html#t3-list-retrieval-denial-of-service">
 List Retrieval Denial of Service</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A flood of fetch requests, a slow-drip server, or an excessively large list
@@ -1433,7 +1442,7 @@ exhausts a [=verifier=]'s connections, memory, or CPU when it retrieves and
 processes a [=recognized entity credential=].
           </li>
           <li value="4">
-            <a href="threat-model#t4-privacy-leakage-via-list-fetch">
+            <a href="threat-model/index.html#t4-privacy-leakage-via-list-fetch">
 Privacy Leakage via List Fetch</a>
             <span class="threat-tag threat-tag-privacy">privacy</span> —
 When a [=verifier=] fetches a [=recognized entity credential=] from the list
@@ -1441,7 +1450,7 @@ publisher, the publisher learns which [=issuer=] is being verified, enabling
 surveillance of commercial relationships and activity patterns.
           </li>
           <li value="8">
-            <a href="threat-model#t8-unvetted-recognized-entity-credential-propagation">
+            <a href="threat-model/index.html#t8-unvetted-recognized-entity-credential-propagation">
 Unvetted Recognized Entity Credential Propagation</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A [=holder=] shares a [=recognized entity credential=] through peer-to-peer
@@ -1449,7 +1458,7 @@ channels and a [=verifier=] accepts it without independently verifying its
 integrity against a trust anchor, spreading fraudulent recognition claims.
           </li>
           <li value="9">
-            <a href="threat-model#t9-list-publisher-impersonation">
+            <a href="threat-model/index.html#t9-list-publisher-impersonation">
 List Publisher Impersonation</a>
             <span class="threat-tag threat-tag-security">security</span> —
 An attacker fabricates a list publisher identity using a confusable identifier or
@@ -1457,7 +1466,7 @@ display name so that a [=verifier=] treats an attacker-controlled registry as an
 authoritative trust anchor.
           </li>
           <li value="10">
-            <a href="threat-model#t10-stale-recognition-acceptance">
+            <a href="threat-model/index.html#t10-stale-recognition-acceptance">
 Stale Recognition Acceptance</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A revoked or compromised [=issuer=] continues to pass validation because a
@@ -1465,7 +1474,7 @@ A revoked or compromised [=issuer=] continues to pass validation because a
 the [=verifier=] relies on aggressively cached, out-of-date list data.
           </li>
           <li value="11">
-            <a href="threat-model#t11-external-resource-substitution">
+            <a href="threat-model/index.html#t11-external-resource-substitution">
 External Resource Substitution</a>
             <span class="threat-tag threat-tag-security">security</span> —
 An attacker substitutes malicious content for an externally-referenced resource,
@@ -1473,7 +1482,7 @@ such as a schema file, via server compromise, domain takeover, or DNS hijacking
 when the reference is not integrity-protected.
           </li>
           <li value="12">
-            <a href="threat-model#t12-unbounded-recognition-chain-trust">
+            <a href="threat-model/index.html#t12-unbounded-recognition-chain-trust">
 Unbounded Recognition Chain Trust</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A compromised entry in a lower-level registry chained via
@@ -1481,7 +1490,7 @@ A compromised entry in a lower-level registry chained via
 enforce depth limits or independently validate each link in the chain.
           </li>
           <li value="13">
-            <a href="threat-model#t13-abuse-of-recognized-actions">
+            <a href="threat-model/index.html#t13-abuse-of-recognized-actions">
 Abuse of Recognized Actions</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A [=verifier=] interprets the free-form <code>action</code> value more
@@ -1489,7 +1498,7 @@ permissively than the list publisher intended, granting a [=recognized entity=]
 broader capabilities than were authorized.
           </li>
           <li value="14">
-            <a href="threat-model#t14-overly-permissive-schema-constraints">
+            <a href="threat-model/index.html#t14-overly-permissive-schema-constraints">
 Overly Permissive Schema Constraints</a>
             <span class="threat-tag threat-tag-security">security</span> —
 Broad, incomplete, or lax <code>outputValidation</code> schema rules let a
@@ -1497,7 +1506,7 @@ recognized [=issuer=] produce a wider class of [=verifiable credentials=] than
 the list publisher intended to authorize.
           </li>
           <li value="15">
-            <a href="threat-model#t15-json-schema-attack">
+            <a href="threat-model/index.html#t15-json-schema-attack">
 JSON Schema Attack</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A maliciously crafted or poorly-written <code>outputValidation</code> schema
@@ -1511,7 +1520,7 @@ catastrophic backtracking or memory exhaustion in the [=verifier=].
         <h3>External Threats</h3>
         <ol class="threat-toc">
           <li value="6">
-            <a href="threat-model#t6-surveillance-of-recognized-entity-identifiers">
+            <a href="threat-model/index.html#t6-surveillance-of-recognized-entity-identifiers">
 Surveillance of Recognized Entity Identifiers</a>
             <span class="threat-tag threat-tag-privacy">privacy</span> —
 Because a [=recognized entity credential=] publicly names [=issuers=] with their
@@ -1519,7 +1528,7 @@ identifiers and attributes, aggregating credentials across lists enables
 systematic profiling and surveillance of [=recognized entities=].
           </li>
           <li value="7">
-            <a href="threat-model#t7-harms-by-association">
+            <a href="threat-model/index.html#t7-harms-by-association">
 Harms by Association</a>
             <span class="threat-tag threat-tag-privacy">privacy</span> —
 A [=recognized entity credential=] reveals the membership of an ecosystem, and a
@@ -1527,7 +1536,7 @@ single onward disclosure can expose participants to targeting, discrimination, o
 reputational harm even when the ecosystem was intended to remain private.
           </li>
           <li value="16">
-            <a href="threat-model#t16-compromise-of-recognized-entity-identifier">
+            <a href="threat-model/index.html#t16-compromise-of-recognized-entity-identifier">
 Compromise of Recognized Entity Identifier</a>
             <span class="threat-tag threat-tag-security">security</span> —
 An attacker who compromises the private key material of a recognized
@@ -1535,7 +1544,7 @@ An attacker who compromises the private key material of a recognized
 producing fraudulent [=verifiable credentials=] that pass validation.
           </li>
           <li value="17">
-            <a href="threat-model#t17-verifier-trust-anchor-misconfiguration">
+            <a href="threat-model/index.html#t17-verifier-trust-anchor-misconfiguration">
 Verifier Trust Anchor Misconfiguration</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A [=verifier=] operator accidentally configures the wrong [=recognized entity
@@ -1549,7 +1558,7 @@ credential=] as a trust anchor, causing the [=verifier=] to accept
         <h3>Dependency Threats</h3>
         <ol class="threat-toc">
           <li value="5">
-            <a href="threat-model#t5-anti-competitive-list-gatekeeping">
+            <a href="threat-model/index.html#t5-anti-competitive-list-gatekeeping">
 Anti-Competitive List Gatekeeping</a>
             <span class="threat-tag threat-tag-market competition">market competition</span> —
 A first-mover list publisher selectively denies registration to competitors, or
@@ -1557,7 +1566,7 @@ is coerced into revoking legitimate entities, creating anti-competitive lock-in
 for [=verifiers=] that rely on a single list.
           </li>
           <li value="18">
-            <a href="threat-model#t18-cryptographically-relevant-quantum-computer-breaks-cryptography">
+            <a href="threat-model/index.html#t18-cryptographically-relevant-quantum-computer-breaks-cryptography">
 Cryptographically Relevant Quantum Computer Breaks Cryptography</a>
             <span class="threat-tag threat-tag-security">security</span> —
 A cryptographically relevant quantum computer breaks the signature schemes in
@@ -1566,6 +1575,27 @@ and [=verifiable credentials=] and collapsing the chain of trust.
           </li>
         </ol>
       </section>
+
+      <section class="notoc">
+        <h3>Security Considerations</h4>
+        <p>
+W3C is migrating to a holistic threat modelling approach and is in the process
+of deprecating the Security Considerations sections in new specifications.
+Please refer to Appendix [[[#threat-model]]] for documentation related to
+security considerations.
+        </p>
+      </section>
+
+      <section class="notoc">
+        <h3>Privacy Considerations</h4>
+        <p>
+W3C is migrating to a holistic threat modelling approach and is in the process
+of deprecating the Privacy Considerations sections in new specifications. Please
+refer to Appendix [[[#threat-model]]] for documentation related to privacy
+considerations.
+        </p>
+      </section>
+
     </section>
 
     <section class="appendix informative">
