@@ -1878,7 +1878,12 @@ that the [=verifier=] does not need to fetch any of them.
       <section>
         <h3>UN GRID Cross-Border Trade Example</h3>
 
-      <p>
+        <p class="issue">
+This entire example is currently under review by UNTP and might be changed
+based on input from that group and others.
+        </p>
+
+        <p>
 The United Nations Global Registrar Information Directory (GRID) is a
 publicly accessible digital directory, hosted by the United Nations under
 the auspices of UN/CEFACT, that lists authoritative registrars, including
@@ -1893,13 +1898,13 @@ globally every year, manual verification is not feasible. GRID solves this
 by providing a trustworthy, scalable map of the world's authoritative
 registrars, enabling automated verification and mitigating the risks of
 impersonation and fraud.
-      </p>
+        </p>
 
-      <p>
+        <p>
 The resulting verification chain involves three tiers of credential, each
 issued at a different time, with a different lifecycle, and by a different
 issuer:
-      </p>
+        </p>
 
       <ul>
         <li>
@@ -2019,8 +2024,7 @@ registrar-issued entity recognition credentials.
     "name": "Utopian Business Register",
     "legalName": "Utopian Ministry of Commerce, Business Registry",
     "url": "https://register.business.utopia.example/",
-    "description": "The national authoritative business register for
-      Utopia, operated by the Ministry of Commerce.",
+    "description": "The national authoritative business register for Utopia, operated by the Ministry of Commerce.",
     "recognizedTo": {
       "type": "RecognizedAction",
       "action": "issue",
@@ -2038,8 +2042,7 @@ registrar-issued entity recognition credentials.
     "verificationMethod": "did:web:grid.un.org#issuance-key-1",
     "cryptosuite": "ecdsa-rdfc-2019",
     "proofPurpose": "assertionMethod",
-    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo
-      5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
   }
 }
       </pre>
@@ -2067,8 +2070,7 @@ Utopian Business Register.
   "service": [{
     "id": "#whois",
     "type": ["WhoisService", "PathService"],
-    "serviceEndpoint":
-      "https://register.business.utopia.example/whois.vp"
+    "serviceEndpoint": "https://register.business.utopia.example/whois.vp"
   }]
 }
       </pre>
@@ -2115,8 +2117,7 @@ Utopian Business Register verified that ACME Exports controls that DID.
   "proof": {
     "type": "DataIntegrityProof",
     "created": "2026-04-10T20:08:22Z",
-    "verificationMethod":
-      "did:web:register.business.utopia.example#issuance-key-1",
+    "verificationMethod": "did:web:register.business.utopia.example#issuance-key-1",
     "cryptosuite": "ecdsa-rdfc-2019",
     "proofPurpose": "assertionMethod",
     "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo
@@ -2144,8 +2145,7 @@ own DID document, as shown below.
   "service": [{
     "id": "#whois",
     "type": ["WhoisService", "PathService"],
-    "serviceEndpoint":
-      "https://acme-exports.utopia.example/whois.vp"
+    "serviceEndpoint": "https://acme-exports.utopia.example/whois.vp"
   }]
 }
       </pre>
@@ -2195,8 +2195,7 @@ In the final example, ACME Exports issues a commercial invoice as a
   "proof": {
     "type": "DataIntegrityProof",
     "created": "2026-05-01T10:15:00Z",
-    "verificationMethod":
-      "did:web:acme-exports.utopia.example#issuance-key-1",
+    "verificationMethod": "did:web:acme-exports.utopia.example#issuance-key-1",
     "cryptosuite": "ecdsa-rdfc-2019",
     "proofPurpose": "assertionMethod",
     "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
