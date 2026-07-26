@@ -152,6 +152,10 @@ pre .subject {
   font-weight: bold;
   color: RoyalBlue;
 }
+pre .external {
+  font-weight: bold;
+  color: rgb(113, 65, 225);
+}
 pre .property {
   font-weight: bold;
   color: DarkGoldenrod;
@@ -1944,7 +1948,7 @@ the relationships:
 
 <figure>
   <pre class="diagram mermaid" style="max-width:55%">
-%%{init: {"flowchart": {"wrappingWidth": 500}}}%%
+%%{init: {"flowchart": {"wrappingWidth": 500}, "securityLevel": "loose"}}%%
 flowchart TD
     GRID["UN GRID\n[Trust Anchor]"]
     NAT["Utopian Business Register\n[National Registrar]"]
@@ -1998,13 +2002,14 @@ Register to issuing credentials that conform to the UNTP-defined schema for
 registrar-issued entity recognition credentials.
       </p>
 
-      <pre class="example"
+      <pre class="example nohighlight"
         title="UN GRID recognizes the Utopian National Business Register">
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
-    "https://www.w3.org/ns/credentials/examples/v2",
-    "https://vocabulary.uncefact.org/untp/"
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// highlighted text is from the UNTP vocabulary</span>
+    <span class="highlight">"https://vocabulary.uncefact.org/untp/v2"</span>
   ],
   "type": [
     "VerifiableCredential",
@@ -2056,7 +2061,7 @@ service endpoint, which contains the GRID-issued credential recognizing the
 Utopian Business Register.
       </p>
 
-      <pre class="example"
+      <pre class="example nohighlight"
         title="Utopian Business Register DID document with WhoisService">
 {
   "@context": "https://www.w3.org/ns/did/v1.1",
@@ -2067,11 +2072,11 @@ Utopian Business Register.
     "controller": "did:web:register.business.utopia.example",
     "publicKeyMultibase": "z6Mkf5rGMoatrSj1f4CyvuHBeXJELe9RPdzo2PKGNCKVtZxP"
   }],
-  "service": [{
+  <span class="highlight">service": [{
     "id": "#whois",
     "type": ["WhoisService", "PathService"],
     "serviceEndpoint": "https://register.business.utopia.example/whois.vp"
-  }]
+  }]</span>
 }
       </pre>
 
@@ -2084,14 +2089,15 @@ Ltd. The credential asserts that the company's corporate registration number,
 Utopian Business Register verified that ACME Exports controls that DID.
       </p>
 
-      <pre class="example"
+      <pre class="example nohighlight"
         title="A national business register issues a recognized entity
           credential to a registered exporter">
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
-    "https://www.w3.org/ns/credentials/examples/v2",
-    "https://vocabulary.uncefact.org/untp/v2"
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// highlighted text is from the UNTP vocabulary</span>
+    <span class="highlight">"https://vocabulary.uncefact.org/untp/v2"</span>
   ],
   "type": [
     "VerifiableCredential",
@@ -2111,8 +2117,8 @@ Utopian Business Register verified that ACME Exports controls that DID.
     "legalName": "ACME Exports Ltd.",
     "url": "https://acme-exports.utopia.example/",
     "description": "A registered exporter in Utopia, corporate registration number UTB-2019-041872.",
-    "registeredId": "UTB-2019-041872",
-    "registrationCountry": "UTO"
+    <span class="highlight">"registeredId": "UTB-2019-041872"</span>,
+    <span class="highlight">"registrationCountry": "UTO"</span>
   }],
   "proof": {
     "type": "DataIntegrityProof",
@@ -2131,7 +2137,7 @@ ACME Exports publishes that credential at a `WhoisService` endpoint in its
 own DID document, as shown below.
       </p>
 
-      <pre class="example"
+      <pre class="example nohighlight"
         title="ACME Exports DID document with WhoisService">
 {
   "@context": "https://www.w3.org/ns/did/v1.1",
@@ -2142,11 +2148,11 @@ own DID document, as shown below.
     "controller": "did:web:acme-exports.utopia.example",
     "publicKeyMultibase": "z6MkrJVnaZkeFzdQyMZu1cgjg7k1pZZ6x5GGnsfSbwqbUXwo"
   }],
-  "service": [{
+  <span class="highlight">"service": [{
     "id": "#whois",
     "type": ["WhoisService", "PathService"],
     "serviceEndpoint": "https://acme-exports.utopia.example/whois.vp"
-  }]
+  }]</span>
 }
       </pre>
 
@@ -2155,18 +2161,19 @@ In the final example, ACME Exports issues a commercial invoice as a
 [=verifiable credential=] using its registered DID as the issuer.
       </p>
 
-      <pre class="example"
+      <pre class="example nohighlight"
         title="A commercial invoice verifiable credential issued by a
           registered exporter">
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
-    "https://www.w3.org/ns/credentials/examples/v2",
-    "https://vocabulary.uncefact.org/untp/v2"
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// highlighted text is from the UNTP vocabulary</span>
+    <span class="highlight">"https://vocabulary.uncefact.org/untp/v2"</span>
   ],
   "type": [
     "VerifiableCredential",
-    "CommercialInvoiceCredential"
+    <span class="highlight">"CommercialInvoiceCredential"</span>
   ],
   "issuer": {
     "id": "did:web:acme-exports.utopia.example",
@@ -2176,7 +2183,7 @@ In the final example, ACME Exports issues a commercial invoice as a
   "validUntil": "2026-07-31T00:00:00Z",
   "credentialSubject": {
     "id": "https://acme-exports.utopia.example/invoices/INV-2026-00431",
-    "invoiceNumber": "INV-2026-00431",
+    <span class="highlight">"invoiceNumber": "INV-2026-00431",
     "invoiceDate": "2026-05-01",
     "seller": {
       "id": "did:web:acme-exports.utopia.example",
@@ -2190,7 +2197,7 @@ In the final example, ACME Exports issues a commercial invoice as a
     "totalAmount": {
       "value": "45200.00",
       "currency": "USD"
-    }
+    }</span>
   },
   "proof": {
     "type": "DataIntegrityProof",
