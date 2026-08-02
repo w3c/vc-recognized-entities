@@ -1,7 +1,22 @@
+/*
+Copyright 2026 Legendary Requirements
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 (function () {
 
   // set up debugger output
-  // you can toggle different debugging namespaces by adjusting the 
+  // you can toggle different debugging namespaces by adjusting the
   // value passed via a debug query parameter.
   // e.g., ?debug=* will turn on all debugging output
   // while ?debug=render will turn on just the render debugging output
@@ -26,7 +41,7 @@
 
 
   // render(config, document)
-  // Renders all the threats, creating both a Table of Contents and 
+  // Renders all the threats, creating both a Table of Contents and
   // Threat Details sections
   ///////////////////////////////////////////////////////////////////////
   function render(config, document) {
@@ -185,7 +200,7 @@
 
       // now define support functions
 
-      function renderName(threat, tocElement) {  // tocElement to render link 
+      function renderName(threat, tocElement) {  // tocElement to render link
         console.log("renderName", threat);
         if (!threat.name || threat.name == "")
           return "";
