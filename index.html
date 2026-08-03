@@ -1716,9 +1716,7 @@ This appendix demonstrates how that delegation chain can be expressed using the
 data model defined by this specification. Each level of the hierarchy publishes
 a [=recognized entity credential=] describing the entities one level below it,
 and each credential's `issuer` object carries a `recognizedIn` property
-referencing the [=recognized entity credential=] one level above it. The
-`recognizedIn` property plays a role analogous to the `extendsCredential`
-property used in GS1's own credential chain: it allows a [=verifier=] to
+referencing the [=recognized entity credential=] one level above it. This allows a [=verifier=] to
 traverse the hierarchy upward, using the [=credential-based discovery=]
 algorithm described in Section [[[#credential-based-discovery]]], until it
 reaches an [=issuer=] it recognizes. The examples below are illustrative;
@@ -1745,7 +1743,7 @@ credential schema specific to GS1 Prefix `950`.
     "RecognizedEntityCredential"
   ],
   "issuer": {
-    "id": "did:web:id.gs1.org",
+    "id": "did:web:vc.gs1.org",
     "type": "RecognizedIssuer",
     "name": "GS1 Global Office",
     "url": "https://www.gs1.org/"
@@ -1753,7 +1751,7 @@ credential schema specific to GS1 Prefix `950`.
   "validFrom": "2025-01-01T00:00:00Z",
   "validUntil": "2030-01-01T00:00:00Z",
   "credentialSubject": [{
-    "id": "did:web:id.gs1utopia.example",
+    "id": "did:web:vc.gs1utopia.example",
     "type": "RecognizedEntity",
     "name": "GS1 Utopia",
     "legalName": "GS1 Utopia Member Organization",
@@ -1763,9 +1761,9 @@ credential schema specific to GS1 Prefix `950`.
     "recognizedTo": {
       "type": "RecognizedAction",
       "action": "issue",
-      "recognizedBy": "did:web:id.gs1.org",
+      "recognizedBy": "did:web:vc.gs1.org",
       "outputValidation": {
-        "id": "https://id.gs1.org/schemas/prefix-license/950.json",
+        "id": "https://ref.gs1.org/gs1/vc/schemas/prefix-license/950.json",
         "type": "JsonSchema",
         "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
       }
@@ -1774,7 +1772,7 @@ credential schema specific to GS1 Prefix `950`.
   "proof": {
     "type": "DataIntegrityProof",
     "created": "2026-04-10T20:08:22Z",
-    "verificationMethod": "did:web:id.gs1.org#issuance-key-1",
+    "verificationMethod": "did:web:vc.gs1.org#issuance-key-1",
     "cryptosuite": "ecdsa-rdfc-2019",
     "proofPurpose": "assertionMethod",
     "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
@@ -1804,11 +1802,11 @@ recognize GS1 Utopia to continue up the hierarchy.
     "RecognizedEntityCredential"
   ],
   "issuer": {
-    "id": "did:web:id.gs1utopia.example",
+    "id": "did:web:vc.gs1utopia.example",
     "type": "RecognizedIssuer",
     "name": "GS1 Utopia",
     "recognizedIn": {
-      "id": "https://id.gs1.org/lists/recognized-member-organizations.vc",
+      "id": "https://vc.gs1.org/lists/recognized-member-organizations.vc",
       "type": "RecognizedEntityCredential",
       "name": "GS1 Register of Member Organizations"
     }
@@ -1826,9 +1824,9 @@ recognize GS1 Utopia to continue up the hierarchy.
     "recognizedTo": {
       "type": "RecognizedAction",
       "action": "issue",
-      "recognizedBy": "did:web:id.gs1utopia.example",
+      "recognizedBy": "did:web:vc.gs1utopia.example",
       "outputValidation": {
-        "id": "https://id.gs1utopia.example/schemas/key-credential/9506000.json",
+        "id": "https://vc.gs1utopia.example/schemas/key-credential/9506000.json",
         "type": "JsonSchema",
         "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
       }
@@ -1837,7 +1835,7 @@ recognize GS1 Utopia to continue up the hierarchy.
   "proof": {
     "type": "DataIntegrityProof",
     "created": "2026-04-10T20:08:22Z",
-    "verificationMethod": "did:web:id.gs1utopia.example#issuance-key-1",
+    "verificationMethod": "did:web:vc.gs1utopia.example#issuance-key-1",
     "cryptosuite": "ecdsa-rdfc-2019",
     "proofPurpose": "assertionMethod",
     "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
@@ -1870,14 +1868,14 @@ previous example.
     "id": "did:web:healthytots.example",
     "name": "Healthy Tots",
     "recognizedIn": {
-      "id": "https://id.gs1utopia.example/lists/recognized-companies.vc",
+      "id": "https://vc.gs1utopia.example/lists/recognized-companies.vc",
       "type": "RecognizedEntityCredential",
       "name": "GS1 Utopia Register of Licensed Companies"
     }
   },
   "validFrom": "2026-01-15T00:00:00Z",
   "credentialSubject": {
-    "id": "https://id.gs1.org/01/09506000134352",
+    "id": "https://vc.gs1.org/01/09506000134352",
     "name": "Healthy Tots Apple & Carrot Puree"
   },
   "proof": {
