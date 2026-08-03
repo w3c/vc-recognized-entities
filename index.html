@@ -738,6 +738,30 @@ determined according to the processing rules outlined by each associated `type`
 property.
               </td>
             </tr>
+            <tr>
+              <td>validFrom</td>
+              <td>
+The earliest point in time at which the [=recognized action=] is valid, that
+is, the date and time from which the [=recognized entity=] is recognized to
+perform the action. The value MUST be an
+<a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
+value expressed in UTC with no sub-second precision, for example
+`2025-01-01T00:00:00Z`. This property is OPTIONAL; if absent, the validity
+period of the enclosing [=recognized entity credential=] applies.
+              </td>
+            </tr>
+            <tr>
+              <td>validUntil</td>
+              <td>
+The latest point in time at which the [=recognized action=] is valid, that
+is, the date and time after which the [=recognized entity=] is no longer
+recognized to perform the action. The value MUST be an
+<a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
+value expressed in UTC with no sub-second precision, for example
+`2030-01-01T00:00:00Z`. This property is OPTIONAL; if absent, the validity
+period of the enclosing [=recognized entity credential=] applies.
+              </td>
+            </tr>
           </tbody>
         </table>
     </section>
