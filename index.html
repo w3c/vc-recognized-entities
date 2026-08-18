@@ -675,7 +675,7 @@ known to perform. The `id` value of the object MUST be a
 [=URL=]. The `type` value of the object MUST conform to the
 <a data-cite="VC-DATA-MODEL#types">type value space </a> defined in
 the [[[VC-DATA-MODEL]]] specification and SHOULD be `EtsiTrustServiceList`,
-`x509CertificateAuthorityList`, or `RecognizedEntityCredential`.
+`x509CertificateAuthorityList`, `ExternalEntityList`, or `RecognizedEntityCredential`.
               </td>
             </tr>
           </tbody>
@@ -687,11 +687,14 @@ addition to the properties above.
         </p>
 
         <p>
-A `recognizedIn` with a `type` property of `EtsiTrustServiceList` MUST conform
-to the [[[ETSI-TRUST-LISTS]]] specification. A list with `type` property of
+A `recognizedIn` entry with a `type` property value of `EtsiTrustServiceList` MUST conform
+to the [[[ETSI-TRUST-LISTS]]] specification. A list with a `type` property value of
 `x509CertificateAuthorityList` MUST conform to the [[[RFC5280]]] specification.
-A list with a `type` property of `RecognizedEntityCredential` MUST conform
-to this specification.
+A list with a `type` property value of `ExternalEntityList` SHOULD conform to a valid
+entity registry specification. The origin of the list URL referenced by the
+`id` property in this case establishes the root of trust for the list.
+A list with a `type` property value of `RecognizedEntityCredential` MUST conform
+to [[[VC-RECOGNIZED-ENTITIES]]].
         </p>
 
     </section>
