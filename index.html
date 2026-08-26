@@ -673,9 +673,9 @@ An object that contains a reference to a document of recognized entities that
 contains this particular [=recognized entity=] as well as the actions it is
 known to perform. The `id` value of the object MUST be a
 [=URL=]. The `type` value of the object MUST conform to the
-<a data-cite="VC-DATA-MODEL#types">type value space </a> defined in
-the [[[VC-DATA-MODEL]]] specification and SHOULD be `EtsiTrustServiceList`,
-`x509CertificateAuthorityList`, `ExternalEntityList`, or `RecognizedEntityCredential`.
+<a data-cite="VC-DATA-MODEL#types">type value space</a> defined in
+the [[[VC-DATA-MODEL]]] specification and SHOULD be `ExternalEntityList`
+or `RecognizedEntityCredential`.
               </td>
             </tr>
           </tbody>
@@ -687,12 +687,14 @@ addition to the properties above.
         </p>
 
         <p>
-A `recognizedIn` entry with a `type` property value of `EtsiTrustServiceList` MUST conform
-to the [[[ETSI-TRUST-LISTS]]] specification. A list with a `type` property value of
-`x509CertificateAuthorityList` MUST conform to the [[[RFC5280]]] specification.
-A list with a `type` property value of `ExternalEntityList` SHOULD conform to a valid
-entity registry specification. The origin of the list URL referenced by the
+A `recognizedIn` entry with a `type` property value of `ExternalEntityList` SHOULD conform
+to a valid entity list specification. The origin of the list URL referenced by the
 `id` property in this case establishes the root of trust for the list.
+Examples of this are the X.509 Certificate Authority List, as specified in [[[RFC5280]]]
+and the Electronic Signatures and Infrastructures (ESI) Trusted Lists, as specified in [[[ETSI-TRUST-LISTS]]].
+For the `ExternalEntityList` type, [=verifiers=] and [=credential=] consumers need to fetch the
+entity list resource referenced by the `id` property in order to determine the entity list specification
+that the resource complies with, determine if it supports that specification, and process/terminate accordingly.
 A list with a `type` property value of `RecognizedEntityCredential` MUST conform
 to [[[VC-RECOGNIZED-ENTITIES]]].
         </p>
@@ -1012,8 +1014,7 @@ publishes an European Union ETSI Trust Services list [[ETSI-TRUST-LISTS]].
     "url": "https://ec.europa.example/",
     "recognizedIn": {
       "id": "https://ec.europa.example/tsl/lotl.xml",
-      "type": "EtsiTrustServiceList",
-      "name": "Utopian Commission List of the Lists"
+      "type": "ExternalEntityList"
     }
   }],
   "proof": {
