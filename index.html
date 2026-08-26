@@ -691,7 +691,7 @@ A `recognizedIn` entry with a `type` property value of `ExternalEntityList` SHOU
 to a valid entity list specification. The origin of the list URL referenced by the
 `id` property in this case establishes the root of trust for the list.
 Examples of this are the X.509 Certificate Authority List, as specified in [[[RFC5280]]]
-and the Electronic Signatures and Infrastructures (ESI) Trusted Lists, as specified in [[[ETSI-TRUST-LISTS]]].
+and the European Union ETSI Trust Service List, as specified in [[[ETSI-TRUST-LISTS]]].
 For the `ExternalEntityList` type, [=verifiers=] and [=credential=] consumers need to fetch the
 entity list resource referenced by the `id` property in order to determine the entity list specification
 that the resource complies with, determine if it supports that specification, and process/terminate accordingly.
@@ -989,7 +989,8 @@ for a particular type of [=verifiable credential=].
 
       <p>
 The final example below is used to publish information about an entity that
-publishes an European Union ETSI Trust Services list [[ETSI-TRUST-LISTS]].
+publishes an European Union ETSI Trust Service List [[ETSI-TRUST-LISTS]]
+using the generic `ExternalEntityList` type.
       </p>
 
       <pre class="example" title="An entity that publishes information conforming to an EU ETSI Trust Service list">
