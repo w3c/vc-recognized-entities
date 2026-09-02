@@ -1,0 +1,48 @@
+{
+    "@context": {
+        "@protected": true,
+        "language": "@language",
+        "direction": "@direction",
+        "id": "@id",
+        "RecognizedEntity": {
+            "@id": "https://www.w3.org/ns/credentials/recognizedEntities#RecognizedEntity",
+            "@context": {
+                "@protected": true,
+                "recognizedTo": {
+                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#recognizedTo",
+                    "@type": "@id"
+                },
+                "recognizedIn": {
+                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#recognizedIn",
+                    "@type": "@id"
+                }
+            }
+        },
+        "RecognizedAction": {
+            "@id": "https://www.w3.org/ns/credentials/recognizedEntities#RecognizedAction",
+            "@context": {
+                "@protected": true,
+                "action": {
+                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#action",
+                    "@type": "http://www.w3.org/2001/XMLSchema#string"
+                },
+                "recognizedBy": {
+                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#recognizedBy",
+                    "@type": "@id"
+                },
+                "outputValidation": {
+                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#outputValidation",
+                    "@type": "@id"
+                }
+            }
+        },
+        "RecognizedEntityCredential": "https://www.w3.org/ns/credentials/recognizedEntities#RecognizedEntityCredential",
+        "x509CertificateAuthorityList": "https://www.w3.org/ns/credentials/recognizedEntities#x509CertificateAuthorityList",
+        "EtsiTrustServiceList": "https://www.w3.org/ns/credentials/recognizedEntities#EtsiTrustServiceList",
+        "legalName": "https://www.w3.org/ns/credentials/recognizedEntities#legalName",
+        "image": "https://www.w3.org/ns/credentials/recognizedEntities#image",
+        "url": "https://www.w3.org/ns/credentials/recognizedEntities#url",
+        "sameAs": "https://www.w3.org/ns/credentials/recognizedEntities#sameAs",
+        "digestMultibase": "https://w3id.org/security#digestMultibase"
+    }
+}

@@ -1,0 +1,161 @@
+@prefix re: <https://www.w3.org/ns/credentials/recognizedEntities#> .
+@prefix cred: <https://www.w3.org/2018/credentials#> .
+@prefix sec: <https://w3id.org/security#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix jsonld: <http://www.w3.org/ns/json-ld#> .
+
+# Ontology definition
+re: a owl:Ontology ;
+    dc:title """Recognized Entities Vocabulary 1.0"""@en ;
+    dc:description """RDFS [[rdf-schema]] defined by the [[[?vc-recognized-entities-1.0]]] [[?vc-recognized-entities-1.0]] specification."""^^rdf:HTML ;
+    rdfs:seeAlso <https://www.w3.org/TR/vc-recognized-entities-1.0/> ;
+    dc:date "2026-09-02"^^xsd:date ;
+.
+
+# Property definitions
+re:action a rdf:Property, owl:DatatypeProperty ;
+    rdfs:domain re:RecognizedAction ;
+    rdfs:range xsd:string ;
+    rdfs:label "Action" ;
+    rdfs:comment """<div>Name of the action to be performed by a <a href="#RecognizedEntity">Recognized Entity</a>. Possible values include "issue" or "verify".</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:recognizedBy a rdf:Property, owl:ObjectProperty ;
+    rdfs:domain re:RecognizedAction ;
+    rdfs:range re:RecognizedEntityCredential ;
+    rdfs:label "Recognized by" ;
+    rdfs:comment """<div>The <a href="#RecognizedEntityCredential">Recognized Entity Credential</a> that performed the task of recognizing.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:outputValidation a rdf:Property, owl:ObjectProperty ;
+    rdfs:domain re:RecognizedAction ;
+    rdfs:label "Output validation" ;
+    rdfs:comment """<div>Refers to a data schema that provides verifiers with enough information to determine whether the provided data conforms to the provided schema (e.g., JSON Schema).</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:recognizedTo a rdf:Property, owl:ObjectProperty ;
+    rdfs:domain re:RecognizedEntity ;
+    rdfs:range re:RecognizedAction ;
+    rdfs:label "Recognized to" ;
+    rdfs:comment """<div>Refer to the <a href="#RecognizedAction">Recognized Action</a>.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:recognizedIn a rdf:Property, owl:ObjectProperty ;
+    rdfs:domain re:RecognizedEntity ;
+    rdfs:range [ a owl:Class; owl:unionOf (re:EtsiTrustServiceList re:x509CertificateAuthorityList re:RecognizedEntityCredential) ] ;
+    rdfs:label "Recognized in" ;
+    rdfs:comment """<div>Refer to the <a href="#RecognizedAction">Recognized Action</a>.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:credentialSubject a rdf:Property, owl:ObjectProperty ;
+    rdfs:subPropertyOf cred:credentialSubject ;
+    rdfs:domain re:RecognizedEntityCredential ;
+    rdfs:range re:RecognizedEntity ;
+    rdfs:label "Credential subject for recognized entities" ;
+    rdfs:comment """<div>When used in a recognized entity credential, the value must be restricted to recognized entities.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:legalName a rdf:Property ;
+    rdfs:range [ a owl:Class; owl:unionOf (xsd:string rdf:langString rdf:dirLangString) ] ;
+    rdfs:label "Legal name" ;
+    rdfs:comment """<div>Legal name of the entity</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:image a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "Visual representation of the entity" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:url a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "Web site of the entity" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:sameAs a rdf:Property, owl:ObjectProperty ;
+    rdfs:label "same as" ;
+    rdfs:comment """<div>One or more URLs that refer to the same entity in other contexts or systems</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+# Class definitions
+re:RecognizedEntity a rdfs:Class ;
+    rdfs:label "Recognized Entity" ;
+    rdfs:comment """<div>An entity that is recognized an <a href="#RecognizedEntityCredential">Recognized Entity Credential</a> to perform a specific action.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:RecognizedAction a rdfs:Class ;
+    rdfs:label "Recognized Action" ;
+    rdfs:comment """<div>An action that a <a href="#RecognizedEntity">Recognized Entity</a> is expected to perform.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:RecognizedEntityCredential a rdfs:Class ;
+    rdfs:subClassOf cred:VerifiableCredential ;
+    rdfs:label "Recognized Entity Credential" ;
+    rdfs:comment """<div>A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href="#RecognizedEntity">Recognized Entities</a> entities.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:x509CertificateAuthorityList a rdfs:Class ;
+    rdfs:label "X509 certificate authoring list" ;
+    rdfs:comment """<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+re:EtsiTrustServiceList a rdfs:Class ;
+    rdfs:label "ETSI Trust Service list" ;
+    rdfs:comment """<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists>, <https://www.w3.org/ns/credentials/recognizedEntities#> ;
+    vs:term_status "stable" ;
+.
+
+
+
+# Context files and their mentions
+<https://www.w3.org/ns/credentials/recognizedEntities/v1> a jsonld:Context ;
+    schema:mentions
+        re:EtsiTrustServiceList,
+        re:RecognizedAction,
+        re:RecognizedEntity,
+        re:RecognizedEntityCredential,
+        re:action,
+        re:image,
+        re:legalName,
+        re:outputValidation,
+        re:recognizedBy,
+        re:recognizedIn,
+        re:recognizedTo,
+        re:sameAs,
+        re:url,
+        re:x509CertificateAuthorityList,
+        sec:digestMultibase ;
+.
+
