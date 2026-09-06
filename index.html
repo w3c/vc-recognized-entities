@@ -1038,7 +1038,42 @@ using the generic `ExternalEntityList` type.
       <p>
 This section describes algorithms that a [=verifier=] can use when processing
 [=verifiable credentials=] and [=recognized entity credentials=] defined by this
-specification.
+specification. These algorithms separate discovery from verification.
+      </p>
+
+      <ul>
+        <li>
+<strong>Discovery</strong> locates the [=recognized entity credentials=] that
+might establish the recognition of an [=issuer=]. Section
+[[[#credential-based-discovery]]] and Section [[[#identifier-based-discovery]]]
+describe two mechanisms for doing so. A [=verifier=] MAY use any other
+mechanism, including receiving the [=recognized entity credentials=] directly
+from a [=holder=] as described in Section [[[#holder-based-delivery]]].
+        </li>
+        <li>
+<strong>Recognition verification</strong>, described in Section
+[[[#recognition-verification]]], determines whether the discovered [=verifiable
+credentials=] establish recognition. It applies the same way regardless of how
+they were discovered.
+        </li>
+      </ul>
+
+      <p>
+Both processes assume that each [=verifiable credential=] has already been
+validated in its own right. Its proof verifies, it is within its validity
+period, and its status, if any, has been checked, according to
+<a data-cite="VC-DATA-MODEL#verification">Section 7.1: Verification</a> and
+<a data-cite="VC-DATA-MODEL#validation">Appendix A: Validation</a> of the
+[[[VC-DATA-MODEL]]] specification. Those rules apply to any [=verifiable
+credential=] and are not restated here.
+      </p>
+
+      <p class="note" title="Discovery does not establish recognition">
+Locating a [=recognized entity credential=] does not establish that an
+[=issuer=] is recognized. A [=verifier=] that skips the checks in Section
+[[[#recognition-verification]]] might accept a [=verifiable credential=] that is
+unrelated to the [=issuer=] in question, or one whose recognition chain never
+reaches a trust anchor that the [=verifier=] trusts.
       </p>
 
       <section>
@@ -1084,33 +1119,43 @@ To perform [=credential-based discovery=] on a [=verifiable credential=]
 (<var>credential</var>) against a configured set of recognized [=issuers=]
 (<var>recognizedIssuers</var>) and an optional set of [=holder=]-provided
 [=verifiable credentials=] (<var>providedDocuments</var>), a [=verifier=] runs
-the following algorithm. The algorithm returns a list representing the
-recognition chain on success, or an error if no recognized [=issuer=] can be
-reached.
+the following algorithm. The algorithm returns a <var>chain</var>, which is a
+list of [=verifiable credentials=] beginning with <var>credential</var>,
+followed by each [=recognized entity credential=] found by following
+`recognizedIn` references. The [=verifier=] then runs the algorithm in Section
+[[[#recognition-verification]]] on the returned <var>chain</var>.
+        </p>
+
+        <p class="note" title="Reaching a trust anchor does not end verification">
+This algorithm stops once it reaches an [=issuer=] in
+<var>recognizedIssuers</var>, because there is no reason to retrieve more
+[=verifiable credentials=] after finding a candidate trust anchor. That test
+bounds retrieval, but it does not establish recognition. A <var>chain</var> that
+never reaches a member of <var>recognizedIssuers</var> is still returned, and
+Section [[[#recognition-verification]]] rejects it.
         </p>
 
         <ol class="algorithm">
           <li>
-Let <var>current</var> be <var>credential</var> and let <var>chain</var> be an
-empty list.
+Let <var>current</var> be <var>credential</var> and let <var>chain</var> be a
+list containing <var>credential</var>.
           </li>
           <li>
 Let <var>maxDepth</var> be the maximum recognition chain depth the [=verifier=]
 is configured to traverse. If the length of <var>chain</var> exceeds
-<var>maxDepth</var>, return an error.
+<var>maxDepth</var>, return <var>chain</var>.
           </li>
           <li>
 Let <var>issuer</var> be the value of the `issuer` property of
 <var>current</var>, and let <var>issuerId</var> be its identifier.
           </li>
           <li>
-If <var>issuerId</var> is a member of <var>recognizedIssuers</var>, append
-<var>current</var> to <var>chain</var> and return <var>chain</var>; discovery has
-succeeded.
+If <var>issuerId</var> is a member of <var>recognizedIssuers</var>, a candidate
+trust anchor has been reached, so return <var>chain</var>.
           </li>
           <li>
-If <var>issuer</var> does not contain a `recognizedIn` property, return an error;
-the recognition hierarchy cannot be traversed any further.
+If <var>issuer</var> does not contain a `recognizedIn` property, the recognition
+hierarchy cannot be traversed any further, so return <var>chain</var>.
           </li>
           <li>
 Let <var>listReference</var> be the value of the `recognizedIn` property and let
@@ -1119,16 +1164,11 @@ Let <var>listReference</var> be the value of the `recognizedIn` property and let
           <li>
 Let <var>list</var> be the [=recognized entity credential=] identified by
 <var>listId</var>, obtained from <var>providedDocuments</var> if present and
-sufficiently fresh, or otherwise retrieved from <var>listId</var>.
+sufficiently fresh, or otherwise retrieved from <var>listId</var>. If
+<var>list</var> cannot be obtained, return <var>chain</var>.
           </li>
           <li>
-Verify the proof on <var>list</var>, confirm that it is currently valid, and
-confirm that <var>issuerId</var> appears as the `id` of a [=recognized entity=]
-in the `credentialSubject` of <var>list</var>. If any check fails, return an
-error.
-          </li>
-          <li>
-Append <var>current</var> to <var>chain</var>, set <var>current</var> to
+Append <var>list</var> to <var>chain</var>, set <var>current</var> to
 <var>list</var>, and return to step 2 to evaluate the [=issuer=] of the list.
           </li>
         </ol>
@@ -1285,23 +1325,18 @@ flowchart TD
 
         <p>
 To perform [=identifier-based discovery=] on a [=verifiable credential=]
-(<var>credential</var>) for a specific action (<var>action</var>, for example
-`issue`) against a configured set of recognized [=issuers=]
+(<var>credential</var>) against a configured set of recognized [=issuers=]
 (<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
-algorithm returns a result with two boolean outcomes: <var>recognized</var>,
-indicating whether the [=issuer=] of <var>credential</var> is ultimately
-recognized by a member of <var>recognizedIssuers</var>, and
-<var>actionRecognized</var>, indicating whether that [=issuer=] is recognized to
-perform <var>action</var> and, where a [=recognized action=] declares an
-`outputValidation`, whether <var>credential</var> conforms to it. On success the
-result also includes the recognition chain that established the outcome.
+algorithm returns a list of candidate chains, where each chain is a list of
+[=verifiable credentials=] beginning with <var>credential</var>. The
+[=verifier=] then performs the process in Section
+[[[#recognition-verification]]] on each candidate chain until one establishes
+recognition.
         </p>
 
         <ol class="algorithm">
           <li>
-Let <var>result</var> be a structure with <var>recognized</var> set to
-`false`, <var>actionRecognized</var> set to `false`, and <var>chain</var> set to
-an empty list.
+Let <var>chains</var> be an empty list.
           </li>
           <li>
 Let <var>issuer</var> be the value of the `issuer` property of
@@ -1310,68 +1345,42 @@ Let <var>issuer</var> be the value of the `issuer` property of
           <li>
 Resolve or dereference <var>issuerId</var> to obtain a controlled identifier
 document, <var>idDocument</var>. If <var>issuerId</var> cannot be resolved,
-return <var>result</var>.
+return <var>chains</var>.
           </li>
           <li>
 Let <var>service</var> be a service in the `service` array of
 <var>idDocument</var> whose `type` includes both `WhoisService` and
-`PathService`. If no such service is present, return <var>result</var>;
+`PathService`. If no such service is present, return <var>chains</var>;
 identifier-based discovery is not supported for this [=issuer=].
           </li>
           <li>
 Let <var>endpoint</var> be the `serviceEndpoint` of <var>service</var> and
 retrieve the [=verifiable presentation=], <var>presentation</var>, published at
-<var>endpoint</var>. If retrieval fails, return <var>result</var>.
+<var>endpoint</var>. If retrieval fails, return <var>chains</var>.
           </li>
           <li>
 Verify the proof on <var>presentation</var> and confirm that it is bound to
-<var>issuerId</var>. If verification fails, return <var>result</var>.
+<var>issuerId</var>. If verification fails, return <var>chains</var>.
           </li>
           <li>
 Let <var>candidates</var> be the [=recognized entity credentials=] contained in
 <var>presentation</var> in which <var>issuerId</var> appears as the `id` of a
 [=recognized entity=] in the `credentialSubject`. If <var>candidates</var> is
-empty, return <var>result</var>.
+empty, return <var>chains</var>.
           </li>
           <li>
-For each <var>list</var> in <var>candidates</var>, verify the proof on
-<var>list</var> and confirm that it is currently valid, discarding any
-<var>list</var> that fails either check.
-          </li>
-          <li>
-For each valid <var>list</var>, let <var>anchor</var> be the result of
-determining whether the [=issuer=] of <var>list</var> is recognized: if the
-[=issuer=] of <var>list</var> is a member of <var>recognizedIssuers</var>, then
-<var>anchor</var> is a list containing <var>list</var>; otherwise, if the
-`issuer` object of <var>list</var> contains a `recognizedIn` property, then
-<var>anchor</var> is the recognition chain returned by performing
+For each <var>list</var> in <var>candidates</var>, do the following. If the
+[=issuer=] of <var>list</var> is a member of <var>recognizedIssuers</var>,
+append the chain consisting of <var>credential</var> followed by
+<var>list</var> to <var>chains</var>. Otherwise, if the `issuer` object of
+<var>list</var> contains a `recognizedIn` property, perform
 [=credential-based discovery=] on <var>list</var> against
-<var>recognizedIssuers</var>, or nothing if that process does not succeed.
+<var>recognizedIssuers</var> and append the chain consisting of
+<var>credential</var> followed by the elements of the returned chain to
+<var>chains</var>.
           </li>
           <li>
-If no valid <var>list</var> produces an <var>anchor</var>, return
-<var>result</var>; the [=issuer=] is not recognized.
-          </li>
-          <li>
-Otherwise, select a valid <var>list</var> that produced an <var>anchor</var>,
-set <var>result.recognized</var> to `true`, and set <var>result.chain</var> to
-<var>credential</var> followed by <var>list</var> followed by the elements of
-its <var>anchor</var>.
-          </li>
-          <li>
-Let <var>entity</var> be the [=recognized entity=] in the `credentialSubject` of
-the selected <var>list</var> whose `id` is <var>issuerId</var>, and let
-<var>actions</var> be the [=recognized actions=] declared by its `recognizedTo`
-property.
-          </li>
-          <li>
-If any [=recognized action=] in <var>actions</var> has an `action` value equal
-to <var>action</var>, and either that [=recognized action=] declares no
-`outputValidation` or <var>credential</var> conforms to every schema referenced
-by its `outputValidation`, set <var>result.actionRecognized</var> to `true`.
-          </li>
-          <li>
-Return <var>result</var>.
+Return <var>chains</var>.
           </li>
         </ol>
 
@@ -1478,6 +1487,129 @@ that [=recognized action=]'s `outputValidation`.
   }
 }
         </pre>
+      </section>
+
+      <section>
+        <h3>Recognition Verification</h3>
+
+        <p>
+<dfn class="export">Recognition verification</dfn> is the process by which a
+[=verifier=] determines whether a chain of [=verifiable credentials=]
+establishes that the [=issuer=] of a [=verifiable credential=] is recognized,
+and whether it is recognized to perform a particular action. The process does
+not depend on how the chain was obtained. A chain returned by
+[=credential-based discovery=], a chain returned by [=identifier-based
+discovery=], and a chain delivered by a [=holder=] as described in Section
+[[[#holder-based-delivery]]] are all verified the same way.
+        </p>
+
+        <p>
+This algorithm checks the relationships between the [=verifiable credentials=]
+in the chain. It does not check the internal validity of any individual
+[=verifiable credential=], which Section [[[#algorithms]]] assumes has already
+been established.
+        </p>
+
+        <p>
+To perform [=recognition verification=] on a chain (<var>chain</var>) produced
+by any discovery mechanism, for a specific action (<var>action</var>, for
+example `issue`), against a configured set of recognized [=issuers=]
+(<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
+algorithm returns a result with two boolean outcomes: <var>recognized</var>,
+indicating whether the [=issuer=] of the first [=verifiable credential=] in
+<var>chain</var> is ultimately recognized by a member of
+<var>recognizedIssuers</var>, and <var>actionRecognized</var>, indicating
+whether that [=issuer=] is recognized to perform <var>action</var> and, where a
+[=recognized action=] declares an `outputValidation`, whether the [=verifiable
+credential=] conforms to it.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Let <var>result</var> be a structure with <var>recognized</var> set to `false`
+and <var>actionRecognized</var> set to `false`.
+          </li>
+          <li>
+If <var>chain</var> contains fewer than two [=verifiable credentials=], return
+<var>result</var>. A recognition chain consists of at least a [=verifiable
+credential=] and a [=recognized entity credential=] that recognizes its
+[=issuer=].
+          </li>
+          <li>
+Let <var>maxDepth</var> be the maximum recognition chain depth the [=verifier=]
+is configured to accept. If the length of <var>chain</var> exceeds
+<var>maxDepth</var>, return <var>result</var>.
+          </li>
+          <li>
+Let <var>seen</var> be an empty set. For each [=verifiable credential=] in
+<var>chain</var>, let <var>id</var> be the identifier of its [=issuer=]. If
+<var>id</var> is already a member of <var>seen</var>, the chain contains a cycle,
+so return <var>result</var>. Otherwise, add <var>id</var> to <var>seen</var>.
+          </li>
+          <li>
+For each adjacent pair of [=verifiable credentials=] in <var>chain</var>, where
+<var>subject</var> is the earlier [=verifiable credential=] and <var>list</var>
+is the later one, perform the checks in steps 6 through 8. If any check fails,
+return <var>result</var>.
+          </li>
+          <li>
+Confirm that <var>list</var> is a [=recognized entity credential=], and let
+<var>entity</var> be the [=recognized entity=] in the `credentialSubject` of
+<var>list</var> whose `id` is equal to the identifier of the [=issuer=] of
+<var>subject</var>. If no such [=recognized entity=] is present, the two
+[=verifiable credentials=] are unrelated and the check fails.
+          </li>
+          <li>
+Confirm that <var>subject</var> was valid at a point in time at which
+<var>list</var> was also valid, by comparing their `validFrom` and `validUntil`
+properties. If the validity periods do not overlap, the check fails.
+          </li>
+          <li>
+For each [=recognized action=] declared by the `recognizedTo` property of
+<var>entity</var> that declares a `validFrom` or `validUntil` property, confirm
+that the [=recognized action=] was valid at the same point in time. A
+[=recognized action=] that is not valid at that time is disregarded in step 10.
+          </li>
+          <li>
+Confirm that the [=issuer=] of the final [=verifiable credential=] in
+<var>chain</var> is a member of <var>recognizedIssuers</var>. If it is not, the
+chain does not terminate at a trust anchor that the [=verifier=] recognizes, so
+return <var>result</var>. Otherwise, set <var>result.recognized</var> to `true`.
+          </li>
+          <li>
+Let <var>credential</var> be the first [=verifiable credential=] in
+<var>chain</var>, let <var>list</var> be the second, and let <var>entity</var>
+be the [=recognized entity=] in the `credentialSubject` of <var>list</var> whose
+`id` is the identifier of the [=issuer=] of <var>credential</var>. If any
+[=recognized action=] declared by the `recognizedTo` property of
+<var>entity</var>, other than one disregarded by step 8, has an `action` value
+equal to <var>action</var>, and either that [=recognized action=] declares no
+`outputValidation` or <var>credential</var> conforms to every schema referenced
+by its `outputValidation`, set <var>result.actionRecognized</var> to `true`.
+          </li>
+          <li>
+Return <var>result</var>.
+          </li>
+        </ol>
+
+        <p class="note" title="Recognition and action recognition are distinct outcomes">
+A result in which <var>recognized</var> is `true` and
+<var>actionRecognized</var> is `false` means that the [=issuer=] is recognized
+by a trust anchor that the [=verifier=] trusts, but was not recognized to
+perform the action in question, or produced a [=verifiable credential=] that
+does not conform to the schema that the [=recognized action=] requires. A
+[=verifier=] is expected to treat that outcome as a failure whenever the
+action matters to the transaction.
+        </p>
+
+        <p>
+A [=recognized entity credential=] that lacks a `recognizedTo` property for a
+given [=recognized entity=] asserts that the entity is recognized, without
+constraining the actions it performs. A [=verifier=] that requires an explicit
+action to be recognized treats such a [=recognized entity credential=] as
+producing an <var>actionRecognized</var> value of `false`.
+        </p>
+
       </section>
     </section>
 
@@ -2330,23 +2462,22 @@ examples solely to illustrate the kind of information a registrar-issued
         <p>
 The [=credential-based discovery=] and [=identifier-based discovery=] processes
 described in Section [[[#algorithms]]] both require a [=verifier=] to retrieve
-information from the network: the former fetches the [=recognized entity
-credential=] named by a `recognizedIn` property, while the latter resolves the
-[=issuer=]'s identifier and fetches a [=verifiable presentation=] from a service
-endpoint. A [=verifier=] that is offline, or that is unwilling to contact a
-third party during a transaction, cannot perform either process.
+information from the network. Credential-based discovery fetches the
+[=recognized entity credential=] named by a `recognizedIn` property, and
+identifier-based discovery resolves the [=issuer=]'s identifier and fetches a
+[=verifiable presentation=] from a service endpoint. A [=verifier=] that is
+offline, or that is unwilling to contact a third party during a transaction,
+cannot perform either process.
         </p>
 
         <p>
-This example demonstrates <em>holder-based delivery</em>, in
-which the [=holder=] supplies the [=recognized entity credential=] to the
-[=verifier=] alongside the [=verifiable credential=] it supports, using the
-"certificate stapling" mechanism described in Section
-[[[#recognizedentitycredential]]]. Because the [=holder=] provides every
-[=verifiable credential=] needed to establish the recognition chain, the
-[=verifier=] performs the entire evaluation locally. This approach also improves
-privacy for the [=holder=], as no list publisher learns which [=issuer=] is
-being verified.
+In <em>holder-based delivery</em>, the [=holder=] supplies the [=recognized
+entity credential=] to the [=verifier=] alongside the [=verifiable credential=]
+it supports, using the "certificate stapling" mechanism described in Section
+[[[#recognizedentitycredential]]]. The [=holder=] provides every [=verifiable
+credential=] needed to establish the recognition chain, so the [=verifier=]
+evaluates the chain locally. Privacy for the [=holder=] improves as well,
+because no list publisher learns which [=issuer=] is being verified.
         </p>
 
         <p>
@@ -2354,15 +2485,15 @@ Holder-based delivery depends on each [=recognized entity=] holding a
 [=recognized entity credential=] of its own, rather than on a single
 [=verifiable credential=] that enumerates every entity in an ecosystem. A
 registration authority that issues one credential per registered entity, as in
-Section [[[#un-grid-cross-border-trade-example]]] above, enables that entity to
+Section [[[#un-grid-cross-border-trade-example]]] above, lets that entity
 present its own recognition information without contacting the authority.
         </p>
 
         <p>
 In the scenario below, a mobile inspector verifies a food safety certificate at
 a remote processing facility where neither party has network connectivity. The
-diagram below shows the entire flow, including the steps that each party
-performs while still online.
+diagram shows the whole flow, including the steps each party performs while
+still online.
         </p>
 
         <figure>
@@ -2426,8 +2557,8 @@ Any schemas referenced by the `outputValidation` property of a [=recognized
 action=] it intends to enforce, since those cannot be fetched while offline.
           </li>
           <li>
-Revocation or status information, which is necessarily as fresh as the moment
-the [=verifier=] went offline; see Section [[[#stale-credentials]]] below.
+Revocation or status information, which is no fresher than the moment the
+[=verifier=] went offline. See Section [[[#stale-credentials]]] below.
           </li>
         </ul>
 
@@ -2579,14 +2710,23 @@ The [=verifier=] evaluates the presentation without any network access. It
 verifies the proof on the [=verifiable presentation=], confirms that the
 `challenge` and `domain` match the ones it issued, and verifies the proof on
 each contained [=verifiable credential=] using its cached key material. It then
-confirms that the `issuer` of the food safety certificate,
+performs [=recognition verification=], as described in Section
+[[[#recognition-verification]]], on the chain consisting of the food safety
+certificate followed by the [=recognized entity credential=]. That process
+confirms that the `issuer` of the certificate,
 `did:web:processor.utopia.example`, appears as the `id` of a [=recognized
-entity=] in the `credentialSubject` of the [=recognized entity credential=], and
+entity=] in the `credentialSubject` of the [=recognized entity credential=],
 that the facility is recognized to `issue` credentials conforming to the schema
-named by that [=recognized action=]'s `outputValidation`. Finally, the
-[=verifier=] confirms that it recognizes
-`did:web:food-safety.utopia.example`, the [=issuer=] of the [=recognized entity
-credential=], as a trust anchor.
+named by that [=recognized action=]'s `outputValidation`, and that the chain
+terminates at `did:web:food-safety.utopia.example`, an [=issuer=] that the
+[=verifier=] has configured as a trust anchor.
+        </p>
+
+        <p>
+Because [=recognition verification=] is independent of how the [=verifiable
+credentials=] were obtained, the [=verifier=] applies exactly the same process
+here as it would to a chain it had discovered for itself. Holder-based delivery
+changes only the discovery step.
         </p>
 
         <section class="informative notoc">
@@ -2598,7 +2738,7 @@ entity credential=]. As noted in Section [[[#recognizedentitycredential]]], a
 [=verifier=] that requires more recent information might ignore the provided
 [=verifiable credential=] and retrieve the [=recognized entity credential=]
 itself once it regains connectivity. An offline [=verifier=] cannot do so during
-the exchange, and therefore accepts a bounded staleness risk: recognition might
+the exchange, and therefore accepts a bounded staleness risk. Recognition might
 have been revoked after the [=holder=] cached its [=recognized entity
 credential=], or after the [=verifier=] last refreshed its own cached data.
           </p>
