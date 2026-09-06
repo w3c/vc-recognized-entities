@@ -2323,6 +2323,309 @@ examples solely to illustrate the kind of information a registrar-issued
       </p>
 
       </section>
+
+      <section class="informative">
+        <h3>Holder-Based Delivery</h3>
+
+        <p>
+The [=credential-based discovery=] and [=identifier-based discovery=] processes
+described in Section [[[#algorithms]]] both require a [=verifier=] to retrieve
+information from the network: the former fetches the [=recognized entity
+credential=] named by a `recognizedIn` property, while the latter resolves the
+[=issuer=]'s identifier and fetches a [=verifiable presentation=] from a service
+endpoint. A [=verifier=] that is offline, or that is unwilling to contact a
+third party during a transaction, cannot perform either process.
+        </p>
+
+        <p>
+This example demonstrates <em>holder-based delivery</em>, in
+which the [=holder=] supplies the [=recognized entity credential=] to the
+[=verifier=] alongside the [=verifiable credential=] it supports, using the
+"certificate stapling" mechanism described in Section
+[[[#recognizedentitycredential]]]. Because the [=holder=] provides every
+[=verifiable credential=] needed to establish the recognition chain, the
+[=verifier=] performs the entire evaluation locally. This approach also improves
+privacy for the [=holder=], as no list publisher learns which [=issuer=] is
+being verified.
+        </p>
+
+        <p>
+Holder-based delivery depends on each [=recognized entity=] holding a
+[=recognized entity credential=] of its own, rather than on a single
+[=verifiable credential=] that enumerates every entity in an ecosystem. A
+registration authority that issues one credential per registered entity, as in
+Section [[[#un-grid-cross-border-trade-example]]] above, enables that entity to
+present its own recognition information without contacting the authority.
+        </p>
+
+        <p>
+In the scenario below, a mobile inspector verifies a food safety certificate at
+a remote processing facility where neither party has network connectivity. The
+diagram below shows the entire flow, including the steps that each party
+performs while still online.
+        </p>
+
+        <figure>
+          <pre class="diagram mermaid" style="max-width:100%">
+sequenceDiagram
+    participant A as Food Safety Authority
+    participant H as Processing Facility (Holder)
+    participant V as Inspector (Verifier)
+    autonumber
+    rect rgb(235, 244, 235)
+    Note over A,V: While online, before the exchange
+    A->>H: RecognizedEntityCredential recognizing the facility
+    Note right of A: Issued once, valid for a year
+    H->>H: Cache credential and its recognized entity credential
+    A->>V: Trust anchor configuration
+    Note left of V: Verifier caches the authority DID document,&lt;br/>verification keys, and schemas
+    end
+    rect rgb(252, 244, 235)
+    Note over H,V: Offline exchange at the facility
+    V->>H: Verifiable Presentation Request
+    Note left of V: acceptedIssuers uses recognizedIn to ask for&lt;br/>the supporting recognized entity credential
+    H->>V: Verifiable Presentation
+    Note right of H: Contains the certificate and the stapled&lt;br/>recognized entity credential
+    V->>V: Verify proofs and evaluate recognition chain locally
+    end
+          </pre>
+          <figcaption>
+Holder-based delivery of a recognized entity credential to an offline verifier
+          </figcaption>
+        </figure>
+
+        <p>
+Because neither party can retrieve anything during the exchange, both cache
+what they need in advance. The [=holder=] caches:
+        </p>
+
+        <ul>
+          <li>
+The [=verifiable credentials=] it intends to present.
+          </li>
+          <li>
+The [=recognized entity credential=] issued to it by the authority that
+recognizes it, and any further [=recognized entity credentials=] needed to
+reach a widely recognized trust anchor, as described in Section
+[[[#credential-based-discovery]]].
+          </li>
+        </ul>
+
+        <p>
+The [=verifier=] caches:
+        </p>
+
+        <ul>
+          <li>
+The identifiers of the [=issuers=] it accepts as trust anchors, along with the
+[=controlled identifier documents=] and verification key material needed to
+verify proofs from those [=issuers=] without resolving their identifiers.
+          </li>
+          <li>
+Any schemas referenced by the `outputValidation` property of a [=recognized
+action=] it intends to enforce, since those cannot be fetched while offline.
+          </li>
+          <li>
+Revocation or status information, which is necessarily as fresh as the moment
+the [=verifier=] went offline; see Section [[[#stale-credentials]]] below.
+          </li>
+        </ul>
+
+        <p>
+The [=verifier=] asks for both [=verifiable credentials=] using a
+<a data-cite="VCALM#verifiable-presentation-request">verifiable
+presentation request</a>, as defined in the [[[VCALM]]] specification. The
+`acceptedIssuers` property of a `credentialQuery` accepts an object containing a
+`recognizedIn` property, which lets the [=verifier=] state that it will accept
+any [=issuer=] recognized in a given [=recognized entity credential=], rather
+than having to enumerate individual [=issuers=] it already knows:
+        </p>
+
+        <pre class="example nohighlight"
+          title="A verifiable presentation request that accepts any recognized issuer">
+{
+  "query": [{
+    "type": "QueryByExample",
+    "credentialQuery": {
+      <span class="comment">// shown to the facility operator by their wallet</span>
+      "reason": "Please present a food safety certificate for this lot.",
+      "example": {
+        "@context": [
+          "https://www.w3.org/ns/credentials/v2",
+          "https://www.w3.org/ns/credentials/examples/v2"
+        ],
+        "type": "ExampleFoodSafetyCertificate"
+      },
+      <span class="comment">// the verifier accepts any issuer recognized in the authority's
+      // recognized entity credential, and expects the holder to staple it</span>
+      "acceptedIssuers": [{
+        <span class="highlight">"recognizedIn": {
+          "id": "https://food-safety.utopia.example/lists/processors.vc",
+          "type": "RecognizedEntityCredential"
+        }</span>
+      }]
+    }
+  }],
+  <span class="comment">// bind the response to this verifier and this exchange</span>
+  "domain": "inspector.food-safety.utopia.example",
+  "challenge": "c31f9a84-8d20-11f1-b4e7-3f21c7d90e12"
+}
+        </pre>
+
+        <p>
+The [=holder=] responds with the [=verifiable presentation=] shown below. It
+contains two [=verifiable credentials=]: the food safety certificate issued by
+the processing facility, and the [=recognized entity credential=], issued by the
+national food safety authority, that recognizes the facility as an [=issuer=] of
+such certificates.
+        </p>
+
+        <pre class="example nohighlight"
+          title="A verifiable presentation containing a credential and the recognized entity credential that supports it">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": "VerifiablePresentation",
+  "holder": "did:web:processor.utopia.example",
+  "verifiableCredential": [{
+    <span class="comment">// the credential that the verifier asked to see</span>
+    "@context": [
+      "https://www.w3.org/ns/credentials/v2",
+      "https://www.w3.org/ns/credentials/examples/v2"
+    ],
+    "type": [
+      "VerifiableCredential",
+      "ExampleFoodSafetyCertificate"
+    ],
+    "issuer": {
+      "id": "did:web:processor.utopia.example",
+      "name": "Utopia Valley Food Processing"
+    },
+    "validFrom": "2026-08-01T00:00:00Z",
+    "validUntil": "2027-08-01T00:00:00Z",
+    "credentialSubject": {
+      "id": "https://processor.utopia.example/lots/2026-08-14-A",
+      "name": "Apple and Carrot Puree, Lot 2026-08-14-A"
+    },
+    "proof": {
+      "type": "DataIntegrityProof",
+      "created": "2026-08-14T09:12:00Z",
+      "verificationMethod": "did:web:processor.utopia.example#issuance-key-1",
+      "cryptosuite": "ecdsa-rdfc-2019",
+      "proofPurpose": "assertionMethod",
+      "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+    }
+  }, {
+    <span class="comment">// the stapled recognized entity credential, delivered by the
+    // holder so that the offline verifier does not need to fetch it</span>
+    "@context": [
+      "https://www.w3.org/ns/credentials/v2",
+      "https://www.w3.org/ns/credentials/examples/v2"
+    ],
+    "type": [
+      "VerifiableCredential",
+      "RecognizedEntityCredential"
+    ],
+    "issuer": {
+      "id": "did:web:food-safety.utopia.example",
+      "type": "RecognizedIssuer",
+      "name": "Utopian Food Safety Authority"
+    },
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validUntil": "2027-01-01T00:00:00Z",
+    "credentialSubject": [{
+      "id": "did:web:processor.utopia.example",
+      "type": "RecognizedEntity",
+      "name": "Utopia Valley Food Processing",
+      "legalName": "Utopia Valley Food Processing Cooperative",
+      "recognizedTo": {
+        "type": "RecognizedAction",
+        "action": "issue",
+        "recognizedBy": "did:web:food-safety.utopia.example",
+        "outputValidation": {
+          "id": "https://food-safety.utopia.example/schemas/certificate.json",
+          "type": "JsonSchema",
+          "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
+        }
+      }
+    }],
+    "proof": {
+      "type": "DataIntegrityProof",
+      "created": "2026-01-02T14:30:00Z",
+      "verificationMethod": "did:web:food-safety.utopia.example#issuance-key-1",
+      "cryptosuite": "ecdsa-rdfc-2019",
+      "proofPurpose": "assertionMethod",
+      "proofValue": "z3FXQjBHwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-08-20T11:05:00Z",
+    "verificationMethod": "did:web:processor.utopia.example#authentication-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "authentication",
+    <span class="comment">// echoes the challenge and domain from the request above</span>
+    "challenge": "c31f9a84-8d20-11f1-b4e7-3f21c7d90e12",
+    "domain": "inspector.food-safety.utopia.example",
+    "proofValue": "z58dRtaBHwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJ"
+  }
+}
+        </pre>
+
+        <p>
+The [=verifier=] evaluates the presentation without any network access. It
+verifies the proof on the [=verifiable presentation=], confirms that the
+`challenge` and `domain` match the ones it issued, and verifies the proof on
+each contained [=verifiable credential=] using its cached key material. It then
+confirms that the `issuer` of the food safety certificate,
+`did:web:processor.utopia.example`, appears as the `id` of a [=recognized
+entity=] in the `credentialSubject` of the [=recognized entity credential=], and
+that the facility is recognized to `issue` credentials conforming to the schema
+named by that [=recognized action=]'s `outputValidation`. Finally, the
+[=verifier=] confirms that it recognizes
+`did:web:food-safety.utopia.example`, the [=issuer=] of the [=recognized entity
+credential=], as a trust anchor.
+        </p>
+
+        <section class="informative notoc">
+          <h4>Stale Credentials</h4>
+
+          <p>
+A [=verifier=] is not obliged to accept a [=holder=]-provided [=recognized
+entity credential=]. As noted in Section [[[#recognizedentitycredential]]], a
+[=verifier=] that requires more recent information might ignore the provided
+[=verifiable credential=] and retrieve the [=recognized entity credential=]
+itself once it regains connectivity. An offline [=verifier=] cannot do so during
+the exchange, and therefore accepts a bounded staleness risk: recognition might
+have been revoked after the [=holder=] cached its [=recognized entity
+credential=], or after the [=verifier=] last refreshed its own cached data.
+          </p>
+
+          <p>
+Deployments reduce that risk by configuring a maximum acceptable age for stapled
+[=recognized entity credentials=], by issuing [=recognized entity credentials=]
+with validity periods appropriate to the expected offline interval, and by
+refreshing cached trust anchor and status information whenever connectivity is
+available. Related guidance is provided by threat
+<a href="threat-model/index.html#t10-stale-recognition-acceptance">T10: Stale
+Recognition Acceptance</a>.
+          </p>
+
+          <p class="note" title="Offline delivery does not weaken verification">
+Every check the [=verifier=] performs in this example is cryptographic and
+local. Holder-based delivery changes how the [=recognized entity credential=]
+reaches the [=verifier=], not the checks that the [=verifier=] performs on it. A
+[=holder=] cannot alter a [=recognized entity credential=] without invalidating
+its proof, although a [=holder=] does choose which [=verifiable credentials=] to
+present; see threat
+<a href="threat-model/index.html#t8-unvetted-recognized-entity-credential-propagation">T8:
+Unvetted Recognized Entity Credential Propagation</a>.
+          </p>
+        </section>
+
+      </section>
     </section>
 
     <section class="appendix informative">
