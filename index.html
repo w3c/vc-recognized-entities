@@ -918,6 +918,74 @@ publish information about a set of known universities in a particular nation.
 }
     </pre>
 
+    <p>
+The following example demonstrates how different languages can be supported
+within a [=recognized entity credential=]:
+    </p>
+
+      <pre class="example nohighlight" title="A recognized entity credential supporting multiple languages">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:learning-commission.example",
+    "type": "RecognizedIssuer"
+  },
+  "validFrom": "2025-01-01T00:00:00Z",
+  "validUntil": "2030-01-01T00:00:00Z",
+  "credentialSubject": {
+    "id": "did:web:university.example",
+    "type": "RecognizedEntity",
+    <span class="highlight">"name": [
+      {"@value": "Example Tech", "@language": "en"},
+      {"@value": "Exemple Tech", "@language": "fr"},
+      {"@value": "エグザンプル工科大学", "@language": "ja"},
+      {"@value": "示例理工大学", "@language": "zh"},
+      {"@value": "مثال للتقنية", "@language": "ar", "@direction": "rtl"},
+      {"@value": "उदाहरण टेक", "@language": "hi"}
+    ]</span>,
+    <span class="highlight">"legalName": [
+      {"@value": "Example Polytechnic University", "@language": "en"},
+      {"@value": "Université Polytechnique Exemple", "@language": "fr"},
+      {"@value": "エグザンプル理工科大学", "@language": "ja"},
+      {"@value": "示例理工科大学", "@language": "zh"},
+      {"@value": "جامعة مثال للعلوم التطبيقية", "@language": "ar", "@direction": "rtl"},
+      {"@value": "उदाहरण प्रौद्योगिकी विश्वविद्यालय", "@language": "hi"}
+    ]</span>,
+    "image": "https://university.example/logo.png",
+    "url": "https://www.university.example/",
+    <span class="highlight">"description": [
+      {"@value": "A university providing a great education in Utopia Valley.",
+        "@language": "en"},
+      {"@value": "Une université offrant une excellente éducation dans la vallée d'Utopie.",
+        "@language": "fr"},
+      {"@value": "ユートピア渓谷で優れた教育を提供する大学です。",
+        "@language": "ja"},
+      {"@value": "一所在乌托邦谷提供优质教育的大学。",
+        "@language": "zh"},
+      {"@value": "جامعة تقدم تعليماً متميزاً في وادي يوتوبيا.",
+        "@language": "ar", "@direction": "rtl"},
+      {"@value": "यूटोपिया घाटी में उत्कृष्ट शिक्षा प्रदान करने वाला एक विश्वविद्यालय।",
+        "@language": "hi"}
+    ]</span>
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-04-10T20:08:22Z",
+    "verificationMethod": "did:web:accreditor.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "zE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdw"
+  }
+}
+    </pre>
+
       <p>
 The next example is used to publish information about a set of known issuers
 for a particular type of [=verifiable credential=].
