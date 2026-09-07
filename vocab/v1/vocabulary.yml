@@ -7,8 +7,8 @@ json_ld:
 
 vocab:
   id: re
-  value: https://www.w3.org/ns/credentials/recognizedEntities#
-  context: https://www.w3.org/ns/credentials/recognizedEntities/v1
+  value: https://www.w3.org/ns/credentials/recognized-entities#
+  context: https://www.w3.org/ns/credentials/recognized-entities/v1
 
 prefix:
   - id: cred
