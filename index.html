@@ -2359,6 +2359,24 @@ present its own recognition information without contacting the authority.
         </p>
 
         <p>
+The three ways of delivering a [=recognized entity credential=] to a
+[=verifier=] disclose different amounts of information about the verification
+itself. Holder-based delivery discloses the least, because the [=verifier=]
+contacts no third party and no other party learns that the verification
+occurred. Retrieval from a list publisher discloses more, because that publisher
+learns that a verification is taking place, although a [=verifier=] that
+retrieves an entire [=recognized entity credential=] rather than a per-entity
+resource does not reveal which [=issuer=] it is checking. Retrieval from a
+`WhoisService` endpoint, as described in Section
+[[[#identifier-based-discovery]]], discloses the most, because the endpoint
+belongs to the [=issuer=] being verified and that [=issuer=] therefore learns of
+every verification of its own [=verifiable credentials=]. Threat
+<a href="threat-model/index.html#t4-privacy-leakage-via-list-fetch">T4: Privacy
+Leakage via List Fetch</a> describes this exposure and the measures that reduce
+it.
+        </p>
+
+        <p>
 In the scenario below, a mobile inspector verifies a food safety certificate at
 a remote processing facility where neither party has network connectivity. The
 diagram below shows the entire flow, including the steps that each party
