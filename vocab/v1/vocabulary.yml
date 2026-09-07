@@ -45,15 +45,10 @@ class:
     comment: A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href="#RecognizedEntity">Recognized Entities</a> entities.
     upper_value: cred:VerifiableCredential
 
-  - id: x509CertificateAuthorityList
-    label: X509 certificate authoring list
-    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists
-    comment: This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies
-
-  - id: EtsiTrustServiceList
-    label: ETSI Trust Service list
-    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists
-    comment: This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies
+  - id: ExternalEntityList
+    label: External Entity List
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#externalentitylist
+    comment: A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an ETSI Trust Services List.
 
 property:
   - id: action
@@ -61,7 +56,6 @@ property:
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction
     comment: Name of the action to be performed by a <a href="#RecognizedEntity">Recognized Entity</a>. Possible values include "issue" or "verify".
     domain: RecognizedAction
-    range: xsd:string
 
   - id: recognizedBy
     label: Recognized by
@@ -89,7 +83,7 @@ property:
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity
     comment: Refer to the <a href="#RecognizedAction">Recognized Action</a>.
     domain: RecognizedEntity
-    range: [EtsiTrustServiceList, x509CertificateAuthorityList, RecognizedEntityCredential]
+    range: [ExternalEntityList, RecognizedEntityCredential]
     range_union: true
 
   - id: credentialSubject
