@@ -33,7 +33,20 @@
                 }
             }
         },
-        "RecognizedEntityCredential": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntityCredential",
+        "RecognizedEntityCredential": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntityCredential",
+            "@context": {
+                "@protected": true,
+                "validFrom": {
+                    "@id": "https://www.w3.org/2018/credentials#validFrom",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "validUntil": {
+                    "@id": "https://www.w3.org/2018/credentials#validUntil",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                }
+            }
+        },
         "ExternalEntityList": "https://www.w3.org/ns/credentials/recognized-entities#ExternalEntityList",
         "legalName": "https://www.w3.org/ns/credentials/recognized-entities#legalName",
         "image": "https://www.w3.org/ns/credentials/recognized-entities#image",

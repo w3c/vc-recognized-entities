@@ -218,6 +218,6 @@
     }, {
         "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "sec:digestMultibase"]
+        "mentions": ["cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "sec:digestMultibase"]
     }]
 }

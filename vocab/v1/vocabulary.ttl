@@ -134,6 +134,8 @@ re:ExternalEntityList a rdfs:Class ;
 # Context files and their mentions
 <https://www.w3.org/ns/credentials/recognized-entities/v1> a jsonld:Context ;
     schema:mentions
+        cred:validFrom,
+        cred:validUntil,
         re:ExternalEntityList,
         re:RecognizedAction,
         re:RecognizedEntity,
