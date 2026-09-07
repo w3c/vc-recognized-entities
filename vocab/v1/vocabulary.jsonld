@@ -66,9 +66,8 @@
         "dc:date": "2026-09-07"
     }, {
         "@id": "re:action",
-        "@type": ["rdf:Property", "owl:DatatypeProperty"],
+        "@type": "rdf:Property",
         "rdfs:domain": "re:RecognizedAction",
-        "rdfs:range": "xsd:string",
         "rdfs:label": "Action",
         "rdfs:comment": {
             "@value": "<div>Name of the action to be performed by a <a href=\"#RecognizedEntity\">Recognized Entity</a>. Possible values include \"issue\" or \"verify\".</div>",
@@ -117,7 +116,7 @@
         "rdfs:domain": "re:RecognizedEntity",
         "rdfs:range": {
             "@type": "ows:Class",
-            "owl:unionOf": ["re:EtsiTrustServiceList", "re:x509CertificateAuthorityList", "re:RecognizedEntityCredential"]
+            "owl:unionOf": ["re:ExternalEntityList", "re:RecognizedEntityCredential"]
         },
         "rdfs:label": "Recognized in",
         "rdfs:comment": {
@@ -223,28 +222,18 @@
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
-        "@id": "re:x509CertificateAuthorityList",
+        "@id": "re:ExternalEntityList",
         "@type": "rdfs:Class",
-        "rdfs:label": "X509 certificate authoring list",
+        "rdfs:label": "External Entity List",
         "rdfs:comment": {
-            "@value": "<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>",
+            "@value": "<div>A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an ETSI Trust Services List.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
-        "@id": "re:EtsiTrustServiceList",
-        "@type": "rdfs:Class",
-        "rdfs:label": "ETSI Trust Service list",
-        "rdfs:comment": {
-            "@value": "<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>",
-            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
-        },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists", "https://www.w3.org/ns/credentials/recognized-entities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#externalentitylist", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["re:EtsiTrustServiceList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "re:validFrom", "re:validUntil", "re:x509CertificateAuthorityList", "schema:name", "sec:digestMultibase"]
+        "mentions": ["re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "re:validFrom", "re:validUntil", "sec:digestMultibase"]
     }]
 }

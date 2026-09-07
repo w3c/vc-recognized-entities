@@ -200,7 +200,7 @@
                 <details>
                     <summary>term list</summary>
                     <ul>
-                        <li><a href="#EtsiTrustServiceList"><code>EtsiTrustServiceList<code></code></code></a></li>
+                        <li><a href="#ExternalEntityList"><code>ExternalEntityList<code></code></code></a></li>
                         <li><a href="#RecognizedAction"><code>RecognizedAction<code></code></code></a></li>
                         <li><a href="#RecognizedEntity"><code>RecognizedEntity<code></code></code></a></li>
                         <li><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential<code></code></code></a></li>
@@ -215,9 +215,6 @@
                         <li><a href="#url"><code>url<code></code></code></a></li>
                         <li><a href="#validFrom"><code>validFrom<code></code></code></a></li>
                         <li><a href="#validUntil"><code>validUntil<code></code></code></a></li>
-                        <li><a href="#x509CertificateAuthorityList"><code>x509CertificateAuthorityList<code></code></code></a></li>
-                        <li><a href="#104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37"><code>name<code></code></code></a>
-                        </li>
                         <li><a
                                 href="#1c2059d8a9b5c10a54ba77dae600e4c97cd023c056cdd48fab98ea2c496fc99f"><code>digestMultibase<code></code></code></a>
                         </li>
@@ -291,8 +288,7 @@
                     <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
                     <dt>Domain of:</dt>
                     <dd><a href="#credentialSubject"><code>credentialSubject</code></a>, <a href="#validFrom"><code>validFrom</code></a>, <a
-                            href="#validUntil"><code>validUntil</code></a>, <a
-                            href="#104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37"><code>name</code></a></dd>
+                            href="#validUntil"><code>validUntil</code></a></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -301,31 +297,13 @@
                     </dd>
                 </dl>
             </section>
-            <section id="x509CertificateAuthorityList">
-                <h4><code>x509CertificateAuthorityList</code></h4>
-                <p><em>X509 certificate authoring list</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists">formal definition
-                        of the term</a>.</p>
-                <div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies
-                </div>
-                <dl class="terms">
-                    <dt>Includes the range of:</dt>
-                    <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
-                </dl>
-                <dl class="terms">
-                    <dt>Relevant <code>@context</code>:</dt>
-                    <dd><a
-                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
-                    </dd>
-                </dl>
-            </section>
-            <section id="EtsiTrustServiceList">
-                <h4><code>EtsiTrustServiceList</code></h4>
-                <p><em>ETSI Trust Service list</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists">formal definition of the
-                        term</a>.</p>
-                <div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies
-                </div>
+            <section id="ExternalEntityList">
+                <h4><code>ExternalEntityList</code></h4>
+                <p><em>External Entity List</em></p>
+                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#externalentitylist">formal definition of the term</a>.
+                </p>
+                <div>A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an
+                    ETSI Trust Services List.</div>
                 <dl class="terms">
                     <dt>Includes the range of:</dt>
                     <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
@@ -352,8 +330,6 @@
                 <dl class="terms">
                     <dt>Domain:</dt>
                     <dd><a href="#RecognizedAction"><code>RecognizedAction</code></a></dd>
-                    <dt>Range:</dt>
-                    <dd><code>xsd:string</code></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -429,8 +405,7 @@
                     <dt>Domain:</dt>
                     <dd><a href="#RecognizedEntity"><code>RecognizedEntity</code></a></dd>
                     <dt>Range:</dt>
-                    <dd><a href="#EtsiTrustServiceList"><code>EtsiTrustServiceList</code></a> ⊔&nbsp;<a
-                            href="#x509CertificateAuthorityList"><code>x509CertificateAuthorityList</code></a> ⊔&nbsp;<a
+                    <dd><a href="#ExternalEntityList"><code>ExternalEntityList</code></a> ⊔&nbsp;<a
                             href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
                 </dl>
                 <dl class="terms">
@@ -504,12 +479,6 @@
                     (as <a href="http://schema.org/name">schema:name</a>), but is frequently used with this vocabulary and has been
                     included to aid readability of this document.
                 </p>
-                <dl class="terms">
-                    <dt>Relevant <code>@context</code>:</dt>
-                    <dd><a
-                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
-                    </dd>
-                </dl>
             </section>
             <section id="legalName">
                 <h4><code>legalName</code></h4>

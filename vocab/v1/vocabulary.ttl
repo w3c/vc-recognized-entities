@@ -19,9 +19,8 @@ re: a owl:Ontology ;
 .
 
 # Property definitions
-re:action a rdf:Property, owl:DatatypeProperty ;
+re:action a rdf:Property ;
     rdfs:domain re:RecognizedAction ;
-    rdfs:range xsd:string ;
     rdfs:label "Action" ;
     rdfs:comment """<div>Name of the action to be performed by a <a href="#RecognizedEntity">Recognized Entity</a>. Possible values include "issue" or "verify".</div>"""^^rdf:HTML ;
     rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
@@ -56,7 +55,7 @@ re:recognizedTo a rdf:Property, owl:ObjectProperty ;
 
 re:recognizedIn a rdf:Property, owl:ObjectProperty ;
     rdfs:domain re:RecognizedEntity ;
-    rdfs:range [ a owl:Class; owl:unionOf (re:EtsiTrustServiceList re:x509CertificateAuthorityList re:RecognizedEntityCredential) ] ;
+    rdfs:range [ a owl:Class; owl:unionOf (re:ExternalEntityList re:RecognizedEntityCredential) ] ;
     rdfs:label "Recognized in" ;
     rdfs:comment """<div>Refer to the <a href="#RecognizedAction">Recognized Action</a>.</div>"""^^rdf:HTML ;
     rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
@@ -139,17 +138,10 @@ re:RecognizedEntityCredential a rdfs:Class ;
     vs:term_status "stable" ;
 .
 
-re:x509CertificateAuthorityList a rdfs:Class ;
-    rdfs:label "X509 certificate authoring list" ;
-    rdfs:comment """<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>"""^^rdf:HTML ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
-re:EtsiTrustServiceList a rdfs:Class ;
-    rdfs:label "ETSI Trust Service list" ;
-    rdfs:comment """<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>"""^^rdf:HTML ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
+re:ExternalEntityList a rdfs:Class ;
+    rdfs:label "External Entity List" ;
+    rdfs:comment """<div>A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an ETSI Trust Services List.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#externalentitylist>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
     vs:term_status "stable" ;
 .
 
@@ -158,7 +150,7 @@ re:EtsiTrustServiceList a rdfs:Class ;
 # Context files and their mentions
 <https://www.w3.org/ns/credentials/recognized-entities/v1> a jsonld:Context ;
     schema:mentions
-        re:EtsiTrustServiceList,
+        re:ExternalEntityList,
         re:RecognizedAction,
         re:RecognizedEntity,
         re:RecognizedEntityCredential,
@@ -173,8 +165,6 @@ re:EtsiTrustServiceList a rdfs:Class ;
         re:url,
         re:validFrom,
         re:validUntil,
-        re:x509CertificateAuthorityList,
-        schema:name,
         sec:digestMultibase ;
 .
 
