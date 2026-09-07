@@ -95,17 +95,19 @@ property:
     range: RecognizedEntity
     context: none
 
-  - id: validFrom
+  - id: cred:validFrom
     label: Valid from
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
     domain: RecognizedEntityCredential
     range: xsd:dateTime
+    context: none
 
-  - id: validUntil
+  - id: cred:validUntil
     label: Valid until
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
     domain: RecognizedEntityCredential
     range: xsd:dateTime
+    context: none
 
   - id: schema:name
     label: name

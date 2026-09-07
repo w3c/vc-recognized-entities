@@ -72,22 +72,6 @@ re:credentialSubject a rdf:Property, owl:ObjectProperty ;
     vs:term_status "stable" ;
 .
 
-re:validFrom a rdf:Property, owl:DatatypeProperty ;
-    rdfs:domain re:RecognizedEntityCredential ;
-    rdfs:range xsd:dateTime ;
-    rdfs:label "Valid from" ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
-re:validUntil a rdf:Property, owl:DatatypeProperty ;
-    rdfs:domain re:RecognizedEntityCredential ;
-    rdfs:range xsd:dateTime ;
-    rdfs:label "Valid until" ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
 re:legalName a rdf:Property ;
     rdfs:range [ a owl:Class; owl:unionOf (xsd:string rdf:langString rdf:dirLangString) ] ;
     rdfs:label "Legal name" ;
@@ -163,8 +147,6 @@ re:ExternalEntityList a rdfs:Class ;
         re:recognizedTo,
         re:sameAs,
         re:url,
-        re:validFrom,
-        re:validUntil,
         sec:digestMultibase ;
 .
 

@@ -139,22 +139,6 @@
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
-        "@id": "re:validFrom",
-        "@type": ["rdf:Property", "owl:DatatypeProperty"],
-        "rdfs:domain": "re:RecognizedEntityCredential",
-        "rdfs:range": "xsd:dateTime",
-        "rdfs:label": "Valid from",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
-        "@id": "re:validUntil",
-        "@type": ["rdf:Property", "owl:DatatypeProperty"],
-        "rdfs:domain": "re:RecognizedEntityCredential",
-        "rdfs:range": "xsd:dateTime",
-        "rdfs:label": "Valid until",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
         "@id": "re:legalName",
         "@type": "rdf:Property",
         "rdfs:range": {
@@ -234,6 +218,6 @@
     }, {
         "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "re:validFrom", "re:validUntil", "sec:digestMultibase"]
+        "mentions": ["re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "sec:digestMultibase"]
     }]
 }
