@@ -1,6 +1,6 @@
 {
     "@context": {
-        "re": "https://www.w3.org/ns/credentials/recognizedEntities#",
+        "re": "https://www.w3.org/ns/credentials/recognized-entities#",
         "cred": "https://www.w3.org/2018/credentials#",
         "sec": "https://w3id.org/security#",
         "dc": "http://purl.org/dc/terms/",
@@ -52,7 +52,7 @@
         }
     },
     "@included": [{
-        "@id": "https://www.w3.org/ns/credentials/recognizedEntities#",
+        "@id": "https://www.w3.org/ns/credentials/recognized-entities#",
         "@type": "owl:Ontology",
         "dc:title": {
             "@value": "Recognized Entities Vocabulary 1.0",
@@ -63,7 +63,7 @@
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:seeAlso": "https://www.w3.org/TR/vc-recognized-entities-1.0/",
-        "dc:date": "2026-09-02"
+        "dc:date": "2026-09-07"
     }, {
         "@id": "re:action",
         "@type": ["rdf:Property", "owl:DatatypeProperty"],
@@ -74,7 +74,7 @@
             "@value": "<div>Name of the action to be performed by a <a href=\"#RecognizedEntity\">Recognized Entity</a>. Possible values include \"issue\" or \"verify\".</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:recognizedBy",
@@ -86,7 +86,7 @@
             "@value": "<div>The <a href=\"#RecognizedEntityCredential\">Recognized Entity Credential</a> that performed the task of recognizing.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:outputValidation",
@@ -97,7 +97,7 @@
             "@value": "<div>Refers to a data schema that provides verifiers with enough information to determine whether the provided data conforms to the provided schema (e.g., JSON Schema).</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:recognizedTo",
@@ -109,7 +109,7 @@
             "@value": "<div>Refer to the <a href=\"#RecognizedAction\">Recognized Action</a>.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:recognizedIn",
@@ -124,7 +124,7 @@
             "@value": "<div>Refer to the <a href=\"#RecognizedAction\">Recognized Action</a>.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:credentialSubject",
@@ -137,7 +137,23 @@
             "@value": "<div>When used in a recognized entity credential, the value must be restricted to recognized entities.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
+        "vs:term_status": "stable"
+    }, {
+        "@id": "re:validFrom",
+        "@type": ["rdf:Property", "owl:DatatypeProperty"],
+        "rdfs:domain": "re:RecognizedEntityCredential",
+        "rdfs:range": "xsd:dateTime",
+        "rdfs:label": "Valid from",
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
+        "vs:term_status": "stable"
+    }, {
+        "@id": "re:validUntil",
+        "@type": ["rdf:Property", "owl:DatatypeProperty"],
+        "rdfs:domain": "re:RecognizedEntityCredential",
+        "rdfs:range": "xsd:dateTime",
+        "rdfs:label": "Valid until",
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:legalName",
@@ -151,19 +167,19 @@
             "@value": "<div>Legal name of the entity</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:image",
         "@type": ["rdf:Property", "owl:ObjectProperty"],
         "rdfs:label": "Visual representation of the entity",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:url",
         "@type": ["rdf:Property", "owl:ObjectProperty"],
         "rdfs:label": "Web site of the entity",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:sameAs",
@@ -173,7 +189,7 @@
             "@value": "<div>One or more URLs that refer to the same entity in other contexts or systems</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:RecognizedEntity",
@@ -183,7 +199,7 @@
             "@value": "<div>An entity that is recognized an <a href=\"#RecognizedEntityCredential\">Recognized Entity Credential</a> to perform a specific action.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:RecognizedAction",
@@ -193,7 +209,7 @@
             "@value": "<div>An action that a <a href=\"#RecognizedEntity\">Recognized Entity</a> is expected to perform.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:RecognizedEntityCredential",
@@ -204,7 +220,7 @@
             "@value": "<div>A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href=\"#RecognizedEntity\">Recognized Entities</a> entities.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:x509CertificateAuthorityList",
@@ -214,7 +230,7 @@
             "@value": "<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#x-509-certificate-authority-lists", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
         "@id": "re:EtsiTrustServiceList",
@@ -224,11 +240,11 @@
             "@value": "<div>This is mainly a placeholder to keep the vocabulary together, those lists are usually not defined in RDF terminologies</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists", "https://www.w3.org/ns/credentials/recognizedEntities#"],
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#etsi-trust-service-lists", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
-        "@id": "https://www.w3.org/ns/credentials/recognizedEntities/v1",
+        "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["re:EtsiTrustServiceList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "re:x509CertificateAuthorityList", "sec:digestMultibase"]
+        "mentions": ["re:EtsiTrustServiceList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "re:validFrom", "re:validUntil", "re:x509CertificateAuthorityList", "schema:name", "sec:digestMultibase"]
     }]
 }

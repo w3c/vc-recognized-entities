@@ -5,44 +5,58 @@
         "direction": "@direction",
         "id": "@id",
         "RecognizedEntity": {
-            "@id": "https://www.w3.org/ns/credentials/recognizedEntities#RecognizedEntity",
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntity",
             "@context": {
                 "@protected": true,
                 "recognizedTo": {
-                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#recognizedTo",
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedTo",
                     "@type": "@id"
                 },
                 "recognizedIn": {
-                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#recognizedIn",
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedIn",
                     "@type": "@id"
                 }
             }
         },
         "RecognizedAction": {
-            "@id": "https://www.w3.org/ns/credentials/recognizedEntities#RecognizedAction",
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedAction",
             "@context": {
                 "@protected": true,
                 "action": {
-                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#action",
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#action",
                     "@type": "http://www.w3.org/2001/XMLSchema#string"
                 },
                 "recognizedBy": {
-                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#recognizedBy",
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedBy",
                     "@type": "@id"
                 },
                 "outputValidation": {
-                    "@id": "https://www.w3.org/ns/credentials/recognizedEntities#outputValidation",
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#outputValidation",
                     "@type": "@id"
                 }
             }
         },
-        "RecognizedEntityCredential": "https://www.w3.org/ns/credentials/recognizedEntities#RecognizedEntityCredential",
-        "x509CertificateAuthorityList": "https://www.w3.org/ns/credentials/recognizedEntities#x509CertificateAuthorityList",
-        "EtsiTrustServiceList": "https://www.w3.org/ns/credentials/recognizedEntities#EtsiTrustServiceList",
-        "legalName": "https://www.w3.org/ns/credentials/recognizedEntities#legalName",
-        "image": "https://www.w3.org/ns/credentials/recognizedEntities#image",
-        "url": "https://www.w3.org/ns/credentials/recognizedEntities#url",
-        "sameAs": "https://www.w3.org/ns/credentials/recognizedEntities#sameAs",
+        "RecognizedEntityCredential": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntityCredential",
+            "@context": {
+                "@protected": true,
+                "validFrom": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#validFrom",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "validUntil": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#validUntil",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "name": "http://schema.org/name"
+            }
+        },
+        "x509CertificateAuthorityList": "https://www.w3.org/ns/credentials/recognized-entities#x509CertificateAuthorityList",
+        "EtsiTrustServiceList": "https://www.w3.org/ns/credentials/recognized-entities#EtsiTrustServiceList",
+        "legalName": "https://www.w3.org/ns/credentials/recognized-entities#legalName",
+        "image": "https://www.w3.org/ns/credentials/recognized-entities#image",
+        "url": "https://www.w3.org/ns/credentials/recognized-entities#url",
+        "sameAs": "https://www.w3.org/ns/credentials/recognized-entities#sameAs",
         "digestMultibase": "https://w3id.org/security#digestMultibase"
     }
 }

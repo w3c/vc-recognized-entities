@@ -144,7 +144,7 @@
         </p>
         <dl>
             <dt>Published:</dt>
-            <dd><time property="dc:date" id="time">2026-09-02</time></dd>
+            <dd><time property="dc:date" id="time">2026-09-07</time></dd>
             <dt>Version Info:</dt>
             <dd>1.0</dd>
             <dt id="see_also">See Also: <a
@@ -169,7 +169,7 @@
         <p>This specification makes use of the following namespaces:</p>
         <dl class="terms" id="namespaces">
             <dt><code>re</code></dt>
-            <dd><code>https://www.w3.org/ns/credentials/recognizedEntities#</code></dd>
+            <dd><code>https://www.w3.org/ns/credentials/recognized-entities#</code></dd>
             <dt><code>cred</code></dt>
             <dd><code>https://www.w3.org/2018/credentials#</code></dd>
             <dt><code>sec</code></dt>
@@ -196,7 +196,7 @@
 
         <dl class="terms" id="contexts">
             <li><a
-                    href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                    href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                 <details>
                     <summary>term list</summary>
                     <ul>
@@ -213,7 +213,11 @@
                         <li><a href="#recognizedTo"><code>recognizedTo<code></code></code></a></li>
                         <li><a href="#sameAs"><code>sameAs<code></code></code></a></li>
                         <li><a href="#url"><code>url<code></code></code></a></li>
+                        <li><a href="#validFrom"><code>validFrom<code></code></code></a></li>
+                        <li><a href="#validUntil"><code>validUntil<code></code></code></a></li>
                         <li><a href="#x509CertificateAuthorityList"><code>x509CertificateAuthorityList<code></code></code></a></li>
+                        <li><a href="#104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37"><code>name<code></code></code></a>
+                        </li>
                         <li><a
                                 href="#1c2059d8a9b5c10a54ba77dae600e4c97cd023c056cdd48fab98ea2c496fc99f"><code>digestMultibase<code></code></code></a>
                         </li>
@@ -245,7 +249,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -265,7 +269,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -286,12 +290,14 @@
                     <dt>Includes the range of:</dt>
                     <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
                     <dt>Domain of:</dt>
-                    <dd><a href="#credentialSubject"><code>credentialSubject</code></a></dd>
+                    <dd><a href="#credentialSubject"><code>credentialSubject</code></a>, <a href="#validFrom"><code>validFrom</code></a>, <a
+                            href="#validUntil"><code>validUntil</code></a>, <a
+                            href="#104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37"><code>name</code></a></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -309,7 +315,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -327,7 +333,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -352,7 +358,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -372,7 +378,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -390,7 +396,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -409,7 +415,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -430,31 +436,9 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
-            </section>
-            <section id="b97a7ba078df5cc33a0bd09c25db536012f09984707459bf18d8b8a8606181be">
-                <h4><code>validFrom</code></h4>
-                <p><em>Valid from</em></p>
-                <div>The beginning of the validity for claims.</div>
-                <p class="note">
-                    <b>This term is formally defined in another vocabulary</b>
-                    (as <a href="https://www.w3.org/2018/credentials#validFrom">cred:validFrom</a>), but is frequently used with this
-                    vocabulary and has been
-                    included to aid readability of this document.
-                </p>
-            </section>
-            <section id="f2720bcc913f364a285a983c3a613968abd7a6482bc6630523ddbe0c8af6d8dd">
-                <h4><code>validUntil</code></h4>
-                <p><em>Valid until</em></p>
-                <div>The end of the validity for claims.</div>
-                <p class="note">
-                    <b>This term is formally defined in another vocabulary</b>
-                    (as <a href="https://www.w3.org/2018/credentials#validUntil">cred:validUntil</a>), but is frequently used with this
-                    vocabulary and has been
-                    included to aid readability of this document.
-                </p>
             </section>
             <section id="credentialSubject">
                 <h4><code>credentialSubject</code></h4>
@@ -475,6 +459,42 @@
                     <dd><a href="#RecognizedEntity"><code>RecognizedEntity</code></a></dd>
                 </dl>
             </section>
+            <section id="validFrom">
+                <h4><code>validFrom</code></h4>
+                <p><em>Valid from</em></p>
+                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">formal definition of the
+                        term</a>.</p>
+                <dl class="terms">
+                    <dt>Domain:</dt>
+                    <dd><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
+                    <dt>Range:</dt>
+                    <dd><code>xsd:dateTime</code></dd>
+                </dl>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
+            </section>
+            <section id="validUntil">
+                <h4><code>validUntil</code></h4>
+                <p><em>Valid until</em></p>
+                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">formal definition of the
+                        term</a>.</p>
+                <dl class="terms">
+                    <dt>Domain:</dt>
+                    <dd><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
+                    <dt>Range:</dt>
+                    <dd><code>xsd:dateTime</code></dd>
+                </dl>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
+            </section>
             <section id="104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37">
                 <h4><code>name</code></h4>
                 <p><em>name</em></p>
@@ -484,6 +504,12 @@
                     (as <a href="http://schema.org/name">schema:name</a>), but is frequently used with this vocabulary and has been
                     included to aid readability of this document.
                 </p>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
             </section>
             <section id="legalName">
                 <h4><code>legalName</code></h4>
@@ -498,7 +524,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -511,7 +537,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -524,7 +550,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -538,7 +564,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
@@ -566,7 +592,7 @@
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
-                            href="https://www.w3.org/ns/credentials/recognizedEntities/v1"><code>https://www.w3.org/ns/credentials/recognizedEntities/v1</code></a>
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
                     </dd>
                 </dl>
             </section>
