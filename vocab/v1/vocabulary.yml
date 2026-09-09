@@ -1,0 +1,160 @@
+json_ld:
+  alias:
+    "language": "@language"
+    "direction": "@direction"
+    "id": "@id"
+  set_vocab: false
+
+vocab:
+  id: re
+  value: https://www.w3.org/ns/credentials/recognized-entities#
+  context: https://www.w3.org/ns/credentials/recognized-entities/v1
+
+prefix:
+  - id: cred
+    value: https://www.w3.org/2018/credentials#
+
+  - id: sec
+    value: https://w3id.org/security#
+
+ontology:
+  - property: dc:title
+    value: Recognized Entities Vocabulary 1.0
+
+  - property: dc:description
+    value: RDFS [[rdf-schema]] defined by the [[[?vc-recognized-entities-1.0]]] [[?vc-recognized-entities-1.0]] specification.
+
+  - property: rdfs:seeAlso
+    value: https://www.w3.org/TR/vc-recognized-entities-1.0/
+
+class:
+
+  - id: RecognizedEntity
+    label: Recognized Entity
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity
+    comment: An entity that is recognized an <a href="#RecognizedEntityCredential">Recognized Entity Credential</a> to perform a specific action.
+
+  - id: RecognizedAction
+    label: Recognized Action
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction
+    comment: An action that a <a href="#RecognizedEntity">Recognized Entity</a> is expected to perform.
+
+  - id: RecognizedEntityCredential
+    label: Recognized Entity Credential
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    comment: A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href="#RecognizedEntity">Recognized Entities</a> entities.
+    upper_value: cred:VerifiableCredential
+
+  - id: RecognizedIssuer
+    label: Recognized Issuer
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+
+  - id: ExternalEntityList
+    label: External Entity List
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#externalentitylist
+    comment: A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an ETSI Trust Services List.
+
+property:
+  - id: action
+    label: Action
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction
+    comment: Name of the action to be performed by a <a href="#RecognizedEntity">Recognized Entity</a>. Possible values include "issue" or "verify".
+    domain: RecognizedAction
+
+  - id: recognizedBy
+    label: Recognized by
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction
+    comment: The <a href="#RecognizedEntityCredential">Recognized Entity Credential</a> that performed the task of recognizing.
+    domain: RecognizedAction
+    range: RecognizedEntityCredential
+
+  - id: outputValidation
+    label: Output validation
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction
+    comment: Refers to a data schema that provides verifiers with enough information to determine whether the provided data conforms to the provided schema (e.g., JSON Schema).
+    domain: RecognizedAction
+    range: URL
+
+  - id: recognizedTo
+    label: Recognized to
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity
+    comment: Refer to the <a href="#RecognizedAction">Recognized Action</a>.
+    domain: RecognizedEntity
+    range: RecognizedAction
+
+  - id: recognizedIn
+    label: Recognized in
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity
+    comment: Refer to the <a href="#RecognizedAction">Recognized Action</a>.
+    domain: [RecognizedEntity, RecognizedIssuer]
+    range: [ExternalEntityList, RecognizedEntityCredential]
+    range_union: true
+
+  - id: credentialSubject
+    label: Credential subject for recognized entities
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    comment: When used in a recognized entity credential, the value must be restricted to recognized entities.
+    upper_value: cred:credentialSubject
+    domain: RecognizedEntityCredential
+    range: RecognizedEntity
+
+  - id: issuer
+    label: Issuer of a Recognized Entity Credential
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    upper_value: cred:issuer
+    domain: RecognizedEntityCredential
+    range: RecognizedIssuer
+
+  - id: cred:validFrom
+    label: Valid from
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    scope: [RecognizedEntityCredential, RecognizedAction]
+    range: xsd:dateTime
+
+  - id: cred:validUntil
+    label: Valid until
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    scope: [RecognizedEntityCredential, RecognizedAction]
+    range: xsd:dateTime
+
+  - id: schema:name
+    label: name
+    comment: name of an entity
+    scope: RecognizedEntityCredential
+
+  - id: legalName
+    label: Legal name
+    comment: Legal name of the entity
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
+    range: [xsd:string, rdf:langString]
+    range_union: true
+    scope: RecognizedEntityCredential
+
+  - id: image
+    label: Visual representation of the entity
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
+    range: URL
+    scope: RecognizedEntityCredential
+
+  - id: url
+    label: Web site of the entity
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
+    range: URL
+    scope: RecognizedEntityCredential
+
+  - id: sameAs
+    label: same as
+    comment: One or more URLs that refer to the same entity in other contexts or systems
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
+    range: URL
+    scope: RecognizedEntityCredential
+
+  - id: schema:description
+    label: description
+    comment: Human-readable description providing details about the entity
+    scope: RecognizedEntityCredential
+
+  - id: sec:digestMultibase
+    label: Digest Multibase
+    comment: One or more cryptographic digests used to verify the integrity of resources associated with the entity.
+    scope: RecognizedEntityCredential
