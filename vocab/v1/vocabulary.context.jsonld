@@ -30,13 +30,7 @@
                 "outputValidation": {
                     "@id": "https://www.w3.org/ns/credentials/recognized-entities#outputValidation",
                     "@type": "@id"
-                }
-            }
-        },
-        "RecognizedEntityCredential": {
-            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntityCredential",
-            "@context": {
-                "@protected": true,
+                },
                 "validFrom": {
                     "@id": "https://www.w3.org/2018/credentials#validFrom",
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
@@ -47,11 +41,54 @@
                 }
             }
         },
-        "ExternalEntityList": "https://www.w3.org/ns/credentials/recognized-entities#ExternalEntityList",
-        "legalName": "https://www.w3.org/ns/credentials/recognized-entities#legalName",
-        "image": "https://www.w3.org/ns/credentials/recognized-entities#image",
-        "url": "https://www.w3.org/ns/credentials/recognized-entities#url",
-        "sameAs": "https://www.w3.org/ns/credentials/recognized-entities#sameAs",
-        "digestMultibase": "https://w3id.org/security#digestMultibase"
+        "RecognizedEntityCredential": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntityCredential",
+            "@context": {
+                "@protected": true,
+                "credentialSubject": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#credentialSubject",
+                    "@type": "@id"
+                },
+                "issuer": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#issuer",
+                    "@type": "@id"
+                },
+                "validFrom": {
+                    "@id": "https://www.w3.org/2018/credentials#validFrom",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "validUntil": {
+                    "@id": "https://www.w3.org/2018/credentials#validUntil",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "name": "http://schema.org/name",
+                "legalName": "https://www.w3.org/ns/credentials/recognized-entities#legalName",
+                "image": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#image",
+                    "@type": "@id"
+                },
+                "url": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#url",
+                    "@type": "@id"
+                },
+                "sameAs": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#sameAs",
+                    "@type": "@id"
+                },
+                "description": "http://schema.org/description",
+                "digestMultibase": "https://w3id.org/security#digestMultibase"
+            }
+        },
+        "RecognizedIssuer": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedIssuer",
+            "@context": {
+                "@protected": true,
+                "recognizedIn": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedIn",
+                    "@type": "@id"
+                }
+            }
+        },
+        "ExternalEntityList": "https://www.w3.org/ns/credentials/recognized-entities#ExternalEntityList"
     }
 }

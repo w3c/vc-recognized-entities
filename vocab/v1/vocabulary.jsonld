@@ -63,7 +63,7 @@
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:seeAlso": "https://www.w3.org/TR/vc-recognized-entities-1.0/",
-        "dc:date": "2026-09-07"
+        "dc:date": "2026-09-09"
     }, {
         "@id": "re:action",
         "@type": "rdf:Property",
@@ -113,7 +113,10 @@
     }, {
         "@id": "re:recognizedIn",
         "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:domain": "re:RecognizedEntity",
+        "rdfs:domain": {
+            "@type": "owl:Class",
+            "owl:unionOf": ["re:RecognizedEntity", "re:RecognizedIssuer"]
+        },
         "rdfs:range": {
             "@type": "ows:Class",
             "owl:unionOf": ["re:ExternalEntityList", "re:RecognizedEntityCredential"]
@@ -136,6 +139,15 @@
             "@value": "<div>When used in a recognized entity credential, the value must be restricted to recognized entities.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
+        "vs:term_status": "stable"
+    }, {
+        "@id": "re:issuer",
+        "@type": ["rdf:Property", "owl:ObjectProperty"],
+        "rdfs:subPropertyOf": ["cred:issuer"],
+        "rdfs:domain": "re:RecognizedEntityCredential",
+        "rdfs:range": "re:RecognizedIssuer",
+        "rdfs:label": "Issuer of a Recognized Entity Credential",
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
@@ -206,6 +218,12 @@
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
+        "@id": "re:RecognizedIssuer",
+        "@type": "rdfs:Class",
+        "rdfs:label": "Recognized Issuer",
+        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential", "https://www.w3.org/ns/credentials/recognized-entities#"],
+        "vs:term_status": "stable"
+    }, {
         "@id": "re:ExternalEntityList",
         "@type": "rdfs:Class",
         "rdfs:label": "External Entity List",
@@ -218,6 +236,6 @@
     }, {
         "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "sec:digestMultibase"]
+        "mentions": ["cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:RecognizedIssuer", "re:action", "re:credentialSubject", "re:image", "re:issuer", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "schema:description", "schema:name", "sec:digestMultibase"]
     }]
 }

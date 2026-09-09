@@ -15,7 +15,7 @@ re: a owl:Ontology ;
     dc:title """Recognized Entities Vocabulary 1.0"""@en ;
     dc:description """RDFS [[rdf-schema]] defined by the [[[?vc-recognized-entities-1.0]]] [[?vc-recognized-entities-1.0]] specification."""^^rdf:HTML ;
     rdfs:seeAlso <https://www.w3.org/TR/vc-recognized-entities-1.0/> ;
-    dc:date "2026-09-07"^^xsd:date ;
+    dc:date "2026-09-09"^^xsd:date ;
 .
 
 # Property definitions
@@ -54,7 +54,7 @@ re:recognizedTo a rdf:Property, owl:ObjectProperty ;
 .
 
 re:recognizedIn a rdf:Property, owl:ObjectProperty ;
-    rdfs:domain re:RecognizedEntity ;
+    rdfs:domain [ a owl:Class; owl:unionOf (re:RecognizedEntity re:RecognizedIssuer) ] ;
     rdfs:range [ a owl:Class; owl:unionOf (re:ExternalEntityList re:RecognizedEntityCredential) ] ;
     rdfs:label "Recognized in" ;
     rdfs:comment """<div>Refer to the <a href="#RecognizedAction">Recognized Action</a>.</div>"""^^rdf:HTML ;
@@ -68,6 +68,15 @@ re:credentialSubject a rdf:Property, owl:ObjectProperty ;
     rdfs:range re:RecognizedEntity ;
     rdfs:label "Credential subject for recognized entities" ;
     rdfs:comment """<div>When used in a recognized entity credential, the value must be restricted to recognized entities.</div>"""^^rdf:HTML ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
+    vs:term_status "stable" ;
+.
+
+re:issuer a rdf:Property, owl:ObjectProperty ;
+    rdfs:subPropertyOf cred:issuer ;
+    rdfs:domain re:RecognizedEntityCredential ;
+    rdfs:range re:RecognizedIssuer ;
+    rdfs:label "Issuer of a Recognized Entity Credential" ;
     rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
     vs:term_status "stable" ;
 .
@@ -122,6 +131,12 @@ re:RecognizedEntityCredential a rdfs:Class ;
     vs:term_status "stable" ;
 .
 
+re:RecognizedIssuer a rdfs:Class ;
+    rdfs:label "Recognized Issuer" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
+    vs:term_status "stable" ;
+.
+
 re:ExternalEntityList a rdfs:Class ;
     rdfs:label "External Entity List" ;
     rdfs:comment """<div>A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an ETSI Trust Services List.</div>"""^^rdf:HTML ;
@@ -140,8 +155,11 @@ re:ExternalEntityList a rdfs:Class ;
         re:RecognizedAction,
         re:RecognizedEntity,
         re:RecognizedEntityCredential,
+        re:RecognizedIssuer,
         re:action,
+        re:credentialSubject,
         re:image,
+        re:issuer,
         re:legalName,
         re:outputValidation,
         re:recognizedBy,
@@ -149,6 +167,8 @@ re:ExternalEntityList a rdfs:Class ;
         re:recognizedTo,
         re:sameAs,
         re:url,
+        schema:description,
+        schema:name,
         sec:digestMultibase ;
 .
 

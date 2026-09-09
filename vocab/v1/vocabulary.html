@@ -144,7 +144,7 @@
         </p>
         <dl>
             <dt>Published:</dt>
-            <dd><time property="dc:date" id="time">2026-09-07</time></dd>
+            <dd><time property="dc:date" id="time">2026-09-09</time></dd>
             <dt>Version Info:</dt>
             <dd>1.0</dd>
             <dt id="see_also">See Also: <a
@@ -210,8 +210,11 @@
                         <li><a href="#RecognizedAction"><code>RecognizedAction<code></code></code></a></li>
                         <li><a href="#RecognizedEntity"><code>RecognizedEntity<code></code></code></a></li>
                         <li><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential<code></code></code></a></li>
+                        <li><a href="#RecognizedIssuer"><code>RecognizedIssuer<code></code></code></a></li>
                         <li><a href="#action"><code>action<code></code></code></a></li>
+                        <li><a href="#credentialSubject"><code>credentialSubject<code></code></code></a></li>
                         <li><a href="#image"><code>image<code></code></code></a></li>
+                        <li><a href="#issuer"><code>issuer<code></code></code></a></li>
                         <li><a href="#legalName"><code>legalName<code></code></code></a></li>
                         <li><a href="#outputValidation"><code>outputValidation<code></code></code></a></li>
                         <li><a href="#recognizedBy"><code>recognizedBy<code></code></code></a></li>
@@ -219,6 +222,11 @@
                         <li><a href="#recognizedTo"><code>recognizedTo<code></code></code></a></li>
                         <li><a href="#sameAs"><code>sameAs<code></code></code></a></li>
                         <li><a href="#url"><code>url<code></code></code></a></li>
+                        <li><a
+                                href="#bd67ab3de4befa12ddca1ae5092c89be951e565f05919d9bcb1e77eecb6d76ba"><code>description<code></code></code></a>
+                        </li>
+                        <li><a href="#104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37"><code>name<code></code></code></a>
+                        </li>
                         <li><a
                                 href="#1c2059d8a9b5c10a54ba77dae600e4c97cd023c056cdd48fab98ea2c496fc99f"><code>digestMultibase<code></code></code></a>
                         </li>
@@ -245,7 +253,9 @@
                     <dt>Range of:</dt>
                     <dd><a href="#credentialSubject"><code>credentialSubject</code></a></dd>
                     <dt>Domain of:</dt>
-                    <dd><a href="#recognizedTo"><code>recognizedTo</code></a>, <a href="#recognizedIn"><code>recognizedIn</code></a></dd>
+                    <dd><a href="#recognizedTo"><code>recognizedTo</code></a></dd>
+                    <dt>In the domain of:</dt>
+                    <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -291,9 +301,25 @@
                     <dt>Includes the range of:</dt>
                     <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
                     <dt>Domain of:</dt>
-                    <dd><a href="#credentialSubject"><code>credentialSubject</code></a>, <a
-                            href="#b97a7ba078df5cc33a0bd09c25db536012f09984707459bf18d8b8a8606181be"><code>validFrom</code></a>, <a
-                            href="#f2720bcc913f364a285a983c3a613968abd7a6482bc6630523ddbe0c8af6d8dd"><code>validUntil</code></a></dd>
+                    <dd><a href="#credentialSubject"><code>credentialSubject</code></a>, <a href="#issuer"><code>issuer</code></a></dd>
+                </dl>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
+            </section>
+            <section id="RecognizedIssuer">
+                <h4><code>RecognizedIssuer</code></h4>
+                <p><em>Recognized Issuer</em></p>
+                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">formal definition of the
+                        term</a>.</p>
+                <dl class="terms">
+                    <dt>Range of:</dt>
+                    <dd><a href="#issuer"><code>issuer</code></a></dd>
+                    <dt>In the domain of:</dt>
+                    <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -408,7 +434,8 @@
                 <div>Refer to the <a href="#RecognizedAction">Recognized Action</a>.</div>
                 <dl class="terms">
                     <dt>Domain:</dt>
-                    <dd><a href="#RecognizedEntity"><code>RecognizedEntity</code></a></dd>
+                    <dd><a href="#RecognizedEntity"><code>RecognizedEntity</code></a> ⊔&nbsp;<a
+                            href="#RecognizedIssuer"><code>RecognizedIssuer</code></a></dd>
                     <dt>Range:</dt>
                     <dd><a href="#ExternalEntityList"><code>ExternalEntityList</code></a> ⊔&nbsp;<a
                             href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
@@ -437,6 +464,34 @@
                     <dd><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
                     <dt>Range:</dt>
                     <dd><a href="#RecognizedEntity"><code>RecognizedEntity</code></a></dd>
+                </dl>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
+            </section>
+            <section id="issuer">
+                <h4><code>issuer</code></h4>
+                <p><em>Issuer of a Recognized Entity Credential</em></p>
+                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">formal definition of the
+                        term</a>.</p>
+                <dl class="terms">
+                    <dt>Subproperty of:</dt>
+                    <dd><span><a href="https://www.w3.org/2018/credentials#issuer"><code>cred:issuer</code></a></span><br></dd>
+                </dl>
+                <dl class="terms">
+                    <dt>Domain:</dt>
+                    <dd><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
+                    <dt>Range:</dt>
+                    <dd><a href="#RecognizedIssuer"><code>RecognizedIssuer</code></a></dd>
+                </dl>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
                 </dl>
             </section>
             <section id="b97a7ba078df5cc33a0bd09c25db536012f09984707459bf18d8b8a8606181be">
@@ -484,6 +539,12 @@
                     (as <a href="http://schema.org/name">schema:name</a>), but is frequently used with this vocabulary and has been
                     included to aid readability of this document.
                 </p>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
             </section>
             <section id="legalName">
                 <h4><code>legalName</code></h4>
@@ -552,6 +613,12 @@
                     been
                     included to aid readability of this document.
                 </p>
+                <dl class="terms">
+                    <dt>Relevant <code>@context</code>:</dt>
+                    <dd><a
+                            href="https://www.w3.org/ns/credentials/recognized-entities/v1"><code>https://www.w3.org/ns/credentials/recognized-entities/v1</code></a>
+                    </dd>
+                </dl>
             </section>
             <section id="1c2059d8a9b5c10a54ba77dae600e4c97cd023c056cdd48fab98ea2c496fc99f">
                 <h4><code>digestMultibase</code></h4>
