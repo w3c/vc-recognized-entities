@@ -2605,10 +2605,10 @@ The three ways of delivering a [=recognized entity credential=] to a
 itself. Holder-based delivery discloses the least, because the [=verifier=]
 contacts no third party and no other party learns that the verification
 occurred. Retrieval from a list publisher discloses more, because that publisher
-learns that a verification is taking place, although a [=verifier=] that
-retrieves an entire [=recognized entity credential=] rather than a per-entity
+learns that a verification is taking place or might soon, although a [=verifier=]
+that retrieves an entire [=recognized entity credential=] rather than a per-entity
 resource does not reveal which [=issuer=] it is checking. Retrieval from a
-`WhoisService` endpoint, as described in Section
+`WhoisService` endpoint, by a [=verifier=], as described in Section
 [[[#identifier-based-discovery]]], discloses the most, because the endpoint
 belongs to the [=issuer=] being verified and that [=issuer=] therefore learns of
 every verification of its own [=verifiable credentials=]. Threat
