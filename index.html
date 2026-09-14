@@ -1060,8 +1060,8 @@ they were discovered.
 
       <p>
 Both processes assume that each [=verifiable credential=] has already been
-validated individually. Its proof verifies, it is within its validity
-period, and its status, if any, has been checked, according to
+validated individually. That is: its proof verifies; it is within its validity
+period; and its status, if any, has been checked, according to
 <a data-cite="VC-DATA-MODEL#verification">Section 7.1: Verification</a> and
 <a data-cite="VC-DATA-MODEL#validation">Appendix A: Validation</a> of the
 [[[VC-DATA-MODEL]]] specification. Those processes apply to any [=verifiable
@@ -1073,7 +1073,7 @@ Locating a [=recognized entity credential=] does not establish that an
 [=issuer=] is recognized. A [=verifier=] that skips the checks in Section
 [[[#recognition-validation]]] might accept a [=verifiable credential=] that is
 unrelated to the [=issuer=] in question, or one whose recognition chain never
-reaches a trust anchor that the [=verifier=] trusts.
+reaches an anchor that the [=verifier=] accepts.
       </p>
 
       <section>
@@ -1126,10 +1126,10 @@ followed by each [=recognized entity credential=] found by following
 [[[#recognition-validation]]] on the returned <var>chain</var>.
         </p>
 
-        <p class="note" title="Reaching a trust anchor does not end verification">
+        <p class="note" title="Reaching a anchor does not end validation">
 This algorithm stops once it reaches an [=issuer=] in
 <var>recognizedIssuers</var>, because there is no reason to retrieve more
-[=verifiable credentials=] after finding a candidate trust anchor. That test
+[=verifiable credentials=] after finding a candidate anchor. That test
 bounds retrieval, but it does not establish recognition. A <var>chain</var> that
 never reaches a member of <var>recognizedIssuers</var> is still returned, and
 Section [[[#recognition-validation]]] rejects it.
@@ -1151,7 +1151,7 @@ Let <var>issuer</var> be the value of the `issuer` property of
           </li>
           <li>
 If <var>issuerId</var> is a member of <var>recognizedIssuers</var>, a candidate
-trust anchor has been reached, so return <var>chain</var>.
+anchor has been reached, so return <var>chain</var>.
           </li>
           <li>
 If <var>issuer</var> does not contain a `recognizedIn` property, the recognition
@@ -1514,7 +1514,7 @@ To perform [=recognition validation=] on a chain (<var>chain</var>) produced
 by any discovery mechanism, for a specific action (<var>action</var>, for
 example `issue`), against a configured set of recognized [=issuers=]
 (<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
-algorithm returns a result with two boolean outcomes: <var>recognized</var>,
+algorithm returns a result with two boolean outcomes: <var>entityRecognized</var>,
 indicating whether the [=issuer=] of the first [=verifiable credential=] in
 <var>chain</var> is ultimately recognized by a member of
 <var>recognizedIssuers</var>, and <var>actionRecognized</var>, indicating
@@ -1567,7 +1567,7 @@ unrelated, so return <var>result</var>.
           <li>
 Confirm that the [=issuer=] of the final [=verifiable credential=] in
 <var>chain</var> is a member of <var>recognizedIssuers</var>. If it is not, the
-chain does not terminate at a trust anchor that the [=verifier=] recognizes, so
+chain does not terminate at an anchor that the [=verifier=] recognizes, so
 return <var>result</var>. Otherwise, set <var>result.recognized</var> to `true`.
           </li>
           <li>
@@ -1600,7 +1600,7 @@ Return <var>result</var>.
         <p class="note" title="Recognition and action recognition are distinct outcomes">
 A result in which <var>recognized</var> is `true` and
 <var>actionRecognized</var> is `false` means that the [=issuer=] is recognized
-by a trust anchor that the [=verifier=] trusts, but was not recognized to
+by an anchor that the [=verifier=] recognizes, but was not recognized to
 perform the action in question, or produced a [=verifiable credential=] that
 does not conform to the schema that the [=recognized action=] requires. A
 [=verifier=] is expected to treat that outcome as a failure whenever the
@@ -2733,7 +2733,7 @@ entity=] in the `credentialSubject` of the [=recognized entity credential=],
 that the facility is recognized to `issue` credentials conforming to the schema
 named by that [=recognized action=]'s `outputValidation`, and that the chain
 terminates at `did:web:food-safety.utopia.example`, an [=issuer=] that the
-[=verifier=] has configured as a trust anchor.
+[=verifier=] has configured as an anchor.
         </p>
 
         <p>
