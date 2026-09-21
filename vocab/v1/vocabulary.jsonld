@@ -63,11 +63,12 @@
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:seeAlso": "https://www.w3.org/TR/vc-recognized-entities-1.0/",
-        "dc:date": "2026-09-09"
+        "dc:date": "2026-09-21"
     }, {
         "@id": "re:action",
-        "@type": "rdf:Property",
+        "@type": ["rdf:Property", "owl:DatatypeProperty"],
         "rdfs:domain": "re:RecognizedAction",
+        "rdfs:range": "xsd:string",
         "rdfs:label": "Action",
         "rdfs:comment": {
             "@value": "<div>Name of the action to be performed by a <a href=\"#RecognizedEntity\">Recognized Entity</a>. Possible values include \"issue\" or \"verify\".</div>",
@@ -155,7 +156,7 @@
         "@type": "rdf:Property",
         "rdfs:range": {
             "@type": "ows:Class",
-            "owl:unionOf": ["xsd:string", "rdf:langString", "rdf:dirLangString"]
+            "owl:unionOf": ["rdf:langString", "rdf:dirLangString", "xsd:string"]
         },
         "rdfs:label": "Legal name",
         "rdfs:comment": {
@@ -179,7 +180,7 @@
     }, {
         "@id": "re:sameAs",
         "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:label": "same as",
+        "rdfs:label": "Same as",
         "rdfs:comment": {
             "@value": "<div>One or more URLs that refer to the same entity in other contexts or systems</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"

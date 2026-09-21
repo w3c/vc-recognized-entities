@@ -60,6 +60,7 @@ property:
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction
     comment: Name of the action to be performed by a <a href="#RecognizedEntity">Recognized Entity</a>. Possible values include "issue" or "verify".
     domain: RecognizedAction
+    range: xsd:string
 
   - id: recognizedBy
     label: Recognized by
@@ -126,8 +127,7 @@ property:
     label: Legal name
     comment: Legal name of the entity
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
-    range: [xsd:string, rdf:langString]
-    range_union: true
+    range: localizableString
     scope: RecognizedEntityCredential
 
   - id: image
@@ -143,7 +143,7 @@ property:
     scope: RecognizedEntityCredential
 
   - id: sameAs
-    label: same as
+    label: Same as
     comment: One or more URLs that refer to the same entity in other contexts or systems
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
     range: URL

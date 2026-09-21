@@ -144,7 +144,7 @@
         </p>
         <dl>
             <dt>Published:</dt>
-            <dd><time property="dc:date" id="time">2026-09-09</time></dd>
+            <dd><time property="dc:date" id="time">2026-09-21</time></dd>
             <dt>Version Info:</dt>
             <dd>1.0</dd>
             <dt id="see_also">See Also: <a
@@ -361,6 +361,8 @@
                 <dl class="terms">
                     <dt>Domain:</dt>
                     <dd><a href="#RecognizedAction"><code>RecognizedAction</code></a></dd>
+                    <dt>Range:</dt>
+                    <dd><code>xsd:string</code></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -551,10 +553,10 @@
                 <p><em>Legal name</em></p>
                 <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties">formal definition of the term</a>.
                 </p>
-                <div>Legal name of the entity<br><br>The property's value is expected to be a natural language string.</div>
+                <div>Legal name of the entity<br><br>The property's value is expected to be a localizable string.</div>
                 <dl class="terms">
                     <dt>Range:</dt>
-                    <dd><code>xsd:string</code> ⊔&nbsp;<code>rdf:langString</code> ⊔&nbsp;<code>rdf:dirLangString</code></dd>
+                    <dd><code>rdf:langString</code> ⊔&nbsp;<code>rdf:dirLangString</code> ⊔&nbsp;<code>xsd:string</code></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -591,7 +593,7 @@
             </section>
             <section id="sameAs">
                 <h4><code>sameAs</code></h4>
-                <p><em>same as</em></p>
+                <p><em>Same as</em></p>
                 <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties">formal definition of the term</a>.
                 </p>
                 <div>One or more URLs that refer to the same entity in other contexts or systems<br><br>The property's value should be a

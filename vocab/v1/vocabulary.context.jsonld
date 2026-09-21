@@ -22,7 +22,10 @@
             "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedAction",
             "@context": {
                 "@protected": true,
-                "action": "https://www.w3.org/ns/credentials/recognized-entities#action",
+                "action": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#action",
+                    "@type": "http://www.w3.org/2001/XMLSchema#string"
+                },
                 "recognizedBy": {
                     "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedBy",
                     "@type": "@id"
