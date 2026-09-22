@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Recognized Entities Threat Model</title>
+  <title>Recognized Entities Threat Model v1.0</title>
   <script src="https://www.w3.org/Tools/respec/respec-w3c"
     class="remove"></script>
   <script src="threats/threat-model.js"></script>
@@ -11,10 +11,10 @@
   <script class='remove'>
     // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
     var respecConfig = {
-      specStatus: "NOTE",
+      specStatus: "DNOTE",
       group: "vc",
+      shortName: "vc-recognized-entities-threat-model",
       edDraftURI: "https://w3c.github.io/vc-recognized-entities/threat-model/",
-      latestVersion: "https://www.w3.org/TR/vc-recognized-entities/threat-model/",
       github: {
         repoURL: "https://github.com/w3c/vc-recognized-entities/",
         branch: "main"
@@ -29,9 +29,6 @@
       threatModelTocSelector: "#threat-model-toc",
       threatModelDetailsSelector: "#threat-model-details",
       preProcess: [window.ThreatModel.render],
-      postProcess: [() => {
-        respecConfig.thisVersion = respecConfig.thisVersion + '/threat-model/';
-      }]
     };
   </script>
   <script src="threats/outline.js"></script>
