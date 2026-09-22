@@ -1124,22 +1124,42 @@ This section describes algorithms that a [=verifier=] can use when processing
 specification. These algorithms separate discovery from validation.
       </p>
 
-      <ul>
-        <li>
+      <p>
 <strong>Discovery</strong> locates the [=recognized entity credentials=] that
 might establish the recognition of an [=issuer=]. Section
 [[[#credential-based-discovery]]] and Section [[[#identifier-based-discovery]]]
 describe two mechanisms for doing so. A [=verifier=] MAY use any other
 mechanism, including receiving the [=recognized entity credentials=] directly
 from a [=holder=] as described in Section [[[#holder-based-delivery]]].
-        </li>
-        <li>
+      </p>
+
+      <p class="note" title="Discovery does not establish recognition">
+Locating a [=recognized entity credential=] does not establish that an
+[=issuer=] is recognized. A [=verifier=] that skips the checks in Section
+[[[#recognition-validation]]] might accept a [=verifiable credential=] that is
+unrelated to the [=issuer=] in question, or one whose recognition chain never
+reaches an anchor that the [=verifier=] accepts.
+      </p>
+
+      <p>
 <strong>Recognition validation</strong>, described in Section
 [[[#recognition-validation]]], determines whether the discovered [=verifiable
 credentials=] establish recognition. It applies the same way regardless of how
 they were discovered.
-        </li>
-      </ul>
+      </p>
+
+      <p class="note" title="Identifier comparison does not use canonical form">
+When identifiers for [=subjects=], such as [=issuers=], are compared for set
+membership or equivalence, simple string comparison is used. While it is
+possible to calculate the canonical form of an identifier in a scheme before
+performing a comparison, the canoncalization rules can vary between identifier
+schemes, leading to high levels of implementation complexity. To reduce the
+implementation burden, a choice was made to use simple string comparison
+instead. Simple string comparison can sometimes lead to non-equivalence between
+identifiers that are canonically the same, such as two HTTPS URLs that differ in
+a query parameter that results in the same document. This downside is the
+trade-off made to keep implementation burden low for identifier comparison.
+      </p>
 
       <p>
 Both processes assume that each [=verifiable credential=] has already been
@@ -1151,13 +1171,6 @@ period; and its status, if any, has been checked, according to
 credential=] and are not restated here.
       </p>
 
-      <p class="note" title="Discovery does not establish recognition">
-Locating a [=recognized entity credential=] does not establish that an
-[=issuer=] is recognized. A [=verifier=] that skips the checks in Section
-[[[#recognition-validation]]] might accept a [=verifiable credential=] that is
-unrelated to the [=issuer=] in question, or one whose recognition chain never
-reaches an anchor that the [=verifier=] accepts.
-      </p>
 
       <section>
         <h3>Credential-based Discovery</h3>
@@ -1643,9 +1656,9 @@ For each adjacent pair of [=verifiable credentials=] in <var>chain</var>, where
 <var>subject</var> is the earlier [=verifiable credential=] and <var>list</var>
 is the later one, confirm that <var>list</var> is a [=recognized entity
 credential=] and that the `credentialSubject` of <var>list</var> contains a
-[=recognized entity=] whose `id` is equal to the identifier of the [=issuer=] of
-<var>subject</var>. If it does not, the two [=verifiable credentials=] are
-unrelated, so return <var>result</var>.
+[=recognized entity=] whose `id` is equal, using simple string comparison, to
+the identifier of the [=issuer=] of <var>subject</var>. If it does not, the two
+[=verifiable credentials=] are unrelated, so return <var>result</var>.
           </li>
           <li>
 Confirm that the [=issuer=] of the final [=verifiable credential=] in
