@@ -1,0 +1,97 @@
+{
+    "@context": {
+        "@protected": true,
+        "language": "@language",
+        "direction": "@direction",
+        "id": "@id",
+        "RecognizedEntity": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntity",
+            "@context": {
+                "@protected": true,
+                "recognizedTo": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedTo",
+                    "@type": "@id"
+                },
+                "recognizedIn": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedIn",
+                    "@type": "@id"
+                }
+            }
+        },
+        "RecognizedAction": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedAction",
+            "@context": {
+                "@protected": true,
+                "validFrom": {
+                    "@id": "https://www.w3.org/2018/credentials#validFrom",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "validUntil": {
+                    "@id": "https://www.w3.org/2018/credentials#validUntil",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "action": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#action",
+                    "@type": "http://www.w3.org/2001/XMLSchema#string"
+                },
+                "recognizedBy": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedBy",
+                    "@type": "@id"
+                },
+                "outputValidation": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#outputValidation",
+                    "@type": "@id"
+                }
+            }
+        },
+        "RecognizedEntityCredential": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedEntityCredential",
+            "@context": {
+                "@protected": true,
+                "legalName": "https://www.w3.org/ns/credentials/recognized-entities#legalName",
+                "image": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#image",
+                    "@type": "@id"
+                },
+                "url": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#url",
+                    "@type": "@id"
+                },
+                "sameAs": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#sameAs",
+                    "@type": "@id"
+                },
+                "description": "http://schema.org/description",
+                "digestMultibase": "https://w3id.org/security#digestMultibase",
+                "validFrom": {
+                    "@id": "https://www.w3.org/2018/credentials#validFrom",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "validUntil": {
+                    "@id": "https://www.w3.org/2018/credentials#validUntil",
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+                },
+                "name": "http://schema.org/name",
+                "issuer": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#issuer",
+                    "@type": "@id"
+                },
+                "credentialSubject": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#credentialSubject",
+                    "@type": "@id"
+                }
+            }
+        },
+        "RecognizedIssuer": {
+            "@id": "https://www.w3.org/ns/credentials/recognized-entities#RecognizedIssuer",
+            "@context": {
+                "@protected": true,
+                "recognizedIn": {
+                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#recognizedIn",
+                    "@type": "@id"
+                }
+            }
+        },
+        "ExternalEntityList": "https://www.w3.org/ns/credentials/recognized-entities#ExternalEntityList"
+    }
+}

@@ -580,7 +580,7 @@ of the [[[VC-DATA-MODEL]]] specification.
               </td>
             </tr>
             <tr>
-              <td>legalName</td>
+              <td><dfn class="export">legalName</dfn></td>
               <td>
 The official legal name of an organization or entity, as registered with legal
 authorities, which can differ from the commonly used name. The value MUST be a
@@ -592,7 +592,7 @@ providing an array of [=language value objects=].
               </td>
             </tr>
             <tr>
-              <td>image</td>
+              <td><dfn class="export">image</dfn></td>
               <td>
 A link to a visual representation of the entity, such as a logo, photograph, or
 icon. The value MUST be a [=URL=], which includes values using the `data:` URL
@@ -600,14 +600,14 @@ scheme as described in [[?RFC2397]].
               </td>
             </tr>
             <tr>
-              <td>url</td>
+              <td><dfn class="export">url</dfn></td>
               <td>
 A URL pointing to the primary website or web resource associated with the
 entity. The value MUST be a [=URL=].
               </td>
             </tr>
             <tr>
-              <td>sameAs</td>
+              <td><dfn class="export">sameAs</dfn></td>
               <td>
 One or more URLs that refer to the same entity in other contexts or systems,
 enabling cross-reference and verification across different platforms.
@@ -672,7 +672,7 @@ of the [[[VC-DATA-MODEL]]] specification.
               </td>
             </tr>
             <tr>
-              <td>recognizedTo</td>
+              <td><dfn class="export">recognizedTo</dfn></td>
               <td>
 A specific action that the [=recognized entity=] is expected to perform as
 defined in Section [[[#recognizedaction]]]. This property may occur more
@@ -681,7 +681,7 @@ one action.
               </td>
             </tr>
             <tr>
-              <td>recognizedIn</td>
+              <td><dfn class="export">recognizedIn</dfn></td>
               <td>
 An object that contains a reference to a document of recognized entities that
 contains this particular [=recognized entity=] as well as the actions it is
@@ -701,7 +701,7 @@ addition to the properties above.
         </p>
 
         <p>
-A `recognizedIn` entry with a `type` property value of `ExternalEntityList` SHOULD conform
+A `recognizedIn` entry with a `type` property value of <dfn class="export">`ExternalEntityList`</dfn> SHOULD conform
 to a valid entity list specification. The origin of the list URL referenced by the
 `id` property in this case establishes the root of trust for the list.
 Examples of this are the X.509 Certificate Authority List, as specified in [[[RFC5280]]]
@@ -738,21 +738,21 @@ The `type` property MUST be `RecognizedAction`.
               </td>
             </tr>
             <tr>
-              <td>action</td>
+              <td><dfn class="export">action</dfn></td>
               <td>
 A [=string=] that specifies the name of the action to be performed such as
 `issue` or `verify`.
               </td>
             </tr>
             <tr>
-              <td>recognizedBy</td>
+              <td><dfn class="export">recognizedBy</dfn></td>
               <td>
 A [=URL=], or object containing properties from Section
 [[[#general-properties]]], of the entity that performed the task of recognizing.
               </td>
             </tr>
             <tr>
-              <td>outputValidation</td>
+              <td><dfn class="export">outputValidation</dfn></td>
               <td>
 The value of the `outputValidation`
 property MUST be one or more data
@@ -840,12 +840,12 @@ value.
               </td>
             </tr>
             <tr>
-              <td>issuer</td>
+              <td><dfn class="export">issuer</dfn></td>
               <td>
 The [=issuer=] of the [=verifiable credential=] as defined in the Verifiable
 Credentials Data Model specification in
 <a href="https://www.w3.org/TR/vc-data-model-2.0/#issuer">
-Section 4.76: Issuer</a>. This object MAY also include other properties listed
+Section 4.76: Issuer</a>. This object, whose type is <dfn class="export">`RecognizedIssuer`</dfn>, MAY also include other properties listed
 in Section [[[#general-properties]]]. This object MAY include a `recognizedIn`
 property, as defined in Section [[[#recognizedentity]]], that references a
 document of recognized entities in which the [=issuer=] itself appears; this
@@ -873,7 +873,7 @@ Section 4.6: Validity Period</a>.
               </td>
             </tr>
             <tr>
-              <td>credentialSubject</td>
+              <td><dfn class="export">credentialSubject</dfn></td>
               <td>
 A set of one or more `RecognizedEntity` objects as defined in
 Section [[[#recognizedentity]]].
