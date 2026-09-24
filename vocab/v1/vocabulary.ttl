@@ -15,7 +15,7 @@ re: a owl:Ontology ;
     dc:title """Recognized Entities Vocabulary"""@en ;
     dc:description """RDFS [[rdf-schema]] defined by the [[[?vc-recognized-entities]]] [[?vc-recognized-entities]] specification."""^^rdf:HTML ;
     rdfs:seeAlso <https://www.w3.org/TR/vc-recognized-entities/> ;
-    dc:date "2026-09-22"^^xsd:date ;
+    dc:date "2026-09-24"^^xsd:date ;
 .
 
 # Property definitions

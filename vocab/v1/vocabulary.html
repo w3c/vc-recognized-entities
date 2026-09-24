@@ -145,7 +145,7 @@
         </p>
         <dl>
             <dt>Published:</dt>
-            <dd><time property="dc:date" id="time">2026-09-22</time></dd>
+            <dd><time property="dc:date" id="time">2026-09-24</time></dd>
             <dt>Version Info:</dt>
             <dd>1.0</dd>
             <dt id="see_also">See Also: <a
@@ -168,55 +168,56 @@
     <section>
         <h2>Class diagram</h2>
         <figure>
-            <pre class="diagram mermaid" style="max-width:90%">%%{init: {"classDiagram": {"wrappingWidth": 500}}}%%
+            <pre class="diagram mermaid" style="max-width:100%">                %%{
+                init: {
+                "theme" : "neutral",
+                "class": {
+                "hideEmptyMembersBox": true
+                }
+                }
+                }%%
+                classDiagram
+                class RecognizedEntity {
+                legalName : localizable string
+                image : URL
+                url : URL
+                sameAs : URL
+                name : string
+                description : string
+                }
 
+                class RecognizedAction {
+                action : "issue" | "verify"
+                recognizedBy : URL
+                outputValidation : URL
+                }
 
-classDiagram
-    class VerifiableCredential {}
+                class RecognizedIssuer {
+                legalName : localizable string
+                image : URL
+                url : URL
+                sameAs : URL
+                name : string
+                description : string
+                }
 
-    class RecognizedEntity {
-        legalName : localizable string
-        image : URL
-        url : URL
-        sameAs : URL
-        name : string
-        description : string
-    }
+                RecognizedEntityCredential --|&gt; cred.VerifiableCredential : rdfs.subClassOf
 
-    class RecognizedAction {
-        action : "issue" | "verify"
-        recognizedBy : URL
-        outputValidation : URL
-    }
+                RecognizedEntity --&gt; RecognizedAction : recognizedTo
 
-    class RecognizedEntityCredential {
-    }
+                RecognizedEntityCredential --&gt; RecognizedIssuer : issuer
+                RecognizedEntityCredential --&gt; RecognizedEntity : credentialSubject
 
-    class RecognizedIssuer {
-        legalName : localizable string
-        image : URL
-        url : URL
-        sameAs : URL
-        name : string
-        description : string
-    }
-
-    class ExternalEntityList { }
-
-    RecognizedEntityCredential --|&gt; cred.VerifiableCredential : rdfs.subClassOf
-
-    RecognizedEntity --&gt; RecognizedAction : recognizedTo
-
-    RecognizedEntityCredential --&gt; RecognizedIssuer : issuer
-    RecognizedEntityCredential --&gt; RecognizedEntity : credentialSubject
-
-    RecognizedEntity --&gt; ExternalEntityList : recognizedIn
-    RecognizedEntity --&gt; RecognizedEntityCredential : recognizedIn
-    RecognizedIssuer --&gt; ExternalEntityList : recognizedIn
-    RecognizedIssuer --&gt; RecognizedEntityCredential : recognizedIn
-</pre>
+                RecognizedEntity --&gt; ExternalEntityList : recognizedIn
+                RecognizedEntity --&gt; RecognizedEntityCredential : recognizedIn
+                RecognizedIssuer --&gt; ExternalEntityList : recognizedIn
+                RecognizedIssuer --&gt; RecognizedEntityCredential : recognizedIn
+                </pre>
             <figcaption>
-                Overview of the main RDF Classes and related properties defined in this vocabulary.
+                Overview diagram of the vocabulary (without the deprecated items). <br>
+                Boxes represent RDFS Classes, labeled connection lines represent RDF properties with explicit domains and ranges.
+                See the <a href="vocabulary.mmd">mermaid source of the image</a> for a textual representation of the structure of the
+                image.
             </figcaption>
         </figure>
     </section>

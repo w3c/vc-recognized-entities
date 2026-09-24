@@ -63,7 +63,7 @@
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:seeAlso": "https://www.w3.org/TR/vc-recognized-entities/",
-        "dc:date": "2026-09-22"
+        "dc:date": "2026-09-24"
     }, {
         "@id": "re:legalName",
         "@type": "rdf:Property",
