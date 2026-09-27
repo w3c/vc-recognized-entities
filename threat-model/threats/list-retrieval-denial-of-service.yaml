@@ -17,7 +17,10 @@ description: >-
   CPU when the [=E4|verifier=] naively loads, parses, or searches the entire
   list during [=P6|Validate Credential(s)=]. High-throughput verification
   systems (such as customs authorities processing thousands of trade documents
-  per hour) are especially vulnerable to both classes of attack.
+  per hour) are especially vulnerable to both classes of attack. How much a
+  [=E4|verifier=] fetches is one problem. Where those fetches are sent is
+  another, covered by
+  [[[#server-side-request-forgery-via-retrieval]]].
 elements: [O1, E1, E3, E4, F5, P6, C1, C4, S1]
 tags: [security]
 taxonomyName: STRIDE

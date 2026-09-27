@@ -35,6 +35,7 @@ categories:
       - abuse-of-recognized-actions.yaml
       - overly-permissive-schema-constraints.yaml
       - json-schema-attack.yaml
+      - server-side-request-forgery-via-retrieval.yaml
   - name: External Threats
     id: threat-model-external-threats
     threats:
