@@ -40,24 +40,93 @@ limitations under the License.
   var elementLabels = {};     // Populated by calling registerElements
 
 
-  // render(config, document)
-  // Renders all the threats, creating both a Table of Contents and
-  // Threat Details sections
+  // loadDefinitions(config)
+  // Loads the threat model definitions from YAML files: first the outline
+  // (threat categories and element labels), then each threat file the
+  // outline's categories list. The outline location can be overridden with
+  // the threatModelOutline configuration option; threat files are resolved
+  // relative to the outline's directory.
+  //
+  // Threat IDs are not stored in the threat files. Each threat is numbered
+  // T1, T2, ... by its position when the categories are walked in order, so
+  // moving a threat between categories or reordering it within one is the
+  // only edit needed to renumber the model.
   ///////////////////////////////////////////////////////////////////////
-  function render(config, document) {
+  async function loadDefinitions(config) {
+    if (typeof jsyaml === "undefined") {
+      throw new Error("js-yaml is not loaded; add a <script> tag for " +
+        "threats/js-yaml.min.js before threats/threat-model.js");
+    }
+
+    const outlinePath = config.threatModelOutline || "threats/outline.yaml";
+    const baseDir = outlinePath.slice(0, outlinePath.lastIndexOf("/") + 1);
+
+    const outline = jsyaml.load(await fetchText(outlinePath));
+    registerCategories(outline.categories);
+    registerElements(outline.elements);
+
+    // The categories, walked in order, are the list of threat files.
+    const files = [];
+    for (const category of outline.categories) {
+      for (const entry of category.threats || []) {
+        files.push(entry);
+      }
+    }
+
+    const texts = await Promise.all(
+      files.map(name => fetchText(baseDir + name)));
+    texts.forEach((text, index) => {
+      const threat = jsyaml.load(text);
+      threat.file = files[index];
+      threat.id = `T${index + 1}`;
+      threat.number = index + 1;
+      register(threat);
+    });
+  }
+
+  async function fetchText(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`failed to fetch ${url}: ` +
+        `${response.status} ${response.statusText}`);
+    }
+    return response.text();
+  }
+
+  // render(config, document)
+  // Loads the YAML threat definitions, then renders all the threats,
+  // creating both a Table of Contents and Threat Details sections. The
+  // returned promise is awaited by ReSpec's preProcess hook.
+  ///////////////////////////////////////////////////////////////////////
+  async function render(config, document) {
     var renderLog = debug("render");
     console.log("Starting render");
 
-    tocElement = document.querySelector(config.threatModelTocSelector);
+    tocElement = document.querySelector(".tm-toc");
+    detailsElement = document.querySelector(".tm-details");
+
+    try {
+      await loadDefinitions(config);
+    } catch (error) {
+      console.error("Failed to load threat model definitions.", error);
+      if (tocElement) {
+        tocElement.innerHTML = `<p class="issue">Failed to load the threat
+          model definitions (${error.message}). If you are viewing this
+          document from a <code>file://</code> URL, serve the directory over
+          HTTP instead (for example, <code>npx http-server</code>) so that
+          the YAML files can be fetched.</p>`;
+      }
+      return;
+    }
+
     if (!tocElement) {
-      console.warn("No Threat Toc found. Selector: ${config.threatModelTocSelector}");
+      console.warn("No Threat Toc found. Selector: .tm-toc");
     } else {
       renderToc(threats, tocElement);
     }
 
-    detailsElement = document.querySelector(config.threatModelDetailsSelector);
     if (!detailsElement) {
-      console.warn("No Threat Section found. Selector: ${config.threatModelDetailsSelector}");
+      console.warn("No Threat Section found. Selector: .tm-details");
     } else {
       renderThreats(threats, detailsElement, tocElement);
     }
@@ -90,54 +159,59 @@ limitations under the License.
       return;
     }
 
-    var threatCount = 1;
     let tocHtml = threatCategories.map(category => {
       return `
         <p class="threatCategory">${category.name}</p>
         <ol class="threat-toc">
-          ${category.threats.map((threatId) => {
-        threatCount++;
-        return renderTocEntry(threatId);
-      }).join("")}
+          ${(category.threats || []).map(renderTocEntry).join("")}
         </ol>
         `;
     }).join("");
 
     tocElement.innerHTML = `
-      <h2>Threat List</h2>
+      <h2 id="threat-list">Threat List</h2>
         ${tocHtml}
       `;
     return;
 
-    function renderTocEntry(threatId) {
-      console.log("renderTocEntry", threatId);
-      let threatValue = threatId.substring(1);
+    function renderTocEntry(entry) {
+      console.log("renderTocEntry", entry);
 
-      let threat = getThreat(threatId);
+      let threat = getThreat(entry);
       if (!threat) {
-        return `<li value="${threatValue}">Threat ${threatId} not found</li>`;
+        return `<li>Threat ${entry} not found</li>`;
       }
 
       let id = makeId(threat);
 
-      return `<li value="${threatValue}"><a href="#${id}">${threat.name}</a> ${renderTags(threat)}
+      // the `value` attribute drives the "T<n>." prefix the threat-toc CSS
+      // renders; the number comes from the threat's position in the outline.
+      return `<li value="${threat.number}"><a href="#${id}">${threat.name}</a> ${renderTags(threat)}
     </li>`;
     }
-
-    return;
   }
 
-  function getThreat(threatId) {
-    console.log("getThreat", threatId);
-    let threat = threats.find(threat => threat.id === threatId);
-    return threat;
+  // getThreat(file)
+  // Looks up a loaded threat by the filename the outline listed it under.
+  ///////////////////////////////////////////////////////////////////////
+  function getThreat(file) {
+    console.log("getThreat", file);
+    return threats.find(threat => threat.file === file);
   }
 
+  // makeId(threat)
+  // Builds the anchor for a threat from its name alone. The T<n> number is
+  // assigned at render time and would change whenever a threat moves, so it
+  // is deliberately kept out of the anchor: links into the threat model stay
+  // valid across renumbering.
+  ///////////////////////////////////////////////////////////////////////
   function makeId(threat) {
-    var id = `${threat.id}-${threat.name}`;
-    id = id.toLowerCase();
-    id = id.replace(/ /g, "-");
-    return id;
+    return threat.name
+      .toLowerCase()
+      .replace(/[(),]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/ /g, "-");
   }
 
   function areRenderThreatInputsGood(threats, detailsElement) {
@@ -166,8 +240,8 @@ limitations under the License.
     let threatsHtml = threatCategories.map(category => {
       return `
         <p class="threatCategory">${category.name}</p>
-          ${category.threats.map((threatId) => {
-            return renderThreat(threatId, tocElement);
+          ${(category.threats || []).map((entry) => {
+            return renderThreat(entry, tocElement);
       }).join("")}`;
     }).join("");
 
@@ -177,12 +251,12 @@ limitations under the License.
       `;
     return;
 
-    function renderThreat(threatId, tocElement) {
-      console.log("renderThreat", threatId);
-      let threat = getThreat(threatId);
+    function renderThreat(entry, tocElement) {
+      console.log("renderThreat", entry);
+      let threat = getThreat(entry);
 
       if (!threat)
-        return `<p>Threat ${threatId} not found.</p>`;
+        return `<p>Threat ${entry} not found.</p>`;
 
       let id = makeId(threat);
       return `
@@ -209,7 +283,7 @@ limitations under the License.
           <tr>
             <td class="threat-name">
               <section>
-                <h5 id="${threat.id}.inner">${threat.id}. ${threat.name}
+                <h5 id="${makeId(threat)}-inner">${threat.id}. ${threat.name}
                   ${renderTags(threat)}
                 </h5>
                 ${renderTocLink(tocElement)}
@@ -219,13 +293,13 @@ limitations under the License.
       }
 
       function renderDescription(threat) {
-        if (!threat.desc || threat.desc == "")
+        if (!threat.description || threat.description == "")
           return "";
 
         return `
         <tr>
           <td class="threat-description">
-            ${threat.desc}
+            ${threat.description}
           </td>
         </tr>
         `
@@ -244,8 +318,7 @@ limitations under the License.
         if (!tocElement)
           return "";
 
-        var selector = `#${tocElement.id}`  // the toc element MUST have an id
-        return `<span class="index-link">[<a href="${selector}">Threat List</a>]</span>`;
+        return `<span class="index-link">[<a href="#threat-list">Threat List</a>]</span>`;
       }
 
       function renderImage(threat) {
@@ -288,11 +361,11 @@ limitations under the License.
 
         let responseHtml = responses.map(response => `
           <tr>
-        <td class="response-name">${response.id}. ${response.name}</td>
+        <td class="response-name">${response.id}. ${response.name}${response.type ? ` (${response.type})` : ""}</td>
           </tr>
           <tr>
         <td class="response-desc">
-          ${response.desc}
+          ${response.description}
         </td>
           </tr>
           `).join("")
@@ -300,13 +373,6 @@ limitations under the License.
         return responseHtml;
       };
     };
-
-    detailsElement.innerHTML = `
-    <h2>Threat Details</h2>
-    ${threatHtml}
-    `;
-    console.log(detailsElement.innerHTML);
-    return;
   }
 
   function renderTags(threat) {
@@ -320,6 +386,87 @@ limitations under the License.
         `).join("");
 
     return tagsHtml;
+  }
+
+  // renderConsiderations(config, document)
+  // Fills in the Security and Privacy Considerations summaries in a document
+  // that embeds them, such as the Verifiable Credentials Data Model
+  // specification. Each summary is a placeholder element of the form
+  //
+  //   <section class="threat" data-threat="<threat-file-basename>"></section>
+  //
+  // which is replaced with the threat's name and its `summary` from the
+  // threat's YAML file, followed by a link into the threat model for the full
+  // analysis. Keeping the summaries in the YAML means a threat's name and
+  // summary are written once and stay consistent between the two documents.
+  //
+  // This is the entry point for the embedding document's ReSpec preProcess
+  // hook; the threat model's own document calls render() instead.
+  ///////////////////////////////////////////////////////////////////////
+  async function renderConsiderations(config, document) {
+    console.log("Starting renderConsiderations");
+
+    const placeholders =
+      Array.from(document.querySelectorAll("section.threat[data-threat]"));
+    if (!placeholders.length) {
+      console.warn("No threat placeholders found. Selector: " +
+        "section.threat[data-threat]");
+      return;
+    }
+
+    try {
+      await loadDefinitions(config);
+    } catch (error) {
+      console.error("Failed to load threat model definitions.", error);
+      for (const placeholder of placeholders) {
+        placeholder.innerHTML = `<p class="issue">Failed to load the threat
+          model definitions (${error.message}). If you are viewing this
+          document from a <code>file://</code> URL, serve the directory over
+          HTTP instead (for example, <code>npx http-server</code>) so that
+          the YAML files can be fetched.</p>`;
+      }
+      return;
+    }
+
+    for (const placeholder of placeholders) {
+      placeholder.innerHTML =
+        renderConsideration(placeholder.dataset.threat, config);
+    }
+  }
+
+  // renderConsideration(name, config)
+  // Renders one threat summary. `name` is the threat's filename in
+  // threats/outline.yaml, with or without the .yaml extension.
+  ///////////////////////////////////////////////////////////////////////
+  function renderConsideration(name, config) {
+    const file = name.endsWith(".yaml") ? name : `${name}.yaml`;
+    const threat = getThreat(file);
+
+    if (!threat) {
+      console.error(`No threat definition found for "${name}".`);
+      return `<p class="issue">No threat definition found for
+        <code>${name}</code>. Check that a threat file of that name is listed
+        in a category in <code>threats/outline.yaml</code>.</p>`;
+    }
+
+    if (!threat.summary) {
+      console.error(`Threat "${name}" has no summary.`);
+      return `<p class="issue">The threat definition in
+        <code>${file}</code> has no <code>summary</code> entry.</p>`;
+    }
+
+    const base = config.threatModelURI ||
+      "https://www.w3.org/TR/vc-data-model-threat-model/";
+
+    return `
+          <h4>${threat.name}</h4>
+          <p>
+${threat.summary}
+See
+<a href="${base}#${makeId(threat)}">${threat.name}</a>
+in the [[[VC-DATA-MODEL-THREAT-MODEL]]] for the full analysis of this threat and
+the responses to it.
+          </p>`;
   }
 
   function register(threat) {
@@ -356,6 +503,7 @@ limitations under the License.
 
   var ThreatModel = {
     render,
+    renderConsiderations,
     renderToc,
     renderThreats,
     register,
