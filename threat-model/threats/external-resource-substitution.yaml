@@ -28,19 +28,18 @@ response:
     name: Content Integrity Protection, DNSSEC, and TLS Verification
     type: Reduce
     description: >-
-      [=E1|List publishers=] use content integrity protection (such as
-      <code>digestMultibase</code>) for all externally-referenced resources in
-      [=O1|recognized entity credentials=]. Because content integrity
-      verification detects substitution regardless of whether the attack is a
-      server compromise, domain takeover, or DNS hijack, it is the primary
-      defense against all three mechanisms. [=E4|Verifiers=] verify the
-      integrity of any fetched resource against the declared digest before
-      applying it during [=P6|Validate Credential(s)=], and treat a digest
-      mismatch as a hard failure. [=E4|Verifiers=] use DNSSEC-validating
-      resolvers and verify TLS certificates against expected values when
-      fetching external resources. Where possible, schema files are embedded
-      directly in the credential or hosted on infrastructure under the
-      [=E1|list publisher=]’s direct control within the [=C1|publisher
-      system=]. Any [=O1|recognized entity credential=] that references
-      external resources without integrity protection is rejected by
-      conforming [=E4|verifiers=].
+      [=E1|List publishers=] protect externally-referenced resources in
+      [=O1|recognized entity credentials=] with a content digest, such as
+      <code>digestMultibase</code>. A digest catches substitution however it
+      happened. It is the primary defense against all three mechanisms.
+      [=E4|Verifiers=] check a fetched resource against its declared digest
+      before applying it during [=P6|Validate Credential(s)=]. A mismatch is
+      a hard failure. [=E4|Verifiers=] use DNSSEC-validating resolvers. They
+      check TLS certificates against expected values. Where possible, schema
+      files are embedded in the credential, or hosted within the
+      [=C1|publisher system=]. The specification does not require a digest. A
+      [=O1|recognized entity credential=] can reference an external resource
+      without one, and then a [=E4|verifier=] has nothing to check against.
+      Ecosystem governance, not the specification, decides whether to reject
+      such credentials. Without that policy, a [=E4|verifier=] that fetches
+      an unprotected resource stays exposed.
