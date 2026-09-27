@@ -1,0 +1,2330 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="generator" content="ReSpec 37.3.6">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+.issue-label{text-transform:initial}
+.warning>p:first-child{margin-top:0}
+.warning{padding:.5em;border-left-width:.5em;border-left-style:solid}
+span.warning{padding:.1em .5em .15em}
+.issue.closed span.issue-number{text-decoration:line-through}
+.issue.closed span.issue-number::after{content:" (Closed)";font-size:smaller}
+.warning{border-color:#f11;border-color:var(--warning-border,#f11);border-width:.2em;border-style:solid;background:#fbe9e9;background:var(--warning-bg,#fbe9e9);color:#000;color:var(--text,#000)}
+.warning-title:before{content:"⚠";font-size:1.3em;float:left;padding-right:.3em;margin-top:-.3em}
+li.task-list-item{list-style:none}
+input.task-list-item-checkbox{margin:0 .35em .25em -1.6em;vertical-align:middle}
+.issue a.respec-gh-label{padding:5px;margin:0 2px 0 2px;font-size:10px;text-transform:none;text-decoration:none;font-weight:700;border-radius:4px;position:relative;bottom:2px;border:none;display:inline-block}
+</style>
+<style>
+dfn{cursor:pointer}
+.dfn-panel{position:absolute;z-index:35;min-width:300px;max-width:500px;padding:.5em .75em;margin-top:.6em;font-family:"Helvetica Neue",sans-serif;font-size:small;background:#fff;background:var(--indextable-hover-bg,#fff);color:#000;color:var(--text,#000);box-shadow:0 1em 3em -.4em rgba(0,0,0,.3),0 0 1px 1px rgba(0,0,0,.05);box-shadow:0 1em 3em -.4em var(--tocsidebar-shadow,rgba(0,0,0,.3)),0 0 1px 1px var(--tocsidebar-shadow,rgba(0,0,0,.05));border-radius:2px}
+.dfn-panel:not(.docked)>.caret{position:absolute;top:-9px}
+.dfn-panel:not(.docked)>.caret::after,.dfn-panel:not(.docked)>.caret::before{content:"";position:absolute;border:10px solid transparent;border-top:0;border-bottom:10px solid #fff;border-bottom-color:var(--indextable-hover-bg,#fff);top:0}
+.dfn-panel:not(.docked)>.caret::before{border-bottom:9px solid #a2a9b1;border-bottom-color:var(--indextable-hover-bg,#a2a9b1)}
+.dfn-panel *{margin:0}
+.dfn-panel b{display:block;color:#000;color:var(--text,#000);margin-top:.25em}
+.dfn-panel ul a[href]{color:#333;color:var(--text,#333)}
+.dfn-panel>div{display:flex}
+.dfn-panel a.self-link{font-weight:700;margin-right:auto}
+.dfn-panel .marker{padding:.1em;margin-left:.5em;border-radius:.2em;text-align:center;white-space:nowrap;font-size:90%;color:#040b1c}
+.dfn-panel .marker.dfn-exported{background:#d1edfd;box-shadow:0 0 0 .125em #1ca5f940}
+.dfn-panel .marker.idl-block{background:#8ccbf2;box-shadow:0 0 0 .125em #0670b161}
+.dfn-panel .marker.cddl-block{background:#8ccbf2;box-shadow:0 0 0 .125em #0670b161}
+.dfn-panel a:not(:hover){text-decoration:none!important;border-bottom:none!important}
+.dfn-panel a[href]:hover{border-bottom-width:1px}
+.dfn-panel ul{padding:0}
+.dfn-panel li{margin-left:1em}
+.dfn-panel.docked{position:fixed;left:.5em;top:unset;bottom:2em;margin:0 auto;max-width:calc(100vw - .75em * 2 - .5em - .2em * 2);max-height:30vh;overflow:auto}
+</style>
+  
+  
+<title>Recognized Entities Threat Model v1.0</title>
+  
+<style id="respec-mainstyle">
+@keyframes pop{
+0%{transform:scale(1,1)}
+25%{transform:scale(1.25,1.25);opacity:.75}
+100%{transform:scale(1,1)}
+}
+a.internalDFN{color:inherit;border-bottom:1px solid #99c;text-decoration:none}
+a.externalDFN{color:inherit;border-bottom:1px dotted #ccc;text-decoration:none}
+a.bibref{text-decoration:none}
+.respec-offending-element:target{animation:pop .25s ease-in-out 0s 1}
+.respec-offending-element,a[href].respec-offending-element{text-decoration:red wavy underline}
+@supports not (text-decoration:red wavy underline){
+.respec-offending-element:not(pre){display:inline-block}
+.respec-offending-element{background:url(data:image/gif;base64,R0lGODdhBAADAPEAANv///8AAP///wAAACwAAAAABAADAEACBZQjmIAFADs=) bottom repeat-x}
+}
+#references :target{background:#eaf3ff;animation:pop .4s ease-in-out 0s 1}
+@media (prefers-color-scheme:dark){
+#references :target{background:color-mix(in srgb, #eaf3ff 15%, transparent)}
+}
+body:has(input[name=color-scheme][value=dark]:checked) #references :target{background:color-mix(in srgb, #eaf3ff 15%, transparent)}
+cite .bibref{font-style:italic}
+a[href].orcid{padding-left:4px;padding-right:4px}
+a[href].orcid>svg{margin-bottom:-2px}
+ol.tof,ul.tof{list-style:none outside none}
+.caption{margin-top:.5em;font-style:italic}
+#issue-summary>ul{column-count:2}
+#issue-summary li{list-style:none}
+details.respec-tests-details{margin-left:1em;display:inline-block;vertical-align:top}
+details.respec-tests-details>*{padding-right:2em}
+details.respec-tests-details[open]{z-index:999999;position:absolute;border:thin solid #cad3e2;border-radius:.3em;background-color:#fff;padding-bottom:.5em}
+details.respec-tests-details[open]>summary{border-bottom:thin solid #cad3e2;padding-left:1em;margin-bottom:1em;line-height:2em}
+details.respec-tests-details>ul{width:100%;margin-top:-.3em}
+details.respec-tests-details>li{padding-left:1em}
+.self-link:hover{opacity:1;text-decoration:none;background-color:transparent}
+aside.example .marker>a.self-link{color:inherit}
+.header-wrapper{display:flex;align-items:baseline}
+:is(h2,h3,h4,h5,h6):not(:where(#toc>h2,#abstract>h2,#sotd>h2,.head>h2)):has(+a.self-link){position:relative;left:-.5em}
+:is(h2,h3,h4,h5,h6):not(:where(#toch2))+a.self-link{color:inherit;order:-1;position:relative;left:-1.1em;font-size:1rem;opacity:.8;text-decoration:none}
+:is(h2,h3,h4,h5,h6)+a.self-link::before{content:"§"}
+:is(h2,h3)+a.self-link{top:-.2em}
+:is(h2,h3)+a.self-link::before{color:var(--heading-text)}
+@media (max-width:767px){
+dd{margin-left:0}
+}
+@media print{
+.removeOnSave{display:none}
+}
+body:has(input[name=color-scheme][value=light]:checked),head:not(:has(meta[name=color-scheme][content~=dark]))+body{color-scheme:light}
+body:has(input[name=color-scheme][value=dark]:checked){color-scheme:dark}
+</style>
+  
+  
+
+  
+  
+<link rel="stylesheet" href="threats/threat-model.css">
+
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2021/dark.css" disabled="" media="">
+<meta name="description" content="This document describes a threat model for the
+Recognized
+Entities specification. It identifies and analyzes security and
+privacy threats specific to ecosystems that use
+RecognizedEntityCredential resources to express recognition of
+entities and the actions they are authorized to perform, such as issuing or
+verifying verifiable credentials.">
+<link rel="canonical" href="https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/">
+<style>
+var:hover{text-decoration:underline;cursor:pointer}
+var.respec-hl{color:var(--color,#000);background-color:var(--bg-color);box-shadow:0 0 0 2px var(--bg-color)}
+@media (prefers-color-scheme:dark){
+var.respec-hl{filter:saturate(.9) brightness(.9)}
+}
+var.respec-hl-c1{--bg-color:#f4d200}
+var.respec-hl-c2{--bg-color:#ff87a2}
+var.respec-hl-c3{--bg-color:#96e885}
+var.respec-hl-c4{--bg-color:#3eeed2}
+var.respec-hl-c5{--bg-color:#eacfb6}
+var.respec-hl-c6{--bg-color:#82ddff}
+var.respec-hl-c7{--bg-color:#ffbcf2}
+@media print{
+var.respec-hl{background:0 0;color:#000;box-shadow:unset}
+}
+</style>
+<style>
+var[data-type]{position:relative}
+var[data-type]::after,var[data-type]::before{position:absolute;left:50%;top:-6px;opacity:0;transition:opacity .4s;pointer-events:none}
+var[data-type]::before{content:"";transform:translateX(-50%);border-width:4px 6px 0 6px;border-style:solid;border-color:transparent;border-top-color:#222}
+var[data-type]::after{content:attr(data-type);transform:translateX(-50%) translateY(-100%);background:#222;text-align:center;font-family:"Dank Mono","Fira Code",monospace;font-style:normal;padding:6px;border-radius:3px;color:#daca88;text-indent:0;font-weight:400}
+var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
+</style>
+<script id="initialUserConfig" type="application/json">{
+  "shortName": "vc-recognized-entities-threat-model-1.0",
+  "specStatus": "DNOTE",
+  "group": "vc",
+  "publishDate": "2026-10-08",
+  "edDraftURI": "https://w3c.github.io/vc-recognized-entities/threat-model/",
+  "github": {
+    "repoURL": "https://github.com/w3c/vc-recognized-entities/",
+    "branch": "main"
+  },
+  "editors": [
+    {
+      "name": "Manu Sporny",
+      "company": "Digital Bazaar",
+      "w3cid": 41758
+    }
+  ],
+  "noRecTrack": "true",
+  "maxTocLevel": 4,
+  "threatModelOutline": "threats/outline.yaml",
+  "preProcess": [
+    null
+  ],
+  "publishISODate": "2026-10-08T00:00:00.000Z",
+  "generatedSubtitle": "W3C Group Note Draft 08 October 2026"
+}</script>
+<link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2021/W3C-DNOTE"></head>
+
+<body class="h-entry informative"><div class="head">
+    <p class="logos"><a class="logo" href="https://www.w3.org/"><img crossorigin="" alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72">
+  </a></p>
+    <h1 id="title" class="title">Recognized Entities Threat Model v1.0</h1> 
+    <p id="w3c-state"><a href="https://www.w3.org/standards/types#DNOTE">W3C Group Note Draft</a> <time class="dt-published" datetime="2026-10-08">08 October 2026</time></p>
+    <details open="">
+      <summary>More details about this document</summary>
+      <dl>
+        <dt>This version:</dt><dd>
+                  <a class="u-url" href="https://www.w3.org/TR/2026/DNOTE-vc-recognized-entities-threat-model-1.0-20261008/">https://www.w3.org/TR/2026/DNOTE-vc-recognized-entities-threat-model-1.0-20261008/</a>
+                </dd>
+        <dt>Latest published version:</dt><dd>
+                  <a href="https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/">https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/</a>
+                </dd>
+        <dt>Latest editor's draft:</dt><dd><a href="https://w3c.github.io/vc-recognized-entities/threat-model/">https://w3c.github.io/vc-recognized-entities/threat-model/</a></dd>
+        <dt>History:</dt><dd>
+                        <a href="https://www.w3.org/standards/history/vc-recognized-entities-threat-model-1.0/">https://www.w3.org/standards/history/vc-recognized-entities-threat-model-1.0/</a>
+                      </dd><dd>
+                        <a href="https://github.com/w3c/vc-recognized-entities/commits/main">Commit history</a>
+                      </dd>
+        
+        
+        
+        
+        
+        <dt>
+                  Editor:
+                </dt><dd class="editor p-author h-card vcard" data-editor-id="41758">
+    <span class="p-name fn">Manu Sporny</span> (<span class="p-org org h-org">Digital Bazaar</span>)
+  </dd>
+        
+        
+        <dt>Feedback:</dt><dd>
+        <a href="https://github.com/w3c/vc-recognized-entities/">GitHub w3c/vc-recognized-entities</a>
+        (<a href="https://github.com/w3c/vc-recognized-entities/pulls/">pull requests</a>,
+        <a href="https://github.com/w3c/vc-recognized-entities/issues/new/choose">new issue</a>,
+        <a href="https://github.com/w3c/vc-recognized-entities/issues/">open issues</a>)
+      </dd>
+        
+        
+      </dl>
+    </details>
+    
+    
+    <p class="copyright">
+    <a href="https://www.w3.org/policies/#copyright">Copyright</a>
+    ©
+    2026
+    
+    <a href="https://www.w3.org/">World Wide Web Consortium</a>.
+    <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup>
+    <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>,
+    <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and
+    <a rel="license" href="https://www.w3.org/copyright/software-license-2023/" title="W3C Software and Document Notice and License">permissive document license</a> rules apply.
+  </p>
+    <hr title="Separator for header">
+  </div>
+  <section id="abstract" class="introductory"><h2>Abstract</h2>
+    <p>
+This document describes a threat model for the
+<a href="https://w3c.github.io/vc-recognized-entities/">Recognized
+Entities</a> specification. It identifies and analyzes security and
+privacy threats specific to ecosystems that use
+<code>RecognizedEntityCredential</code> resources to express recognition of
+entities and the actions they are authorized to perform, such as issuing or
+verifying verifiable credentials.
+    </p>
+  </section>
+  <section id="sotd" class="introductory"><h2>Status of This Document</h2><p><em>This section describes the status of this
+      document at the time of its publication. A list of current <abbr title="World Wide Web Consortium">W3C</abbr>
+      publications and the latest revision of this technical report can be found
+      in the
+      <a href="https://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> standards and drafts index</a>.</em></p>
+    <p>
+This threat model is a work in progress. It is published alongside the
+Recognized Entities specification to inform implementers and ecosystem
+designers of the security and privacy considerations relevant to deployments
+of the specification. Feedback and proposed additions are welcome via the
+<a href="https://github.com/w3c/vc-recognized-entities/issues">issue
+tracker</a>.
+    </p>
+  <p>
+    This document was published by the <a href="https://www.w3.org/groups/wg/vc">Verifiable Credentials Working Group</a> as
+    a Group Note Draft using the
+        <a href="https://www.w3.org/policies/process/20250818/#recs-and-notes">Note
+          track</a>. 
+  </p><p>Group Note Drafts are not endorsed by
+        <abbr title="World Wide Web Consortium">W3C</abbr> nor its Members. </p><p>
+    This is a draft document and may be updated, replaced, or obsoleted by other
+    documents at any time. It is inappropriate to cite this document as other
+    than a work in progress.
+    
+  </p><p data-deliverer="98922">
+    
+        The
+        <a href="https://www.w3.org/policies/patent-policy/"><abbr title="World Wide Web Consortium">W3C</abbr> Patent
+          Policy</a>
+        does not carry any licensing requirements or commitments on this
+        document.
+      
+    
+  </p><p>
+                          This document is governed by the
+                          <a id="w3c_process_revision" href="https://www.w3.org/policies/process/20250818/">18 August 2025 <abbr title="World Wide Web Consortium">W3C</abbr> Process Document</a>.
+                        </p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a class="tocxref" href="#abstract">Abstract</a></li><li class="tocline"><a class="tocxref" href="#sotd">Status of This Document</a></li><li class="tocline"><a class="tocxref" href="#Introduction"><bdi class="secno">1. </bdi>Introduction</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#threat-model-description"><bdi class="secno">1.1 </bdi>Description</a></li><li class="tocline"><a class="tocxref" href="#threat-model-data-flow-diagram"><bdi class="secno">1.2 </bdi>Data Flow Diagram for the Recognized Entities Ecosystem</a></li><li class="tocline"><a class="tocxref" href="#threat-model-architecture-dictionary"><bdi class="secno">1.3 </bdi>Dictionary</a></li></ol></li><li class="tocline"><a class="tocxref" href="#threat-model-stakeholders"><bdi class="secno">2. </bdi>Stakeholders</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#e1-list-publisher"><bdi class="secno">2.1 </bdi>E1 List Publisher</a></li><li class="tocline"><a class="tocxref" href="#e2-issuer"><bdi class="secno">2.2 </bdi>E2 Issuer</a></li><li class="tocline"><a class="tocxref" href="#e3-holder"><bdi class="secno">2.3 </bdi>E3 Holder</a></li><li class="tocline"><a class="tocxref" href="#e4-verifier"><bdi class="secno">2.4 </bdi>E4 Verifier</a></li></ol></li><li class="tocline"><a class="tocxref" href="#threat-model-threats"><bdi class="secno">3. </bdi>Threats</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#threat-list"><bdi class="secno">3.1 </bdi>Threat List</a></li><li class="tocline"><a class="tocxref" href="#threat-details"><bdi class="secno">3.2 </bdi>Threat Details</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#unauthorized-issuer-spoofing"><bdi class="secno">3.2.1 </bdi>T1. Unauthorized Issuer Spoofing</a></li><li class="tocline"><a class="tocxref" href="#recognized-entity-credential-tampering"><bdi class="secno">3.2.2 </bdi>T2. Recognized Entity Credential Tampering</a></li><li class="tocline"><a class="tocxref" href="#list-retrieval-denial-of-service"><bdi class="secno">3.2.3 </bdi>T3. List Retrieval Denial of Service</a></li><li class="tocline"><a class="tocxref" href="#privacy-leakage-via-list-fetch"><bdi class="secno">3.2.4 </bdi>T4. Privacy Leakage via List Fetch</a></li><li class="tocline"><a class="tocxref" href="#unvetted-recognized-entity-credential-propagation"><bdi class="secno">3.2.5 </bdi>T5. Unvetted Recognized Entity Credential Propagation</a></li><li class="tocline"><a class="tocxref" href="#list-publisher-impersonation"><bdi class="secno">3.2.6 </bdi>T6. List Publisher Impersonation</a></li><li class="tocline"><a class="tocxref" href="#stale-recognition-acceptance"><bdi class="secno">3.2.7 </bdi>T7. Stale Recognition Acceptance</a></li><li class="tocline"><a class="tocxref" href="#external-resource-substitution"><bdi class="secno">3.2.8 </bdi>T8. External Resource Substitution</a></li><li class="tocline"><a class="tocxref" href="#unbounded-recognition-chain-trust"><bdi class="secno">3.2.9 </bdi>T9. Unbounded Recognition Chain Trust</a></li><li class="tocline"><a class="tocxref" href="#abuse-of-recognized-actions"><bdi class="secno">3.2.10 </bdi>T10. Abuse of Recognized Actions</a></li><li class="tocline"><a class="tocxref" href="#overly-permissive-schema-constraints"><bdi class="secno">3.2.11 </bdi>T11. Overly Permissive Schema Constraints</a></li><li class="tocline"><a class="tocxref" href="#json-schema-attack"><bdi class="secno">3.2.12 </bdi>T12. JSON Schema Attack</a></li><li class="tocline"><a class="tocxref" href="#surveillance-of-recognized-entity-identifiers"><bdi class="secno">3.2.13 </bdi>T13. Surveillance of Recognized Entity Identifiers</a></li><li class="tocline"><a class="tocxref" href="#harms-by-association"><bdi class="secno">3.2.14 </bdi>T14. Harms by Association</a></li><li class="tocline"><a class="tocxref" href="#compromise-of-recognized-entity-identifier"><bdi class="secno">3.2.15 </bdi>T15. Compromise of Recognized Entity Identifier</a></li><li class="tocline"><a class="tocxref" href="#verifier-trust-anchor-misconfiguration"><bdi class="secno">3.2.16 </bdi>T16. Verifier Trust Anchor Misconfiguration</a></li><li class="tocline"><a class="tocxref" href="#anti-competitive-list-gatekeeping"><bdi class="secno">3.2.17 </bdi>T17. Anti-Competitive List Gatekeeping</a></li><li class="tocline"><a class="tocxref" href="#cryptographically-relevant-quantum-computer-breaks-cryptography"><bdi class="secno">3.2.18 </bdi>T18. Cryptographically Relevant Quantum Computer Breaks Cryptography</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#references"><bdi class="secno">A. </bdi>References</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#informative-references"><bdi class="secno">A.1 </bdi>Informative references</a></li></ol></li></ol></nav>
+  <section id="Introduction"><div class="header-wrapper"><h2 id="x1-introduction"><bdi class="secno">1. </bdi>Introduction</h2><a class="self-link" href="#Introduction" aria-label="Permalink for Section 1."></a></div>
+    
+    <p>
+Threat modeling is a vital part of specification development. This
+document provides a threat model for the Recognized Entities specification,
+which defines a data model for expressing that one or more entities are
+recognized to perform specific actions — such as issuing or verifying verifiable
+credentials — within a particular ecosystem.
+    </p>
+    <p>
+This threat model follows the methodology described in the
+<a href="https://www.w3.org/TR/threat-modeling-guide/"><abbr title="World Wide Web Consortium">W3C</abbr> Threat
+Modeling Guide</a> and classifies threats using the STRIDE taxonomy.
+Threats are grouped into four categories:
+    </p>
+    <ul>
+      <li>
+<strong>Target Threats</strong> — threats the specification was designed
+to address.
+      </li>
+      <li>
+<strong>Implementation Threats</strong> — threats that implementers must
+handle; the specification leaves the choice of mitigation open.
+      </li>
+      <li>
+<strong>External Threats</strong> — real-world risks acknowledged as out
+of scope for this version of the specification.
+      </li>
+      <li>
+<strong>Dependency Threats</strong> — threats inherited from technologies
+the specification depends upon.
+      </li>
+    </ul>
+
+    <section id="threat-model-description"><div class="header-wrapper"><h3 id="x1-1-description"><bdi class="secno">1.1 </bdi>Description</h3><a class="self-link" href="#threat-model-description" aria-label="Permalink for Section 1.1"></a></div>
+      
+      <p>
+The Recognized Entities ecosystem enables a <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-1">list publisher</a> — such as an
+individual, a club or organization, a national business register, an
+accreditation authority, or an industry consortium — to issue a
+<code>RecognizedEntityCredential</code> (<a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-1">O1</a>) asserting that one or more
+<a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-1">issuers</a> are recognized to perform specific actions. A <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-1">holder</a> can
+acquire a <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-1">dependent verifiable credential</a> from such an issuer and
+<a data-link-type="dfn|abstract-op" data-lt="F4" href="#dfn-f4" class="internalDFN" id="ref-for-dfn-f4-1">present</a> it to a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-1">verifier</a> alongside the
+<a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-2">recognized entity credential</a>, allowing the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-2">verifier</a> to confirm
+both the integrity of the presented credential and the recognized status of its
+issuer.
+      </p>
+      <p>
+The core challenge is that a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-3">verifier</a> receiving a
+<a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-2">dependent verifiable credential</a> from an unknown <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-2">issuer</a> must be
+able to determine, in an automated and cryptographically-verifiable way, whether
+that <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-3">issuer</a> is recognized within the relevant ecosystem. The Recognized
+Entities specification addresses this by providing a data model for publishing
+recognition information as a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-3">recognized entity credential</a>, enabling a
+<a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-4">verifier</a> to accept <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-3">dependent verifiable credentials</a> from
+<a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-4">issuers</a> described by <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-2">recognized entity list publishers</a>.
+      </p>
+      <p>
+For this threat model, we consider a minimal instantiation of the Recognized
+Entities ecosystem consisting of four roles: the <strong><a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-3">List Publisher</a>
+(E1)</strong> who issues <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-4">recognized entity credentials</a>, the
+<strong><a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-5">Issuer</a> (E2)</strong> who receives recognition and issues
+<a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-4">dependent verifiable credentials</a>, the <strong><a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-2">Holder</a>
+(E3)</strong> who receives and presents those credentials, and the
+<strong><a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-5">Verifier</a> (E4)</strong> who validates the credential chain against
+a configured set of trusted list publishers.
+      </p>
+      <div class="note" role="note" id="issue-container-generatedID"><div class="note-title marker" id="h-note"><span>Note</span></div><p class="" role="note">
+<span class="marker">Note:</span> We do NOT model potential attackers as
+first-class elements, as over-characterizing attackers can lead to analysis
+bias that is better avoided.
+      </p></div>
+    </section>
+
+    <section id="threat-model-data-flow-diagram"><div class="header-wrapper"><h3 id="x1-2-data-flow-diagram-for-the-recognized-entities-ecosystem"><bdi class="secno">1.2 </bdi>Data Flow Diagram for the Recognized Entities Ecosystem</h3><a class="self-link" href="#threat-model-data-flow-diagram" aria-label="Permalink for Section 1.2"></a></div>
+      
+      <p>
+The data flow diagram below illustrates the key elements and data flows in
+a minimal Recognized Entities ecosystem. The diagram shows how a recognized
+entity credential (O1) is issued by a list publisher (E1) to an issuer (E2),
+how the holder (E3) <a data-link-type="dfn|abstract-op" data-lt="F4" href="#dfn-f4" class="internalDFN" id="ref-for-dfn-f4-2">presents</a> a dependent verifiable credential (O2)
+alongside the recognized entity credential to a verifier (E4), and how the
+verifier <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-1">retrieves the published list</a> from publisher storage (S1) to
+confirm the issuer's recognized status.
+      </p>
+
+      <img src="diagrams/dfd.svg" alt="Data flow diagram showing four external entities, each above a
+dashed system boundary: the List Publisher (E1) above the Publisher System
+(C1), the Issuer (E2) above the Issuer System (C2), the Holder (E3) above the
+Holder System (C3), and the Verifier (E4) above the Verifier System (C4). The
+Publisher System contains the Create List (P1), Publish List (P2), and Update
+List (P7) processes and Publisher Storage (S1), with P2 and P7 both writing to
+S1. The Issuer System contains the Recognized Entity Credential (O1) data
+object and the Credential Issuance (P4) process. The Holder System contains
+the Dependent Verifiable Credential (O2) data object, Holder Storage (S2), and
+the Credential Presentation (P5) process. The Verifier System contains the
+Configure Verifier (P3) and Validate Credential(s) (P6) processes. The Issuer
+identifies itself to the Publisher System via flow F1 into Create List; the
+Publisher System issues a recognized entity credential to the Issuer System
+via flow F2, producing O1, which feeds Credential Issuance; the Issuer System
+issues credentials via flow F3, producing the Dependent Verifiable Credential
+and placing it in Holder Storage; the Holder System presents credentials via
+flow F4 from Credential Presentation to Validate Credential(s); and the
+Verifier System retrieves the published list from Publisher Storage via flow
+F5, which runs back along the bottom of the diagram from C4 to S1.">
+
+      <p>
+The following notation is used in the diagram description and dictionary:
+      </p>
+      <ul>
+        <li>
+<strong>E</strong> — External Entity (human or legal person outside the
+system boundary)
+        </li>
+        <li>
+<strong>P</strong> — Process (running algorithm that transforms data)
+        </li>
+        <li>
+<strong>F</strong> — Data Flow (movement of data between elements)
+        </li>
+        <li>
+<strong>S</strong> — Data Store (persistent or ephemeral storage)
+        </li>
+        <li>
+<strong>O</strong> — Data Object (self-contained, transferable artifact)
+        </li>
+        <li>
+<strong>C</strong> — Contained System Boundary (collection of elements under a
+single authority)
+        </li>
+      </ul>
+    </section>
+
+    <section id="threat-model-architecture-dictionary"><div class="header-wrapper"><h3 id="x1-3-dictionary"><bdi class="secno">1.3 </bdi>Dictionary</h3><a class="self-link" href="#threat-model-architecture-dictionary" aria-label="Permalink for Section 1.3"></a></div>
+      
+
+      <table class="dictionary">
+        <tbody>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E1|List Publisher|E1 List Publisher" data-plurals="list publishers" id="dfn-e1" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">E1 List Publisher</dfn>
+            </td>
+            <td>
+An entity — such as an individual, club, organization, accreditation authority,
+national business register, or industry consortium — that issues recognized
+entity credetnials that assert that one or more entities are recognized to
+perform specific actions. The list publisher is the authority for any recognized
+entity credentials it issues.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E2|Issuer|E2 Issuer" data-plurals="issuers" id="dfn-e2" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">E2 Issuer</dfn>
+            </td>
+            <td>
+An entity — such as an individual, club university, trade exporter, or a
+conformity assessment body — that has been granted a recognized entity
+credential by a list publisher and uses it to issue dependent verifiable
+credentials to holders. This entity controls an identifier document, such as a
+CID or a DID, whose identifier appears as the <code>credentialSubject.id</code>
+of the recognized entity credential and as the <code>issuer</code> of the
+dependent verifiable credentials it produces.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E3|Holder|E3 Holder" data-plurals="holders" id="dfn-e3" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">E3 Holder</dfn>
+            </td>
+            <td>
+A person or organization that receives a dependent verifiable credential from an
+issuer and presents it — optionally, together with the recognized entity
+credential — to a verifier. The holder stores credentials in a software
+application, such as a digital wallet, and controls what is disclosed to
+verifiers.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="E4|Verifier|E4 Verifier" data-plurals="verifiers" id="dfn-e4" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">E4 Verifier</dfn>
+            </td>
+            <td>
+An entity — such as an individual, organization, customs authority, trade
+finance lender, or a market surveillance authority — that receives a credential
+presentation from a holder and must determine whether the issuer of that
+credential is recognized within the relevant ecosystem. The verifier is
+configured with one or more URLs that identify the list publishers, and lists,
+that it considers authoritative.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P1|Create List|P1 Create List" id="dfn-p1" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">P1 Create List</dfn>
+            </td>
+            <td>
+The process by which a list publisher vets an issuer to determine whether
+they qualify for inclusion in a list, and, if so, creates and
+cryptographically signs a new <code>RecognizedEntityCredential</code>,
+applying the publisher's private key material to produce a verifiable proof.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P2|Publish List|P2 Publish List" id="dfn-p2" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">P2 Publish List</dfn>
+            </td>
+            <td>
+The process by which a list publisher makes a signed
+<code>RecognizedEntityCredential</code> publicly available, typically
+via HTTPS, so that verifiers can retrieve it.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P3|Configure Verifier|P3 Configure Verifier" id="dfn-p3" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">P3 Configure Verifier</dfn>
+            </td>
+            <td>
+The process by which a verifier is configured with one or more recognized entity
+list publishers — the URLs or DIDs of list publishers whose recognized entity
+credentials the verifier will accept as authoritative, or recognized entity
+lists.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P4|Credential Issuance|P4 Credential Issuance" id="dfn-p4" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">P4 Credential Issuance</dfn>
+            </td>
+            <td>
+The process by which an issuer signs and delivers a dependent
+verifiable credential to a holder. This process uses the issuer's private
+key material to produce a cryptographic proof over the credential. The process
+can optionally also result in the delivery of a recognized entity credential
+to the holder.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P5|Credential Presentation|P5 Credential Presentation" id="dfn-p5" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+P5 Credential Presentation</dfn>
+            </td>
+            <td>
+The process by which a holder assembles and transmits a
+credential presentation — containing the dependent verifiable credential
+and optionally a recognized entity credential — to a verifier.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P6|Validate Credentials|P6 Validate Credential(s)" id="dfn-p6" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+P6 Validate Credential(s)</dfn>
+            </td>
+            <td>
+The process by which a verifier checks the cryptographic proof
+of a presented dependent verifiable credential, resolves the issuer's
+recognized entity credential, and confirms that the issuer is recognized
+within a configured list. This process may involve fetching recognized
+entity credentials from external URLs or from holder-provided presentations.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="P7|Update List|P7 Update List" id="dfn-p7" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">P7 Update List</dfn>
+            </td>
+            <td>
+The process by which a list publisher modifies an existing
+<code>RecognizedEntityCredential</code> — for example to add, remove, or
+revoke recognized entities — and re-publishes the updated credential.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn class="lint-ignore" data-lt="F1|Identify Entity|F1 Identify Entity" id="dfn-f1" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">F1 Identify Entity</dfn>
+            </td>
+            <td>
+The data flow by which an issuer provides identity and vetting information
+to the list publisher's <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-1">Create List</a> process, so that the publisher
+can determine whether to include the issuer in a recognized entity
+credential.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F2|Issue Recognized Entity Credential|F2 Issue Recognized Entity Credential" id="dfn-f2" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+F2 Issue Recognized Entity Credential</dfn>
+            </td>
+            <td>
+The data flow by which a list publisher delivers a signed
+<code>RecognizedEntityCredential</code> to an issuer. This credential
+asserts that the issuer's DID is recognized to perform one or more
+specific actions within the relevant ecosystem.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn class="lint-ignore" data-lt="F3|Issue Credentials|F3 Issue Credential(s)" id="dfn-f3" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+F3 Issue Credential(s)</dfn>
+            </td>
+            <td>
+The data flow by which an issuer delivers a signed dependent verifiable
+credential to a holder. The credential contains the issuer's DID as its
+<code>issuer</code> value.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F4|Present Credentials|F4 Present Credential(s)" id="dfn-f4" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+F4 Present Credential(s)</dfn>
+            </td>
+            <td>
+The data flow by which a holder presents a dependent verifiable credential
+— and optionally a recognized entity credential — to a verifier. This
+flow crosses a security boundary between the <a data-link-type="dfn|abstract-op" data-lt="C3" href="#dfn-c3" class="internalDFN" id="ref-for-dfn-c3-1">holder's system</a> and the
+<a data-link-type="dfn|abstract-op" data-lt="C4" href="#dfn-c4" class="internalDFN" id="ref-for-dfn-c4-1">verifier's system</a>.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="F5|Retrieve List|F5 Retrieve List" id="dfn-f5" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">F5 Retrieve List</dfn>
+            </td>
+            <td>
+The data flow by which a verifier retrieves a recognized entity credential
+directly from the <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-1">list publisher's server</a>, either to confirm an
+issuer's current status or to obtain a more recent version of the
+credential than the one provided by the holder.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="S1|Publisher Storage|S1 Publisher Storage" id="dfn-s1" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">S1 Publisher Storage</dfn>
+            </td>
+            <td>
+The persistent storage within the <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-2">publisher system</a> where recognized
+entity credentials are kept and made available for retrieval. This store is
+managed by the list publisher and is typically accessible to the public
+via HTTPS.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn class="lint-ignore" data-lt="S2|Holder Storage|S2 Holder Storage" id="dfn-s2" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">S2 Holder Storage</dfn>
+            </td>
+            <td>
+The persistent storage within the <a data-link-type="dfn|abstract-op" data-lt="C3" href="#dfn-c3" class="internalDFN" id="ref-for-dfn-c3-2">holder's system</a> where dependent
+verifiable credentials and recognized entity credentials are kept. This
+storage is accessible only to the holder's software within the
+<a data-link-type="dfn|abstract-op" data-lt="C3" href="#dfn-c3" class="internalDFN" id="ref-for-dfn-c3-3">holder system</a> boundary.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="O1|Recognized Entity Credential|O1 Recognized Entity Credential" data-plurals="recognized entity credentials" id="dfn-o1" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+O1 Recognized Entity Credential</dfn>
+            </td>
+            <td>
+A cryptographically-signed data object issued by a list publisher to an
+issuer. It asserts that the issuer's DID is recognized to perform one or
+more actions — such as issuing or verifying specific types of verifiable
+credentials — within the ecosystem governed by the list publisher.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="O2|Dependent Verifiable Credential|O2 Dependent Verifiable Credential" data-plurals="dependent verifiable credentials" id="dfn-o2" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">
+O2 Dependent Verifiable Credential</dfn>
+            </td>
+            <td>
+A cryptographically-signed data object issued by a recognized issuer to a
+holder. The credential asserts claims about the holder and is signed with
+the issuer's private key. Its trustworthiness depends on the issuer
+holding a valid recognized entity credential (O1), making it a
+"dependent" verifiable credential.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C1|Publisher System|C1 Publisher System" id="dfn-c1" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">C1 Publisher System</dfn>
+            </td>
+            <td>
+The system boundary — typically a web server or DID-linked resource host —
+managed by the list publisher. It runs the <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-2">Create List</a>,
+<a data-link-type="dfn|abstract-op" data-lt="P2" href="#dfn-p2" class="internalDFN" id="ref-for-dfn-p2-1">Publish List</a>, and <a data-link-type="dfn|abstract-op" data-lt="P7" href="#dfn-p7" class="internalDFN" id="ref-for-dfn-p7-1">Update List</a> processes and maintains
+Publisher Storage (S1) from which recognized entity credentials are served.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn class="lint-ignore" data-lt="C2|Issuer System|C2 Issuer System" id="dfn-c2" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">C2 Issuer System</dfn>
+            </td>
+            <td>
+The system boundary — typically a server or service operated by the issuer —
+that manages the issuer's credentials, keys, and DID. It runs the
+<a data-link-type="dfn|abstract-op" data-lt="P4" href="#dfn-p4" class="internalDFN" id="ref-for-dfn-p4-1">Credential Issuance</a> process and holds the recognized entity
+credential issued to the issuer.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C3|Holder System|C3 Holder System" id="dfn-c3" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">C3 Holder System</dfn>
+            </td>
+            <td>
+The system boundary — typically a mobile or desktop application — that manages
+the holder's credentials, keys, and DID. All credential storage (S2) and
+<a data-link-type="dfn|abstract-op" data-lt="P5" href="#dfn-p5" class="internalDFN" id="ref-for-dfn-p5-1">Credential Presentation</a> logic runs within this system boundary, which is
+under the holder's control.
+            </td>
+          </tr>
+          <tr>
+            <td class="left">
+              <dfn data-lt="C4|Verifier System|C4 Verifier System" id="dfn-c4" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">C4 Verifier System</dfn>
+            </td>
+            <td>
+The system boundary — typically an automated verification service or
+human-operated review system — that runs the <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-1">Configure Verifier</a> and
+<a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-1">Validate Credential(s)</a> processes. It is configured with trust
+anchors identifying authoritative list publishers.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <section id="threat-model-stakeholders"><div class="header-wrapper"><h2 id="x2-stakeholders"><bdi class="secno">2. </bdi>Stakeholders</h2><a class="self-link" href="#threat-model-stakeholders" aria-label="Permalink for Section 2."></a></div>
+    
+
+    <section id="e1-list-publisher"><div class="header-wrapper"><h3 id="x2-1-e1-list-publisher"><bdi class="secno">2.1 </bdi>E1 List Publisher</h3><a class="self-link" href="#e1-list-publisher" aria-label="Permalink for Section 2.1"></a></div>
+    <p>
+A list publisher is an entity that issues
+<code>RecognizedEntityCredential</code> resources. List publishers are
+the authority for any recognized entity credentials they issue. They
+range from national government bodies (such as business registers and
+accreditation authorities) to industry consortia and standards organizations.
+    </p>
+    <p>
+List publishers have a strong interest in ensuring that only properly
+vetted entities appear in their lists, and that their list
+credentials are not forged or misused. They also bear operational
+responsibility for the availability and integrity of the credentials they
+publish.
+    </p>
+
+    </section><section id="e2-issuer"><div class="header-wrapper"><h3 id="x2-2-e2-issuer"><bdi class="secno">2.2 </bdi>E2 Issuer</h3><a class="self-link" href="#e2-issuer" aria-label="Permalink for Section 2.2"></a></div>
+    <p>
+An issuer is any person or organization that has been granted a
+<code>RecognizedEntityCredential</code> by a list publisher and uses
+that recognition to issue dependent verifiable credentials to holders.
+Examples include universities issuing academic credentials, national
+business registers issuing trade entity credentials, and conformity
+assessment bodies issuing product certificates.
+    </p>
+    <p>
+The issuer's primary goal is to issue dependent verifiable credentials
+that will be accepted by verifiers within the relevant ecosystem. They
+want confidence that their recognized status is accurately represented,
+that their recognition credentials are not misappropriated or tampered
+with, and that their DID remains under their control.
+    </p>
+
+    </section><section id="e3-holder"><div class="header-wrapper"><h3 id="x2-3-e3-holder"><bdi class="secno">2.3 </bdi>E3 Holder</h3><a class="self-link" href="#e3-holder" aria-label="Permalink for Section 2.3"></a></div>
+    <p>
+A holder is a person or organization that receives dependent verifiable
+credentials from issuers and presents them to verifiers. In the
+cross-border trade use case, the holder is an importer presenting an
+exporter's invoice credential to customs. In the education use case,
+the holder is a student presenting a university-issued diploma.
+    </p>
+    <p>
+The holder's primary goal is to present credentials that will be accepted
+by verifiers, without disclosing more information than necessary. Holders
+have a strong interest in privacy: they do not want their credential
+presentations to leak information about their activities to list
+publishers or other third parties.
+    </p>
+
+    </section><section id="e4-verifier"><div class="header-wrapper"><h3 id="x2-4-e4-verifier"><bdi class="secno">2.4 </bdi>E4 Verifier</h3><a class="self-link" href="#e4-verifier" aria-label="Permalink for Section 2.4"></a></div>
+    <p>
+A verifier is an entity that receives a credential presentation from a
+holder and must determine whether to accept it. Verifiers range from
+automated customs clearance systems processing thousands of trade documents
+per hour to human-operated market surveillance authorities checking product
+conformity certificates.
+    </p>
+    <p>
+The verifier's primary goal is to confirm that the credential it has
+received was issued by an entity that is genuinely recognized within the
+relevant ecosystem, and that the credential itself has not been tampered
+with. Verifiers also have a strong interest in availability: a denial of
+service against the lists they depend on directly impairs their
+ability to function.
+    </p>
+  </section></section>
+
+  <section id="threat-model-threats"><div class="header-wrapper"><h2 id="x3-threats"><bdi class="secno">3. </bdi>Threats</h2><a class="self-link" href="#threat-model-threats" aria-label="Permalink for Section 3."></a></div>
+    
+    <section class="tm-toc" id="threat-list-0"><div class="header-wrapper"><h3 id="threat-list"><bdi class="secno">3.1 </bdi>Threat List</h3><a class="self-link" href="#threat-list" aria-label="Permalink for Section 3.1"></a></div>
+      
+        
+        <p class="threatCategory">Target Threats</p>
+        <ol class="threat-toc">
+          <li value="1"><a href="#unauthorized-issuer-spoofing">Unauthorized Issuer Spoofing</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="2"><a href="#recognized-entity-credential-tampering">Recognized Entity Credential Tampering</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li>
+        </ol>
+        
+        <p class="threatCategory">Implementation Threats</p>
+        <ol class="threat-toc">
+          <li value="3"><a href="#list-retrieval-denial-of-service">List Retrieval Denial of Service</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="4"><a href="#privacy-leakage-via-list-fetch">Privacy Leakage via List Fetch</a> 
+          <span class="threat-tag threat-tag-privacy">privacy</span>
+        
+    </li><li value="5"><a href="#unvetted-recognized-entity-credential-propagation">Unvetted Recognized Entity Credential Propagation</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="6"><a href="#list-publisher-impersonation">List Publisher Impersonation</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="7"><a href="#stale-recognition-acceptance">Stale Recognition Acceptance</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="8"><a href="#external-resource-substitution">External Resource Substitution</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="9"><a href="#unbounded-recognition-chain-trust">Unbounded Recognition Chain Trust</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="10"><a href="#abuse-of-recognized-actions">Abuse of Recognized Actions</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="11"><a href="#overly-permissive-schema-constraints">Overly Permissive Schema Constraints</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="12"><a href="#json-schema-attack">JSON Schema Attack</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li>
+        </ol>
+        
+        <p class="threatCategory">External Threats</p>
+        <ol class="threat-toc">
+          <li value="13"><a href="#surveillance-of-recognized-entity-identifiers">Surveillance of Recognized Entity Identifiers</a> 
+          <span class="threat-tag threat-tag-privacy">privacy</span>
+        
+    </li><li value="14"><a href="#harms-by-association">Harms by Association</a> 
+          <span class="threat-tag threat-tag-privacy">privacy</span>
+        
+    </li><li value="15"><a href="#compromise-of-recognized-entity-identifier">Compromise of Recognized Entity Identifier</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li><li value="16"><a href="#verifier-trust-anchor-misconfiguration">Verifier Trust Anchor Misconfiguration</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li>
+        </ol>
+        
+        <p class="threatCategory">Dependency Threats</p>
+        <ol class="threat-toc">
+          <li value="17"><a href="#anti-competitive-list-gatekeeping">Anti-Competitive List Gatekeeping</a> 
+          <span class="threat-tag threat-tag-market-competition">market competition</span>
+        
+    </li><li value="18"><a href="#cryptographically-relevant-quantum-computer-breaks-cryptography">Cryptographically Relevant Quantum Computer Breaks Cryptography</a> 
+          <span class="threat-tag threat-tag-security">security</span>
+        
+    </li>
+        </ol>
+        
+      </section>
+    <section class="tm-details" id="threat-details"><div class="header-wrapper"><h3 id="x3-2-threat-details"><bdi class="secno">3.2 </bdi>Threat Details</h3><a class="self-link" href="#threat-details" aria-label="Permalink for Section 3.2"></a></div>
+      
+        
+        <p class="threatCategory">Target Threats</p>
+          
+      <section class="threatDetail" id="t1-unauthorized-issuer-spoofing"><div class="header-wrapper"><h4 id="unauthorized-issuer-spoofing"><bdi class="secno">3.2.1 </bdi>T1. Unauthorized Issuer Spoofing</h4><a class="self-link" href="#unauthorized-issuer-spoofing" aria-label="Permalink for Section 3.2.1"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="unauthorized-issuer-spoofing-inner">T1. Unauthorized Issuer Spoofing
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#unauthorized-issuer-spoofing-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            An entity that has not been granted a <code>RecognizedEntityCredential</code> by a legitimate <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-4">list publisher</a> attempts to present itself as a recognized issuer. The attacker fabricates, replays, or reuses a stolen <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-5">recognized entity credential</a> to make their <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-5">verifiable credentials</a> appear to originate from a legitimately recognized entity. Without strict cryptographic verification of the full <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-6">recognized entity credential</a> chain — from the issuer’s credential back to a trusted <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-5">list publisher</a> — a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-6">verifier</a> may accept credentials from actors who were never actually recognized. This is particularly dangerous in high-stakes scenarios such as cross-border trade finance or product conformity assessment, where a fraudulent issuer could cause significant economic harm.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R1. Cryptographic Verification of the Recognized Entity Credential Chain (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-7">Verifiers</a> cryptographically verify that every <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-7">recognized entity credential</a> in a presented chain carries a valid proof, that the <code>credentialSubject.id</code> of the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-8">recognized entity credential</a> matches the <code>issuer.id</code> of the credential under evaluation, and that the outermost <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-9">recognized entity credential</a> was issued by an entity within the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-8">verifier</a>’s configured set of trust anchors. The specification requires conforming processors to produce errors when these checks fail, preventing unverified entities from appearing to be recognized.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="F4" href="#dfn-f4" class="internalDFN" id="ref-for-dfn-f4-3">F4: Present Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-2">F5: Retrieve List</a>, <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-6">O2: Dependent Verifiable Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-10">O1: Recognized Entity Credential</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Spoofing)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t2-recognized-entity-credential-tampering"><div class="header-wrapper"><h4 id="recognized-entity-credential-tampering"><bdi class="secno">3.2.2 </bdi>T2. Recognized Entity Credential Tampering</h4><a class="self-link" href="#recognized-entity-credential-tampering" aria-label="Permalink for Section 3.2.2"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="recognized-entity-credential-tampering-inner">T2. Recognized Entity Credential Tampering
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#recognized-entity-credential-tampering-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            When a <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-3">holder</a> presents a bundle containing both their own <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-7">verifiable credential</a> and a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-11">recognized entity credential</a>, a malicious intermediary could swap or modify the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-12">recognized entity credential</a>, substituting one that makes an unrecognized issuer appear legitimate. For example, a transport layer intermediary could replace a valid <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-13">recognized entity credential</a> bound to Issuer A with one bound to Issuer B, effectively laundering an unrecognized issuer’s credentials through a legitimate recognition chain. Without integrity protection on the binding between the <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-8">verifiable credential</a> and its associated <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-14">recognized entity credential</a>, such substitution is undetectable.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R2. Cryptographic Binding Between Credential and Recognition (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-15">Recognized entity credentials</a> are cryptographically signed by the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-6">list publisher</a> using a verifiable proof. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-9">Verifiers</a> confirm that the <code>credentialSubject.id</code> of the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-16">recognized entity credential</a> exactly matches the <code>issuer.id</code> (or <code>issuer</code> value) in the presented <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-9">verifiable credential</a>. Any mismatch causes the verification to fail. Because each <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-17">recognized entity credential</a> is independently signed, tampering with the binding is detectable through standard proof verification.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="F4" href="#dfn-f4" class="internalDFN" id="ref-for-dfn-f4-4">F4: Present Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-10">O2: Dependent Verifiable Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-18">O1: Recognized Entity Credential</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Tampering)</td>
+          </tr>
+        </tbody></table>
+        <p class="threatCategory">Implementation Threats</p>
+          
+      <section class="threatDetail" id="t3-list-retrieval-denial-of-service"><div class="header-wrapper"><h4 id="list-retrieval-denial-of-service"><bdi class="secno">3.2.3 </bdi>T3. List Retrieval Denial of Service</h4><a class="self-link" href="#list-retrieval-denial-of-service" aria-label="Permalink for Section 3.2.3"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="list-retrieval-denial-of-service-inner">T3. List Retrieval Denial of Service
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#list-retrieval-denial-of-service-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            When <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-10">verifiers</a> fetch <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-19">recognized entity credential</a> resources directly from external URLs, two classes of denial-of-service condition can arise. At the network layer, a surge of simultaneous verification requests can overwhelm the <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-3">publisher system</a> list host, turning the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-20">recognized entity credential</a> list into a single point of failure; alternatively, a slow-drip server can return a response byte-by-byte, causing <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-11">verifier</a> processes to hang indefinitely and exhaust connection pools. At the data layer, a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-21">recognized entity credential</a> whose list of recognized entities grows to an impractical size — either through legitimate growth or adversarial inflation — can exhaust memory or CPU when the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-12">verifier</a> naively loads, parses, or searches the entire list during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-2">Validate Credential(s)</a>. High-throughput verification systems (such as customs authorities processing thousands of trade documents per hour) are especially vulnerable to both classes of attack.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R3. Credential Stapling, Caching, Timeouts, and Size Limits (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-4">Holders</a> present <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-22">recognized entity credentials</a> directly to <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-13">verifiers</a> (“credential stapling”) rather than requiring <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-14">verifiers</a> to fetch them, distributing load away from the list host. When direct fetching is necessary, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-15">verifier</a> implementations enforce both connection and read timeouts and enforce maximum payload size limits on all list fetches. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-16">Verifiers</a> impose maximum list size thresholds and reject or skip lists that exceed configurable limits. Implementations use streaming or paginated access patterns rather than loading entire lists into memory. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-17">Verifiers</a> cache resolved <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-23">recognized entity credentials</a> with appropriate TTLs aligned to the credential’s <code>validUntil</code> period. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-7">List publishers</a> deploy content delivery network infrastructure, rate limiting, and paginated or indexed lookup mechanisms to allow <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-18">verifiers</a> to check membership without retrieving full lists.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-24">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-8">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-5">E3: Holder</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-19">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-3">F5: Retrieve List</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-3">P6: Validate Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-4">C1: Publisher System</a>, <a data-link-type="dfn|abstract-op" data-lt="C4" href="#dfn-c4" class="internalDFN" id="ref-for-dfn-c4-2">C4: Verifier System</a>, <a data-link-type="dfn|abstract-op" data-lt="S1" href="#dfn-s1" class="internalDFN" id="ref-for-dfn-s1-1">S1: Publisher Storage</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Denial of Service)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t4-privacy-leakage-via-list-fetch"><div class="header-wrapper"><h4 id="privacy-leakage-via-list-fetch"><bdi class="secno">3.2.4 </bdi>T4. Privacy Leakage via List Fetch</h4><a class="self-link" href="#privacy-leakage-via-list-fetch" aria-label="Permalink for Section 3.2.4"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="privacy-leakage-via-list-fetch-inner">T4. Privacy Leakage via List Fetch
+                  
+          <span class="threat-tag threat-tag-privacy">privacy</span>
+        
+                </h4><a class="self-link" href="#privacy-leakage-via-list-fetch-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            When a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-20">verifier</a> fetches a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-25">recognized entity credential</a> over the network to confirm an <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-6">issuer</a>’s status, the party serving that fetch learns that a verification event involving that specific <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-7">issuer</a> is occurring. The fetch is correlated with the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-21">verifier</a>’s IP address and timestamp. In high-volume ecosystems with many <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-8">issuers</a> each referenced by a unique URL, the serving party can build detailed surveillance logs mapping which <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-22">verifiers</a> are checking which <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-9">issuers</a> at what times — revealing commercial relationships, transaction volumes, and business activity patterns that neither the <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-10">issuer</a> nor the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-23">verifier</a> intended to disclose. Who learns this depends on where the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-26">recognized entity credential</a> is retrieved from. Fetching from a <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-9">list publisher</a>’s server exposes the verification event to the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-10">list publisher</a>. Fetching from a <code>whois</code> service endpoint declared in an <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-11">issuer</a>’s controlled identifier document exposes it to the <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-12">issuer</a> itself, which learns of each verification of its own credentials and cannot be mitigated by retrieving a larger list, because such an endpoint serves a single <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-13">issuer</a> by construction.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R4. Credential Stapling and Bulk List Retrieval (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          Deployments choose a delivery mechanism according to how much it discloses. Delivery by the <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-6">holder</a> discloses the least. <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-7">Holders</a> present the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-27">recognized entity credential</a> directly alongside their <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-11">verifiable credential</a> (“credential stapling”), so no third party is contacted at verification time and no party other than the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-24">verifier</a> learns that the verification occurred. Retrieval from a <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-11">list publisher</a> discloses more, and <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-25">verifiers</a> that retrieve the full <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-28">recognized entity credential</a> rather than contacting a per-issuer endpoint ensure that any single fetch reveals only that the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-26">verifier</a> is interested in some entity in that list, not which specific <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-14">issuer</a> is being verified. Retrieval from a <code>whois</code> service endpoint discloses the most, because the endpoint serves a single <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-15">issuer</a> and that <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-16">issuer</a> therefore learns of every verification of its own credentials. When a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-27">verifier</a> cannot avoid fetching, it reduces the exposure by caching retrieved <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-29">recognized entity credentials</a> for their validity period rather than fetching them per transaction, and by issuing the request through Oblivious HTTP [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc9458" title="Oblivious HTTP">RFC9458</a></cite>], which separates the request from the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-28">verifier</a>’s IP address so that the serving party learns which <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-30">recognized entity credential</a> was requested but not who requested it. Implementers are advised to use privacy-preserving techniques such as anonymous credentials or blind fetch proxies for particularly sensitive ecosystems.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-4">F5: Retrieve List</a>, <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-5">C1: Publisher System</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Information Disclosure)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t5-unvetted-recognized-entity-credential-propagation"><div class="header-wrapper"><h4 id="unvetted-recognized-entity-credential-propagation"><bdi class="secno">3.2.5 </bdi>T5. Unvetted Recognized Entity Credential Propagation</h4><a class="self-link" href="#unvetted-recognized-entity-credential-propagation" aria-label="Permalink for Section 3.2.5"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="unvetted-recognized-entity-credential-propagation-inner">T5. Unvetted Recognized Entity Credential Propagation
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#unvetted-recognized-entity-credential-propagation-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-8">holder</a> who receives a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-31">recognized entity credential</a> may share it with others without independently verifying its integrity or provenance. A malicious or negligent actor could craft a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-32">recognized entity credential</a> that lists fraudulent or compromised entities as recognized <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-17">issuers</a>, then propagate it through peer-to-peer channels outside the <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-5">Retrieve List</a> flow. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-29">Verifiers</a> who accept the credential without running <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-4">Validate Credential(s)</a> against an independently-established trust anchor may unknowingly accept <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-12">dependent verifiable credentials</a> from untrustworthy sources. The decentralized nature of the specification amplifies this risk: a single unvetted credential shared widely can rapidly corrupt the trust assumptions of many parties across an ecosystem.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R8. Independent Cryptographic Verification Before Acting on Any Recognized Entity Credential (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-30">Verifiers</a> independently verify the cryptographic integrity and provenance of any <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-33">recognized entity credential</a> before acting on it, regardless of the channel through which it was received. The <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-12">list publisher</a> identified as the issuer of the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-34">recognized entity credential</a> is validated against a trust anchor established through independent, out-of-band means — not through the credential itself. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-31">Verifiers</a> do not treat peer acceptance of a credential as evidence of its validity. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-32">Verifiers</a> also confirm that the credential has not expired and has not been revoked before relying upon it.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-35">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-13">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-18">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-9">E3: Holder</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-33">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="F4" href="#dfn-f4" class="internalDFN" id="ref-for-dfn-f4-5">F4: Present Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-5">P6: Validate Credential(s)</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Spoofing)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t6-list-publisher-impersonation"><div class="header-wrapper"><h4 id="list-publisher-impersonation"><bdi class="secno">3.2.6 </bdi>T6. List Publisher Impersonation</h4><a class="self-link" href="#list-publisher-impersonation" aria-label="Permalink for Section 3.2.6"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="list-publisher-impersonation-inner">T6. List Publisher Impersonation
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#list-publisher-impersonation-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A malicious actor could create a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-36">recognized entity credential</a> that mimics a well-known <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-14">list publisher</a> by using a similar or confusable issuer identifier or display name. A <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-34">verifier</a> that does not independently validate the issuer identifier against a known root of trust during <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-2">Configure Verifier</a> could be deceived into treating an attacker-controlled list as authoritative. This is distinct from unauthorized issuer spoofing (T1): rather than an unrecognized <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-19">issuer</a> presenting fraudulent credentials, the attacker here fabricates the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-15">list publisher</a> identity itself — causing the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-35">verifier</a> to accept an entirely attacker-controlled recognition registry as a legitimate trust anchor.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R9. Out-of-Band Validation of List Publisher Identifiers (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-36">Verifiers</a> validate the issuer identifier of any <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-37">recognized entity credential</a> against a pre-established set of trusted identifiers obtained through independent, out-of-band means before adding it to their configured trust anchors during <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-3">Configure Verifier</a>. Display names, logos, and human-readable labels are not sufficient — the cryptographic identifier (e.g., DID or HTTPS URL) is always verified. Governance frameworks publish canonical, authoritative identifiers for <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-16">list publishers</a> through an independently-secured channel so that <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-37">verifiers</a> have a reliable reference to check against.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-38">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-17">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-38">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-4">P3: Configure Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-6">P6: Validate Credential(s)</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Spoofing)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t7-stale-recognition-acceptance"><div class="header-wrapper"><h4 id="stale-recognition-acceptance"><bdi class="secno">3.2.7 </bdi>T7. Stale Recognition Acceptance</h4><a class="self-link" href="#stale-recognition-acceptance" aria-label="Permalink for Section 3.2.7"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="stale-recognition-acceptance-inner">T7. Stale Recognition Acceptance
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#stale-recognition-acceptance-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A revoked or compromised <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-20">issuer</a> may continue to pass <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-7">Validate Credential(s)</a> through two related failure modes. First, a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-39">recognized entity credential</a> with an excessively long <code>validUntil</code> period remains valid long after the <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-21">issuer</a>’s recognition has been withdrawn; a <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-10">holder</a> who cached the credential before revocation may continue to present it successfully. Second, even when <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-18">list publishers</a> set appropriate validity periods and publish timely updates via <a data-link-type="dfn|abstract-op" data-lt="P7" href="#dfn-p7" class="internalDFN" id="ref-for-dfn-p7-2">Update List</a>, a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-39">verifier</a> that caches aggressively or operates offline may continue using stale list data well beyond an acceptable freshness window, accepting credentials from issuers whose recognition has since changed. Both failure modes share the same impact — a credential that should fail validation passes — but require complementary mitigations at the publisher and verifier levels respectively.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R10. Risk-Proportionate Validity Periods, Revocation, and Cache Freshness Controls (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-19">List publishers</a> select validity periods appropriate to the risk profile and operational capacity of the ecosystem. High-risk or large ecosystems prefer short validity periods (24–48 hours); smaller, lower-risk ecosystems might use longer periods provided robust revocation mechanisms are also deployed. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-20">List publishers</a> provide revocation status endpoints that allow point-in-time queries rather than requiring full list re-fetches. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-40">Verifier</a> implementations check the <code>validUntil</code> field during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-8">Validate Credential(s)</a> and do not accept expired credentials. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-41">Verifiers</a> respect cache-control directives from <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-21">list publishers</a> and enforce maximum cache TTLs appropriate to the ecosystem risk profile, performing fresh retrieval or live revocation checks when cached data exceeds the configured staleness threshold. Governance frameworks specify acceptable cache freshness windows for compliant <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-42">verifier</a> implementations.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-40">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-22">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-22">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-11">E3: Holder</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-43">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-3">P1: Create List</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-9">P6: Validate Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="P7" href="#dfn-p7" class="internalDFN" id="ref-for-dfn-p7-3">P7: Update List</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-6">F5: Retrieve List</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Tampering)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t8-external-resource-substitution"><div class="header-wrapper"><h4 id="external-resource-substitution"><bdi class="secno">3.2.8 </bdi>T8. External Resource Substitution</h4><a class="self-link" href="#external-resource-substitution" aria-label="Permalink for Section 3.2.8"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="external-resource-substitution-inner">T8. External Resource Substitution
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#external-resource-substitution-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-41">recognized entity credential</a> may reference external resources — such as <code>outputValidation</code> schema files or governance documents — via URL. If those URLs are not integrity-protected, an attacker can substitute malicious content through any of three mechanisms: (1) compromising the hosting server directly and altering the files in <a data-link-type="dfn|abstract-op" data-lt="S1" href="#dfn-s1" class="internalDFN" id="ref-for-dfn-s1-2">publisher storage</a>; (2) acquiring or hijacking the domain the URL resolves to (e.g., via domain expiry or sale), allowing the new controller to replace previously trusted content; or (3) poisoning the DNS cache used by the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-44">verifier</a> during <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-7">Retrieve List</a>, redirecting resolution to an attacker-controlled server without the domain changing hands. In all three cases, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-45">verifiers</a> running <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-10">Validate Credential(s)</a> who fetch and apply the substituted resource may accept <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-13">dependent verifiable credentials</a> that fall outside the intended schema, or reject valid ones, without any indication that the external resource has been tampered with.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R11. Content Integrity Protection, DNSSEC, and TLS Verification (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-23">List publishers</a> use content integrity protection (such as <code>digestMultibase</code>) for all externally-referenced resources in <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-42">recognized entity credentials</a>. Because content integrity verification detects substitution regardless of whether the attack is a server compromise, domain takeover, or DNS hijack, it is the primary defense against all three mechanisms. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-46">Verifiers</a> verify the integrity of any fetched resource against the declared digest before applying it during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-11">Validate Credential(s)</a>, and treat a digest mismatch as a hard failure. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-47">Verifiers</a> use DNSSEC-validating resolvers and verify TLS certificates against expected values when fetching external resources. Where possible, schema files are embedded directly in the credential or hosted on infrastructure under the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-24">list publisher</a>’s direct control within the <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-6">publisher system</a>. Any <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-43">recognized entity credential</a> that references external resources without integrity protection is rejected by conforming <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-48">verifiers</a>.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-44">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-25">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-49">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-8">F5: Retrieve List</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-12">P6: Validate Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="C1" href="#dfn-c1" class="internalDFN" id="ref-for-dfn-c1-7">C1: Publisher System</a>, <a data-link-type="dfn|abstract-op" data-lt="S1" href="#dfn-s1" class="internalDFN" id="ref-for-dfn-s1-3">S1: Publisher Storage</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Tampering)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t9-unbounded-recognition-chain-trust"><div class="header-wrapper"><h4 id="unbounded-recognition-chain-trust"><bdi class="secno">3.2.9 </bdi>T9. Unbounded Recognition Chain Trust</h4><a class="self-link" href="#unbounded-recognition-chain-trust" aria-label="Permalink for Section 3.2.9"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="unbounded-recognition-chain-trust-inner">T9. Unbounded Recognition Chain Trust
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#unbounded-recognition-chain-trust-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            The <code>recognizedIn</code> property allows <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-45">recognized entity credentials</a> to chain to other registries — such as ETSI Trust Service Lists, X.509 certificate authority lists, or other <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-46">recognized entity credentials</a>. A compromised or malicious entry in a lower-level registry could be transitively trusted if <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-50">verifiers</a> do not enforce depth limits or independently validate each link during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-13">Validate Credential(s)</a>. Unbounded transitive trust chains amplify the blast radius of any single compromised registry: an attacker who compromises a registry at any depth gains the ability to assert recognition claims that propagate upward through the entire chain to <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-51">verifiers</a> that have configured only a top-level trust anchor.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R12. Chain Depth Limits and Per-Link Validation (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-52">Verifiers</a> enforce a maximum depth limit when traversing recognition chains via <code>recognizedIn</code>. Each link in the chain is independently validated for cryptographic integrity and issuer trust during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-14">Validate Credential(s)</a> — transitive trust from a higher-level registry does not substitute for independent validation of each link. Ecosystem governance frameworks specify maximum permitted chain depths and enumerate the specific registry types that might appear at each level. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-53">Verifiers</a> reject chains that exceed the configured depth or that include registry types not explicitly permitted by their governance configuration.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-47">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-26">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-54">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-9">F5: Retrieve List</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-15">P6: Validate Credential(s)</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Elevation of Privilege)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t10-abuse-of-recognized-actions"><div class="header-wrapper"><h4 id="abuse-of-recognized-actions"><bdi class="secno">3.2.10 </bdi>T10. Abuse of Recognized Actions</h4><a class="self-link" href="#abuse-of-recognized-actions" aria-label="Permalink for Section 3.2.10"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="abuse-of-recognized-actions-inner">T10. Abuse of Recognized Actions
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#abuse-of-recognized-actions-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            The <code>action</code> property in a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-48">recognized entity credential</a> is a free-form string (e.g., <code>issue</code>, <code>verify</code>). Without strict ecosystem-level governance of allowable action values, a <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-23">issuer</a> may present credentials claiming broad or undefined actions that <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-55">verifiers</a> interpret more permissively than the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-27">list publisher</a> intended during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-16">Validate Credential(s)</a>. This can grant recognized entities capabilities beyond what was authorized — for example, a credential authorizing <code>issue</code> for one credential type being interpreted as authorizing issuance of any credential type. Overly permissive interpretation could enable credential forgery, regulatory non-compliance, or fraud.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R13. Controlled Action Vocabulary and Strict Interpretation (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          Ecosystem governance frameworks define and publish a controlled vocabulary of permitted <code>action</code> values and their precise semantics. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-28">List publishers</a> use only values from the governed vocabulary when issuing <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-49">recognized entity credentials</a>. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-56">Verifiers</a> accept only <code>action</code> values they explicitly recognize and have been configured to trust during <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-5">Configure Verifier</a>. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-57">Verifiers</a> treat unknown, overly broad, or undefined action values as grounds for rejection during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-17">Validate Credential(s)</a> rather than falling back to permissive defaults.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-50">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-29">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-24">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-58">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-6">P3: Configure Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-18">P6: Validate Credential(s)</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Elevation of Privilege)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t11-overly-permissive-schema-constraints"><div class="header-wrapper"><h4 id="overly-permissive-schema-constraints"><bdi class="secno">3.2.11 </bdi>T11. Overly Permissive Schema Constraints</h4><a class="self-link" href="#overly-permissive-schema-constraints" aria-label="Permalink for Section 3.2.11"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="overly-permissive-schema-constraints-inner">T11. Overly Permissive Schema Constraints
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#overly-permissive-schema-constraints-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-30">list publisher</a> who creates a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-51">recognized entity credential</a> may specify <code>outputValidation</code> schema rules that are too broad, incomplete, or lax, inadvertently permitting recognized <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-25">issuers</a> to issue a wider class of <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-14">dependent verifiable credentials</a> than was intended. An <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-26">issuer</a> — acting legitimately within the stated schema constraints — could issue credential types that the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-31">list publisher</a> did not authorize, or the missing constraints could be exploited by a malicious <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-27">issuer</a> to produce credentials that technically pass <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-19">Validate Credential(s)</a> despite falling outside the intended recognition scope.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R14. Precise and Complete Schema Validation Rules (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-32">List publishers</a> define <code>outputValidation</code> schema rules that are as precise and restrictive as the intended recognition scope requires. Schemas enumerate permitted credential types explicitly rather than relying on broad or permissive patterns. Governance frameworks review and audit schema constraints as part of the <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-4">Create List</a> and <a data-link-type="dfn|abstract-op" data-lt="P7" href="#dfn-p7" class="internalDFN" id="ref-for-dfn-p7-4">Update List</a> processes. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-59">Verifiers</a> treat credentials that fail schema validation as invalid and do not relax validation rules to accept credentials that would otherwise be rejected.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-52">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-33">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-28">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-60">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-5">P1: Create List</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-20">P6: Validate Credential(s)</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Elevation of Privilege)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t12-json-schema-attack"><div class="header-wrapper"><h4 id="json-schema-attack"><bdi class="secno">3.2.12 </bdi>T12. JSON Schema Attack</h4><a class="self-link" href="#json-schema-attack" aria-label="Permalink for Section 3.2.12"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="json-schema-attack-inner">T12. JSON Schema Attack
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#json-schema-attack-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            The <code>outputValidation</code> property of a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-53">recognized entity credential</a> references JSON schema files used during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-21">Validate Credential(s)</a>. A maliciously crafted schema — introduced by a compromised <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-34">list publisher</a>, an attacker who has tampered with a schema hosted at an unprotected URL (see T11), or via a crafted <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-54">recognized entity credential</a> — may contain pathological regular expressions or deeply nested structures that cause catastrophic backtracking or excessive memory consumption in the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-61">verifier</a>’s JSON schema processor. This constitutes a denial-of-service attack against the <a data-link-type="dfn|abstract-op" data-lt="C4" href="#dfn-c4" class="internalDFN" id="ref-for-dfn-c4-3">verifier system</a> itself. Even without malicious intent, poorly-written schemas can cause the same effect.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R15. Schema Complexity Limits and Safe Regex Validation (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-62">Verifier</a> implementations enforce time and memory limits on all JSON schema validation operations performed during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-22">Validate Credential(s)</a>. Implementations use schema validation libraries that protect against regex denial-of-service (ReDoS) by using linear-time regex engines or by bounding pattern complexity. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-35">List publishers</a> avoid complex or unbounded regular expressions in <code>outputValidation</code> schemas. Governance frameworks require schema review as part of the <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-6">Create List</a> process to catch pathological patterns before publication.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-55">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-36">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-63">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P1" href="#dfn-p1" class="internalDFN" id="ref-for-dfn-p1-7">P1: Create List</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-23">P6: Validate Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="C4" href="#dfn-c4" class="internalDFN" id="ref-for-dfn-c4-4">C4: Verifier System</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Denial of Service)</td>
+          </tr>
+        </tbody></table>
+        <p class="threatCategory">External Threats</p>
+          
+      <section class="threatDetail" id="t13-surveillance-of-recognized-entity-identifiers"><div class="header-wrapper"><h4 id="surveillance-of-recognized-entity-identifiers"><bdi class="secno">3.2.13 </bdi>T13. Surveillance of Recognized Entity Identifiers</h4><a class="self-link" href="#surveillance-of-recognized-entity-identifiers" aria-label="Permalink for Section 3.2.13"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="surveillance-of-recognized-entity-identifiers-inner">T13. Surveillance of Recognized Entity Identifiers
+                  
+          <span class="threat-tag threat-tag-privacy">privacy</span>
+        
+                </h4><a class="self-link" href="#surveillance-of-recognized-entity-identifiers-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-56">recognized entity credential</a> publicly names <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-29">issuers</a> with their identifiers, legal names, and other attributes. Aggregating these credentials across multiple lists enables systematic profiling and surveillance of recognized entities, including natural persons acting as <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-30">issuers</a> or <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-64">verifiers</a>. Because the credential is designed to be publicly retrievable via <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-10">Retrieve List</a>, any party that fetches it from <a data-link-type="dfn|abstract-op" data-lt="S1" href="#dfn-s1" class="internalDFN" id="ref-for-dfn-s1-4">publisher storage</a> gains access to the full membership of the list. This risk is amplified when multiple lists are aggregated — cross-referencing identifiers across lists can reveal entity relationships, activity patterns, and ecosystem memberships that no single list discloses on its own.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R6. Minimize Personal Information in Recognized Entity Credentials (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-37">List publishers</a> minimize the personal information included in <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-57">recognized entity credentials</a> for natural persons. Where feasible, pseudonymous or role-based identifiers are preferred over personally identifying information such as legal names and images. Governance frameworks establish policies on what attributes are permitted in a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-58">recognized entity credential</a> and require a documented justification for any personally identifying fields. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-38">List publishers</a> advise recognized entities that their inclusion in a publicly-accessible list is effectively a public disclosure of their participation in the ecosystem.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-59">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-39">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-31">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="S1" href="#dfn-s1" class="internalDFN" id="ref-for-dfn-s1-5">S1: Publisher Storage</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-11">F5: Retrieve List</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Information Disclosure)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t14-harms-by-association"><div class="header-wrapper"><h4 id="harms-by-association"><bdi class="secno">3.2.14 </bdi>T14. Harms by Association</h4><a class="self-link" href="#harms-by-association" aria-label="Permalink for Section 3.2.14"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="harms-by-association-inner">T14. Harms by Association
+                  
+          <span class="threat-tag threat-tag-privacy">privacy</span>
+        
+                </h4><a class="self-link" href="#harms-by-association-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-60">recognized entity credential</a> reveals the membership structure of the ecosystem it governs. Even in ecosystems intended to remain private, the credential may escape controlled distribution — for example, when a member of a private group publishes it externally, or when it is cached by intermediaries after being retrieved via <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-12">Retrieve List</a>. This exposes which entities participate in the ecosystem, which may be commercially sensitive, create competitive risks, or expose individuals and organizations to targeting, discrimination, or reputational harm. Unlike selective disclosure mechanisms, containment relies entirely on the honesty of all recipients — a single disclosure breaks the boundary for the entire list.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R7. Scoping and Distribution Controls for Sensitive Ecosystems (Accept)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          The specification cannot prevent a <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-12">holder</a> or <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-65">verifier</a> from disclosing a received <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-61">recognized entity credential</a> to third parties. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-40">List publishers</a> treat the act of publishing a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-62">recognized entity credential</a> as equivalent to a public disclosure of the membership list. For highly sensitive ecosystems, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-41">list publishers</a> consider issuing individual <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-63">recognized entity credentials</a> to each entity rather than a single list-style credential, limiting the blast radius of any single disclosure. Governance frameworks explicitly advise ecosystem participants that membership in a recognized entity list might become publicly known and that sensitive ecosystems might be better served by alternative trust mechanisms.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-64">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-42">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E3" href="#dfn-e3" class="internalDFN" id="ref-for-dfn-e3-13">E3: Holder</a>, <a data-link-type="dfn|abstract-op" data-lt="S1" href="#dfn-s1" class="internalDFN" id="ref-for-dfn-s1-6">S1: Publisher Storage</a>, <a data-link-type="dfn|abstract-op" data-lt="F5" href="#dfn-f5" class="internalDFN" id="ref-for-dfn-f5-13">F5: Retrieve List</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Information Disclosure)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t15-compromise-of-recognized-entity-identifier"><div class="header-wrapper"><h4 id="compromise-of-recognized-entity-identifier"><bdi class="secno">3.2.15 </bdi>T15. Compromise of Recognized Entity Identifier</h4><a class="self-link" href="#compromise-of-recognized-entity-identifier" aria-label="Permalink for Section 3.2.15"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="compromise-of-recognized-entity-identifier-inner">T15. Compromise of Recognized Entity Identifier
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#compromise-of-recognized-entity-identifier-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-32">issuer</a> recognized in a <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-65">recognized entity credential</a> is identified by a cryptographic identifier (such as a DID or a public key). If an attacker compromises the private key material associated with that identifier — through phishing, insider threat, infrastructure breach, or cryptographic weakness — the attacker can impersonate the legitimate <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-33">issuer</a> during <a data-link-type="dfn|abstract-op" data-lt="P4" href="#dfn-p4" class="internalDFN" id="ref-for-dfn-p4-2">Credential Issuance</a>. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-66">Verifiers</a> performing <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-24">Validate Credential(s)</a> will see a valid cryptographic signature from a recognized identifier, and will have no basis to distinguish legitimate from fraudulent issuance. This is distinct from T1 (spoofing a non-recognized issuer) because the compromised identifier is genuinely enrolled in the registry.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R16. Key Rotation, Revocation Notification, and Hardware Security (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-34">Issuers</a> protect signing keys with hardware security modules or equivalent tamper-resistant key storage. <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-43">List publishers</a> support rapid key rotation and revocation notification workflows so that a compromised identifier can be removed from recognition without waiting for scheduled <a data-link-type="dfn|abstract-op" data-lt="P7" href="#dfn-p7" class="internalDFN" id="ref-for-dfn-p7-5">Update List</a> cycles. Governance frameworks require <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-35">issuers</a> to report suspected key compromise promptly and define incident response procedures. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-67">Verifiers</a> subscribe to revocation feeds or check revocation status in near-real-time for high-value validation scenarios.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-66">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-44">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-36">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-68">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P4" href="#dfn-p4" class="internalDFN" id="ref-for-dfn-p4-3">P4: Credential Issuance</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-25">P6: Validate Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="P7" href="#dfn-p7" class="internalDFN" id="ref-for-dfn-p7-6">P7: Update List</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Spoofing)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t16-verifier-trust-anchor-misconfiguration"><div class="header-wrapper"><h4 id="verifier-trust-anchor-misconfiguration"><bdi class="secno">3.2.16 </bdi>T16. Verifier Trust Anchor Misconfiguration</h4><a class="self-link" href="#verifier-trust-anchor-misconfiguration" aria-label="Permalink for Section 3.2.16"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="verifier-trust-anchor-misconfiguration-inner">T16. Verifier Trust Anchor Misconfiguration
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#verifier-trust-anchor-misconfiguration-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            During <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-7">Configure Verifier</a>, a <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-69">verifier</a> operator may accidentally or incorrectly configure the system to reference the wrong <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-67">recognized entity credential</a> as its trust anchor — for example, pointing to a test registry instead of a production registry, or to a registry managed by a different governance authority than intended. As a result, during <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-26">Validate Credential(s)</a>, the <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-70">verifier</a> will accept credentials from issuers recognized by the wrong registry, potentially granting trust to entities that have not been vetted by the intended governance framework. This is an accidental misconfiguration risk rather than an active attack.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R17. Trust Anchor Verification and Configuration Audits (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-71">Verifier</a> implementations display the resolved identity of the configured trust anchor (e.g., the subject DID or name from the <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-68">recognized entity credential</a>) prominently during setup so that operators can confirm they have the correct registry. Deployment tooling requires explicit operator confirmation when configuring trust anchors in production environments. Governance frameworks provide well-known, stable identifiers for their authoritative registries and distinguish test and production registries clearly. Operators perform periodic audits of <a data-link-type="dfn|abstract-op" data-lt="C4" href="#dfn-c4" class="internalDFN" id="ref-for-dfn-c4-5">verifier system</a> trust anchor configuration as part of routine security reviews.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-69">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-45">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-72">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P3" href="#dfn-p3" class="internalDFN" id="ref-for-dfn-p3-8">P3: Configure Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-27">P6: Validate Credential(s)</a>, <a data-link-type="dfn|abstract-op" data-lt="C4" href="#dfn-c4" class="internalDFN" id="ref-for-dfn-c4-6">C4: Verifier System</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Elevation of Privilege)</td>
+          </tr>
+        </tbody></table>
+        <p class="threatCategory">Dependency Threats</p>
+          
+      <section class="threatDetail" id="t17-anti-competitive-list-gatekeeping"><div class="header-wrapper"><h4 id="anti-competitive-list-gatekeeping"><bdi class="secno">3.2.17 </bdi>T17. Anti-Competitive List Gatekeeping</h4><a class="self-link" href="#anti-competitive-list-gatekeeping" aria-label="Permalink for Section 3.2.17"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="anti-competitive-list-gatekeeping-inner">T17. Anti-Competitive List Gatekeeping
+                  
+          <span class="threat-tag threat-tag-market-competition">market competition</span>
+        
+                </h4><a class="self-link" href="#anti-competitive-list-gatekeeping-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            A first-mover that establishes the initial <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-70">recognized entity credential</a> list for a market vertical — such as a national business register, an accreditation authority, or an industry consortium — can selectively deny registration to competitors or disfavored entities, creating a de facto monopoly or anti-competitive lock-in. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-73">Verifiers</a> that rely exclusively on a single <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-71">recognized entity credential</a> list become entirely dependent on the <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-46">list publisher</a>’s goodwill and business interests. Conversely, a <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-47">list publisher</a> can also be coerced by governments or other powerful actors into revoking the recognition of legitimate entities, effectively censoring them from the ecosystem.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R5. List Pluralism via Multi-Trust-Anchor Configuration (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          The specification permits and encourages multiple overlapping and competing <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-72">recognized entity credential</a> registries. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-74">Verifiers</a> are configurable with multiple independent trust anchors, so that an entity recognized by any one list from within the configured set is accepted. This prevents any single <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-48">list publisher</a> from having veto power over ecosystem participation. Ecosystem designers actively encourage multiple independent <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-49">list publishers</a> to publish <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-73">recognized entity credentials</a> for the same market vertical, reducing systemic dependency on any single authority.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-50">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="F2" href="#dfn-f2" class="internalDFN" id="ref-for-dfn-f2-1">F2: Issue Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-74">O1: Recognized Entity Credential</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Denial of Service)</td>
+          </tr>
+        </tbody></table>
+      <section class="threatDetail" id="t18-cryptographically-relevant-quantum-computer-breaks-cryptography"><div class="header-wrapper"><h4 id="cryptographically-relevant-quantum-computer-breaks-cryptography"><bdi class="secno">3.2.18 </bdi>T18. Cryptographically Relevant Quantum Computer Breaks Cryptography</h4><a class="self-link" href="#cryptographically-relevant-quantum-computer-breaks-cryptography" aria-label="Permalink for Section 3.2.18"></a></div>
+        
+      </section>
+        <table class="threat">
+          
+          <tbody><tr>
+            <td class="threat-name">
+              <section>
+                <div class="header-wrapper"><h4 id="cryptographically-relevant-quantum-computer-breaks-cryptography-inner">T18. Cryptographically Relevant Quantum Computer Breaks Cryptography
+                  
+          <span class="threat-tag threat-tag-security">security</span>
+        
+                </h4><a class="self-link" href="#cryptographically-relevant-quantum-computer-breaks-cryptography-inner" aria-label="Permalink for this Section"></a></div>
+                <span class="index-link">[<a href="#threat-list">Threat List</a>]</span>
+              </section>
+            </td>
+          </tr>
+          
+        <tr>
+          <td class="threat-description">
+            The trust model for <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-75">recognized entity credentials</a> and <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-15">dependent verifiable credentials</a> depends on the cryptographic integrity of digital signatures. A sufficiently powerful cryptographically relevant quantum computer (<abbr title="Cryptographically Relevant Quantum Computer">CRQC</abbr>) could break the elliptic-curve and RSA-based signature schemes commonly used today, allowing an attacker to forge signatures on credentials without possessing the private key. If such a <abbr title="Cryptographically Relevant Quantum Computer">CRQC</abbr> capability becomes available before the ecosystem migrates to post-quantum cryptography, all previously issued credentials and recognition assertions become untrustworthy, and the entire chain of trust underpinning recognized entity infrastructure collapses.
+          </td>
+        </tr>
+        
+          
+          
+          <tr>
+        <td class="response-name">R18. Post-Quantum Cryptography Migration Planning (Reduce)</td>
+          </tr>
+          <tr>
+        <td class="response-desc">
+          <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-51">List publishers</a> and <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-37">issuers</a> monitor the development of post-quantum cryptographic standards (e.g., NIST PQC finalists) and adopt algorithm agility in credential formats so that signature suites can be swapped without redesigning the entire system. Governance frameworks establish migration timelines for transitioning <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-76">recognized entity credentials</a> to post-quantum signature schemes. <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-75">Verifiers</a> are prepared to support hybrid signature verification (classical + post-quantum) during transition periods. All parties are aware that credentials issued today using classical cryptography might be vulnerable to retroactive forgery if harvested and attacked later. For further guidance on defending against credential forgery, including forgery resulting from key compromise enabled by a <abbr title="Cryptographically Relevant Quantum Computer">CRQC</abbr>, see the <cite><a data-matched-text="[[[VC-FORGERY-DEFENSE]]]" href="https://www.w3.org/TR/vc-forgery-defense-1.0/">Verifiable Credential Forgery Defense v1.0</a></cite> specification.
+        </td>
+          </tr>
+          
+          <tr>
+          <td class="affected-component">Affected Components: <a data-link-type="dfn|abstract-op" data-lt="O1" href="#dfn-o1" class="internalDFN" id="ref-for-dfn-o1-77">O1: Recognized Entity Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="O2" href="#dfn-o2" class="internalDFN" id="ref-for-dfn-o2-16">O2: Dependent Verifiable Credential</a>, <a data-link-type="dfn|abstract-op" data-lt="E1" href="#dfn-e1" class="internalDFN" id="ref-for-dfn-e1-52">E1: List Publisher</a>, <a data-link-type="dfn|abstract-op" data-lt="E2" href="#dfn-e2" class="internalDFN" id="ref-for-dfn-e2-38">E2: Issuer</a>, <a data-link-type="dfn|abstract-op" data-lt="E4" href="#dfn-e4" class="internalDFN" id="ref-for-dfn-e4-76">E4: Verifier</a>, <a data-link-type="dfn|abstract-op" data-lt="P6" href="#dfn-p6" class="internalDFN" id="ref-for-dfn-p6-28">P6: Validate Credential(s)</a></td>
+        </tr>
+          
+          <tr>
+            <td class="taxonomy">Threat Taxonomy: STRIDE (Tampering)</td>
+          </tr>
+        </tbody></table>
+      </section>
+  </section>
+
+
+
+
+<section id="references" class="appendix"><div class="header-wrapper"><h2 id="a-references"><bdi class="secno">A. </bdi>References</h2><a class="self-link" href="#references" aria-label="Permalink for Appendix A."></a></div><section id="informative-references"><div class="header-wrapper"><h3 id="a-1-informative-references"><bdi class="secno">A.1 </bdi>Informative references</h3><a class="self-link" href="#informative-references" aria-label="Permalink for Appendix A.1"></a></div>
+    
+    <dl class="bibliography"><dt id="bib-rfc9458">[RFC9458]</dt><dd>
+      <a href="https://www.rfc-editor.org/info/rfc9458/"><cite>Oblivious HTTP</cite></a>. M. Thomson; C. A. Wood.  IETF. January 2024. Proposed Standard. URL: <a href="https://www.rfc-editor.org/info/rfc9458/">https://www.rfc-editor.org/info/rfc9458/</a>
+    </dd><dt id="bib-vc-forgery-defense">[VC-FORGERY-DEFENSE]</dt><dd>
+      <a href="https://www.w3.org/TR/vc-forgery-defense-1.0/"><cite>Verifiable Credential Forgery Defense v1.0</cite></a>. Wesley Smith; Elaine Wooton.  W3C. 25 August 2026. W3C Working Draft. URL: <a href="https://www.w3.org/TR/vc-forgery-defense-1.0/">https://www.w3.org/TR/vc-forgery-defense-1.0/</a>
+    </dd></dl>
+  </section></section><p role="navigation" id="back-to-top">
+    <a href="#title"><abbr title="Back to Top">↑</abbr></a>
+  </p><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-e1" aria-label="Links in this document to definition: E1 List Publisher">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-e1" aria-label="Permalink for definition: E1 List Publisher. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-e1-1" title="§ 1.1 Description">§ 1.1 Description</a> <a href="#ref-for-dfn-e1-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e1-3" title="Reference 3">(3)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-e1-4" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-e1-5" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e1-6" title="Reference 3">(3)</a> <a href="#ref-for-dfn-e1-7" title="Reference 4">(4)</a> <a href="#ref-for-dfn-e1-8" title="Reference 5">(5)</a> <a href="#ref-for-dfn-e1-9" title="Reference 6">(6)</a> <a href="#ref-for-dfn-e1-10" title="Reference 7">(7)</a> <a href="#ref-for-dfn-e1-11" title="Reference 8">(8)</a> <a href="#ref-for-dfn-e1-12" title="Reference 9">(9)</a> <a href="#ref-for-dfn-e1-13" title="Reference 10">(10)</a> <a href="#ref-for-dfn-e1-14" title="Reference 11">(11)</a> <a href="#ref-for-dfn-e1-15" title="Reference 12">(12)</a> <a href="#ref-for-dfn-e1-16" title="Reference 13">(13)</a> <a href="#ref-for-dfn-e1-17" title="Reference 14">(14)</a> <a href="#ref-for-dfn-e1-18" title="Reference 15">(15)</a> <a href="#ref-for-dfn-e1-19" title="Reference 16">(16)</a> <a href="#ref-for-dfn-e1-20" title="Reference 17">(17)</a> <a href="#ref-for-dfn-e1-21" title="Reference 18">(18)</a> <a href="#ref-for-dfn-e1-22" title="Reference 19">(19)</a> <a href="#ref-for-dfn-e1-23" title="Reference 20">(20)</a> <a href="#ref-for-dfn-e1-24" title="Reference 21">(21)</a> <a href="#ref-for-dfn-e1-25" title="Reference 22">(22)</a> <a href="#ref-for-dfn-e1-26" title="Reference 23">(23)</a> <a href="#ref-for-dfn-e1-27" title="Reference 24">(24)</a> <a href="#ref-for-dfn-e1-28" title="Reference 25">(25)</a> <a href="#ref-for-dfn-e1-29" title="Reference 26">(26)</a> <a href="#ref-for-dfn-e1-30" title="Reference 27">(27)</a> <a href="#ref-for-dfn-e1-31" title="Reference 28">(28)</a> <a href="#ref-for-dfn-e1-32" title="Reference 29">(29)</a> <a href="#ref-for-dfn-e1-33" title="Reference 30">(30)</a> <a href="#ref-for-dfn-e1-34" title="Reference 31">(31)</a> <a href="#ref-for-dfn-e1-35" title="Reference 32">(32)</a> <a href="#ref-for-dfn-e1-36" title="Reference 33">(33)</a> <a href="#ref-for-dfn-e1-37" title="Reference 34">(34)</a> <a href="#ref-for-dfn-e1-38" title="Reference 35">(35)</a> <a href="#ref-for-dfn-e1-39" title="Reference 36">(36)</a> <a href="#ref-for-dfn-e1-40" title="Reference 37">(37)</a> <a href="#ref-for-dfn-e1-41" title="Reference 38">(38)</a> <a href="#ref-for-dfn-e1-42" title="Reference 39">(39)</a> <a href="#ref-for-dfn-e1-43" title="Reference 40">(40)</a> <a href="#ref-for-dfn-e1-44" title="Reference 41">(41)</a> <a href="#ref-for-dfn-e1-45" title="Reference 42">(42)</a> <a href="#ref-for-dfn-e1-46" title="Reference 43">(43)</a> <a href="#ref-for-dfn-e1-47" title="Reference 44">(44)</a> <a href="#ref-for-dfn-e1-48" title="Reference 45">(45)</a> <a href="#ref-for-dfn-e1-49" title="Reference 46">(46)</a> <a href="#ref-for-dfn-e1-50" title="Reference 47">(47)</a> <a href="#ref-for-dfn-e1-51" title="Reference 48">(48)</a> <a href="#ref-for-dfn-e1-52" title="Reference 49">(49)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-e2" aria-label="Links in this document to definition: E2 Issuer">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-e2" aria-label="Permalink for definition: E2 Issuer. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-e2-1" title="§ 1.1 Description">§ 1.1 Description</a> <a href="#ref-for-dfn-e2-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e2-3" title="Reference 3">(3)</a> <a href="#ref-for-dfn-e2-4" title="Reference 4">(4)</a> <a href="#ref-for-dfn-e2-5" title="Reference 5">(5)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-e2-6" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-e2-7" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e2-8" title="Reference 3">(3)</a> <a href="#ref-for-dfn-e2-9" title="Reference 4">(4)</a> <a href="#ref-for-dfn-e2-10" title="Reference 5">(5)</a> <a href="#ref-for-dfn-e2-11" title="Reference 6">(6)</a> <a href="#ref-for-dfn-e2-12" title="Reference 7">(7)</a> <a href="#ref-for-dfn-e2-13" title="Reference 8">(8)</a> <a href="#ref-for-dfn-e2-14" title="Reference 9">(9)</a> <a href="#ref-for-dfn-e2-15" title="Reference 10">(10)</a> <a href="#ref-for-dfn-e2-16" title="Reference 11">(11)</a> <a href="#ref-for-dfn-e2-17" title="Reference 12">(12)</a> <a href="#ref-for-dfn-e2-18" title="Reference 13">(13)</a> <a href="#ref-for-dfn-e2-19" title="Reference 14">(14)</a> <a href="#ref-for-dfn-e2-20" title="Reference 15">(15)</a> <a href="#ref-for-dfn-e2-21" title="Reference 16">(16)</a> <a href="#ref-for-dfn-e2-22" title="Reference 17">(17)</a> <a href="#ref-for-dfn-e2-23" title="Reference 18">(18)</a> <a href="#ref-for-dfn-e2-24" title="Reference 19">(19)</a> <a href="#ref-for-dfn-e2-25" title="Reference 20">(20)</a> <a href="#ref-for-dfn-e2-26" title="Reference 21">(21)</a> <a href="#ref-for-dfn-e2-27" title="Reference 22">(22)</a> <a href="#ref-for-dfn-e2-28" title="Reference 23">(23)</a> <a href="#ref-for-dfn-e2-29" title="Reference 24">(24)</a> <a href="#ref-for-dfn-e2-30" title="Reference 25">(25)</a> <a href="#ref-for-dfn-e2-31" title="Reference 26">(26)</a> <a href="#ref-for-dfn-e2-32" title="Reference 27">(27)</a> <a href="#ref-for-dfn-e2-33" title="Reference 28">(28)</a> <a href="#ref-for-dfn-e2-34" title="Reference 29">(29)</a> <a href="#ref-for-dfn-e2-35" title="Reference 30">(30)</a> <a href="#ref-for-dfn-e2-36" title="Reference 31">(31)</a> <a href="#ref-for-dfn-e2-37" title="Reference 32">(32)</a> <a href="#ref-for-dfn-e2-38" title="Reference 33">(33)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-e3" aria-label="Links in this document to definition: E3 Holder">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-e3" aria-label="Permalink for definition: E3 Holder. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-e3-1" title="§ 1.1 Description">§ 1.1 Description</a> <a href="#ref-for-dfn-e3-2" title="Reference 2">(2)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-e3-3" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-e3-4" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e3-5" title="Reference 3">(3)</a> <a href="#ref-for-dfn-e3-6" title="Reference 4">(4)</a> <a href="#ref-for-dfn-e3-7" title="Reference 5">(5)</a> <a href="#ref-for-dfn-e3-8" title="Reference 6">(6)</a> <a href="#ref-for-dfn-e3-9" title="Reference 7">(7)</a> <a href="#ref-for-dfn-e3-10" title="Reference 8">(8)</a> <a href="#ref-for-dfn-e3-11" title="Reference 9">(9)</a> <a href="#ref-for-dfn-e3-12" title="Reference 10">(10)</a> <a href="#ref-for-dfn-e3-13" title="Reference 11">(11)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-e4" aria-label="Links in this document to definition: E4 Verifier">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-e4" aria-label="Permalink for definition: E4 Verifier. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-e4-1" title="§ 1.1 Description">§ 1.1 Description</a> <a href="#ref-for-dfn-e4-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e4-3" title="Reference 3">(3)</a> <a href="#ref-for-dfn-e4-4" title="Reference 4">(4)</a> <a href="#ref-for-dfn-e4-5" title="Reference 5">(5)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-e4-6" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-e4-7" title="Reference 2">(2)</a> <a href="#ref-for-dfn-e4-8" title="Reference 3">(3)</a> <a href="#ref-for-dfn-e4-9" title="Reference 4">(4)</a> <a href="#ref-for-dfn-e4-10" title="Reference 5">(5)</a> <a href="#ref-for-dfn-e4-11" title="Reference 6">(6)</a> <a href="#ref-for-dfn-e4-12" title="Reference 7">(7)</a> <a href="#ref-for-dfn-e4-13" title="Reference 8">(8)</a> <a href="#ref-for-dfn-e4-14" title="Reference 9">(9)</a> <a href="#ref-for-dfn-e4-15" title="Reference 10">(10)</a> <a href="#ref-for-dfn-e4-16" title="Reference 11">(11)</a> <a href="#ref-for-dfn-e4-17" title="Reference 12">(12)</a> <a href="#ref-for-dfn-e4-18" title="Reference 13">(13)</a> <a href="#ref-for-dfn-e4-19" title="Reference 14">(14)</a> <a href="#ref-for-dfn-e4-20" title="Reference 15">(15)</a> <a href="#ref-for-dfn-e4-21" title="Reference 16">(16)</a> <a href="#ref-for-dfn-e4-22" title="Reference 17">(17)</a> <a href="#ref-for-dfn-e4-23" title="Reference 18">(18)</a> <a href="#ref-for-dfn-e4-24" title="Reference 19">(19)</a> <a href="#ref-for-dfn-e4-25" title="Reference 20">(20)</a> <a href="#ref-for-dfn-e4-26" title="Reference 21">(21)</a> <a href="#ref-for-dfn-e4-27" title="Reference 22">(22)</a> <a href="#ref-for-dfn-e4-28" title="Reference 23">(23)</a> <a href="#ref-for-dfn-e4-29" title="Reference 24">(24)</a> <a href="#ref-for-dfn-e4-30" title="Reference 25">(25)</a> <a href="#ref-for-dfn-e4-31" title="Reference 26">(26)</a> <a href="#ref-for-dfn-e4-32" title="Reference 27">(27)</a> <a href="#ref-for-dfn-e4-33" title="Reference 28">(28)</a> <a href="#ref-for-dfn-e4-34" title="Reference 29">(29)</a> <a href="#ref-for-dfn-e4-35" title="Reference 30">(30)</a> <a href="#ref-for-dfn-e4-36" title="Reference 31">(31)</a> <a href="#ref-for-dfn-e4-37" title="Reference 32">(32)</a> <a href="#ref-for-dfn-e4-38" title="Reference 33">(33)</a> <a href="#ref-for-dfn-e4-39" title="Reference 34">(34)</a> <a href="#ref-for-dfn-e4-40" title="Reference 35">(35)</a> <a href="#ref-for-dfn-e4-41" title="Reference 36">(36)</a> <a href="#ref-for-dfn-e4-42" title="Reference 37">(37)</a> <a href="#ref-for-dfn-e4-43" title="Reference 38">(38)</a> <a href="#ref-for-dfn-e4-44" title="Reference 39">(39)</a> <a href="#ref-for-dfn-e4-45" title="Reference 40">(40)</a> <a href="#ref-for-dfn-e4-46" title="Reference 41">(41)</a> <a href="#ref-for-dfn-e4-47" title="Reference 42">(42)</a> <a href="#ref-for-dfn-e4-48" title="Reference 43">(43)</a> <a href="#ref-for-dfn-e4-49" title="Reference 44">(44)</a> <a href="#ref-for-dfn-e4-50" title="Reference 45">(45)</a> <a href="#ref-for-dfn-e4-51" title="Reference 46">(46)</a> <a href="#ref-for-dfn-e4-52" title="Reference 47">(47)</a> <a href="#ref-for-dfn-e4-53" title="Reference 48">(48)</a> <a href="#ref-for-dfn-e4-54" title="Reference 49">(49)</a> <a href="#ref-for-dfn-e4-55" title="Reference 50">(50)</a> <a href="#ref-for-dfn-e4-56" title="Reference 51">(51)</a> <a href="#ref-for-dfn-e4-57" title="Reference 52">(52)</a> <a href="#ref-for-dfn-e4-58" title="Reference 53">(53)</a> <a href="#ref-for-dfn-e4-59" title="Reference 54">(54)</a> <a href="#ref-for-dfn-e4-60" title="Reference 55">(55)</a> <a href="#ref-for-dfn-e4-61" title="Reference 56">(56)</a> <a href="#ref-for-dfn-e4-62" title="Reference 57">(57)</a> <a href="#ref-for-dfn-e4-63" title="Reference 58">(58)</a> <a href="#ref-for-dfn-e4-64" title="Reference 59">(59)</a> <a href="#ref-for-dfn-e4-65" title="Reference 60">(60)</a> <a href="#ref-for-dfn-e4-66" title="Reference 61">(61)</a> <a href="#ref-for-dfn-e4-67" title="Reference 62">(62)</a> <a href="#ref-for-dfn-e4-68" title="Reference 63">(63)</a> <a href="#ref-for-dfn-e4-69" title="Reference 64">(64)</a> <a href="#ref-for-dfn-e4-70" title="Reference 65">(65)</a> <a href="#ref-for-dfn-e4-71" title="Reference 66">(66)</a> <a href="#ref-for-dfn-e4-72" title="Reference 67">(67)</a> <a href="#ref-for-dfn-e4-73" title="Reference 68">(68)</a> <a href="#ref-for-dfn-e4-74" title="Reference 69">(69)</a> <a href="#ref-for-dfn-e4-75" title="Reference 70">(70)</a> <a href="#ref-for-dfn-e4-76" title="Reference 71">(71)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p1" aria-label="Links in this document to definition: P1 Create List">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p1" aria-label="Permalink for definition: P1 Create List. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p1-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> <a href="#ref-for-dfn-p1-2" title="Reference 2">(2)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-p1-3" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-p1-4" title="Reference 2">(2)</a> <a href="#ref-for-dfn-p1-5" title="Reference 3">(3)</a> <a href="#ref-for-dfn-p1-6" title="Reference 4">(4)</a> <a href="#ref-for-dfn-p1-7" title="Reference 5">(5)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p2" aria-label="Links in this document to definition: P2 Publish List">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p2" aria-label="Permalink for definition: P2 Publish List. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p2-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p3" aria-label="Links in this document to definition: P3 Configure Verifier">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p3" aria-label="Permalink for definition: P3 Configure Verifier. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p3-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li><li>
+      <a href="#ref-for-dfn-p3-2" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-p3-3" title="Reference 2">(2)</a> <a href="#ref-for-dfn-p3-4" title="Reference 3">(3)</a> <a href="#ref-for-dfn-p3-5" title="Reference 4">(4)</a> <a href="#ref-for-dfn-p3-6" title="Reference 5">(5)</a> <a href="#ref-for-dfn-p3-7" title="Reference 6">(6)</a> <a href="#ref-for-dfn-p3-8" title="Reference 7">(7)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p4" aria-label="Links in this document to definition: P4 Credential Issuance">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p4" aria-label="Permalink for definition: P4 Credential Issuance. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p4-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li><li>
+      <a href="#ref-for-dfn-p4-2" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-p4-3" title="Reference 2">(2)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p5" aria-label="Links in this document to definition: P5 Credential Presentation">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p5" aria-label="Permalink for definition: P5 Credential Presentation. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p5-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p6" aria-label="Links in this document to definition: P6 Validate Credential(s)">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p6" aria-label="Permalink for definition: P6 Validate Credential(s). Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p6-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li><li>
+      <a href="#ref-for-dfn-p6-2" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-p6-3" title="Reference 2">(2)</a> <a href="#ref-for-dfn-p6-4" title="Reference 3">(3)</a> <a href="#ref-for-dfn-p6-5" title="Reference 4">(4)</a> <a href="#ref-for-dfn-p6-6" title="Reference 5">(5)</a> <a href="#ref-for-dfn-p6-7" title="Reference 6">(6)</a> <a href="#ref-for-dfn-p6-8" title="Reference 7">(7)</a> <a href="#ref-for-dfn-p6-9" title="Reference 8">(8)</a> <a href="#ref-for-dfn-p6-10" title="Reference 9">(9)</a> <a href="#ref-for-dfn-p6-11" title="Reference 10">(10)</a> <a href="#ref-for-dfn-p6-12" title="Reference 11">(11)</a> <a href="#ref-for-dfn-p6-13" title="Reference 12">(12)</a> <a href="#ref-for-dfn-p6-14" title="Reference 13">(13)</a> <a href="#ref-for-dfn-p6-15" title="Reference 14">(14)</a> <a href="#ref-for-dfn-p6-16" title="Reference 15">(15)</a> <a href="#ref-for-dfn-p6-17" title="Reference 16">(16)</a> <a href="#ref-for-dfn-p6-18" title="Reference 17">(17)</a> <a href="#ref-for-dfn-p6-19" title="Reference 18">(18)</a> <a href="#ref-for-dfn-p6-20" title="Reference 19">(19)</a> <a href="#ref-for-dfn-p6-21" title="Reference 20">(20)</a> <a href="#ref-for-dfn-p6-22" title="Reference 21">(21)</a> <a href="#ref-for-dfn-p6-23" title="Reference 22">(22)</a> <a href="#ref-for-dfn-p6-24" title="Reference 23">(23)</a> <a href="#ref-for-dfn-p6-25" title="Reference 24">(24)</a> <a href="#ref-for-dfn-p6-26" title="Reference 25">(25)</a> <a href="#ref-for-dfn-p6-27" title="Reference 26">(26)</a> <a href="#ref-for-dfn-p6-28" title="Reference 27">(27)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-p7" aria-label="Links in this document to definition: P7 Update List">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-p7" aria-label="Permalink for definition: P7 Update List. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-p7-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li><li>
+      <a href="#ref-for-dfn-p7-2" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-p7-3" title="Reference 2">(2)</a> <a href="#ref-for-dfn-p7-4" title="Reference 3">(3)</a> <a href="#ref-for-dfn-p7-5" title="Reference 4">(4)</a> <a href="#ref-for-dfn-p7-6" title="Reference 5">(5)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-f1" aria-label="Links in this document to definition: F1 Identify Entity">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-f1" aria-label="Permalink for definition: F1 Identify Entity. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+      <li>Not referenced in this document.</li>
+    </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-f2" aria-label="Links in this document to definition: F2 Issue Recognized Entity Credential">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-f2" aria-label="Permalink for definition: F2 Issue Recognized Entity Credential. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-f2-1" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-f3" aria-label="Links in this document to definition: F3 Issue Credential(s)">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-f3" aria-label="Permalink for definition: F3 Issue Credential(s). Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+      <li>Not referenced in this document.</li>
+    </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-f4" aria-label="Links in this document to definition: F4 Present Credential(s)">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-f4" aria-label="Permalink for definition: F4 Present Credential(s). Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-f4-1" title="§ 1.1 Description">§ 1.1 Description</a> 
+    </li><li>
+      <a href="#ref-for-dfn-f4-2" title="§ 1.2 Data Flow Diagram for the Recognized Entities Ecosystem">§ 1.2 Data Flow Diagram for the Recognized Entities Ecosystem</a> 
+    </li><li>
+      <a href="#ref-for-dfn-f4-3" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-f4-4" title="Reference 2">(2)</a> <a href="#ref-for-dfn-f4-5" title="Reference 3">(3)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-f5" aria-label="Links in this document to definition: F5 Retrieve List">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-f5" aria-label="Permalink for definition: F5 Retrieve List. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-f5-1" title="§ 1.2 Data Flow Diagram for the Recognized Entities Ecosystem">§ 1.2 Data Flow Diagram for the Recognized Entities Ecosystem</a> 
+    </li><li>
+      <a href="#ref-for-dfn-f5-2" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-f5-3" title="Reference 2">(2)</a> <a href="#ref-for-dfn-f5-4" title="Reference 3">(3)</a> <a href="#ref-for-dfn-f5-5" title="Reference 4">(4)</a> <a href="#ref-for-dfn-f5-6" title="Reference 5">(5)</a> <a href="#ref-for-dfn-f5-7" title="Reference 6">(6)</a> <a href="#ref-for-dfn-f5-8" title="Reference 7">(7)</a> <a href="#ref-for-dfn-f5-9" title="Reference 8">(8)</a> <a href="#ref-for-dfn-f5-10" title="Reference 9">(9)</a> <a href="#ref-for-dfn-f5-11" title="Reference 10">(10)</a> <a href="#ref-for-dfn-f5-12" title="Reference 11">(11)</a> <a href="#ref-for-dfn-f5-13" title="Reference 12">(12)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-s1" aria-label="Links in this document to definition: S1 Publisher Storage">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-s1" aria-label="Permalink for definition: S1 Publisher Storage. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-s1-1" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-s1-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-s1-3" title="Reference 3">(3)</a> <a href="#ref-for-dfn-s1-4" title="Reference 4">(4)</a> <a href="#ref-for-dfn-s1-5" title="Reference 5">(5)</a> <a href="#ref-for-dfn-s1-6" title="Reference 6">(6)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-s2" aria-label="Links in this document to definition: S2 Holder Storage">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-s2" aria-label="Permalink for definition: S2 Holder Storage. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+      <li>Not referenced in this document.</li>
+    </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-o1" aria-label="Links in this document to definition: O1 Recognized Entity Credential">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-o1" aria-label="Permalink for definition: O1 Recognized Entity Credential. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-o1-1" title="§ 1.1 Description">§ 1.1 Description</a> <a href="#ref-for-dfn-o1-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-o1-3" title="Reference 3">(3)</a> <a href="#ref-for-dfn-o1-4" title="Reference 4">(4)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-o1-5" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-o1-6" title="Reference 2">(2)</a> <a href="#ref-for-dfn-o1-7" title="Reference 3">(3)</a> <a href="#ref-for-dfn-o1-8" title="Reference 4">(4)</a> <a href="#ref-for-dfn-o1-9" title="Reference 5">(5)</a> <a href="#ref-for-dfn-o1-10" title="Reference 6">(6)</a> <a href="#ref-for-dfn-o1-11" title="Reference 7">(7)</a> <a href="#ref-for-dfn-o1-12" title="Reference 8">(8)</a> <a href="#ref-for-dfn-o1-13" title="Reference 9">(9)</a> <a href="#ref-for-dfn-o1-14" title="Reference 10">(10)</a> <a href="#ref-for-dfn-o1-15" title="Reference 11">(11)</a> <a href="#ref-for-dfn-o1-16" title="Reference 12">(12)</a> <a href="#ref-for-dfn-o1-17" title="Reference 13">(13)</a> <a href="#ref-for-dfn-o1-18" title="Reference 14">(14)</a> <a href="#ref-for-dfn-o1-19" title="Reference 15">(15)</a> <a href="#ref-for-dfn-o1-20" title="Reference 16">(16)</a> <a href="#ref-for-dfn-o1-21" title="Reference 17">(17)</a> <a href="#ref-for-dfn-o1-22" title="Reference 18">(18)</a> <a href="#ref-for-dfn-o1-23" title="Reference 19">(19)</a> <a href="#ref-for-dfn-o1-24" title="Reference 20">(20)</a> <a href="#ref-for-dfn-o1-25" title="Reference 21">(21)</a> <a href="#ref-for-dfn-o1-26" title="Reference 22">(22)</a> <a href="#ref-for-dfn-o1-27" title="Reference 23">(23)</a> <a href="#ref-for-dfn-o1-28" title="Reference 24">(24)</a> <a href="#ref-for-dfn-o1-29" title="Reference 25">(25)</a> <a href="#ref-for-dfn-o1-30" title="Reference 26">(26)</a> <a href="#ref-for-dfn-o1-31" title="Reference 27">(27)</a> <a href="#ref-for-dfn-o1-32" title="Reference 28">(28)</a> <a href="#ref-for-dfn-o1-33" title="Reference 29">(29)</a> <a href="#ref-for-dfn-o1-34" title="Reference 30">(30)</a> <a href="#ref-for-dfn-o1-35" title="Reference 31">(31)</a> <a href="#ref-for-dfn-o1-36" title="Reference 32">(32)</a> <a href="#ref-for-dfn-o1-37" title="Reference 33">(33)</a> <a href="#ref-for-dfn-o1-38" title="Reference 34">(34)</a> <a href="#ref-for-dfn-o1-39" title="Reference 35">(35)</a> <a href="#ref-for-dfn-o1-40" title="Reference 36">(36)</a> <a href="#ref-for-dfn-o1-41" title="Reference 37">(37)</a> <a href="#ref-for-dfn-o1-42" title="Reference 38">(38)</a> <a href="#ref-for-dfn-o1-43" title="Reference 39">(39)</a> <a href="#ref-for-dfn-o1-44" title="Reference 40">(40)</a> <a href="#ref-for-dfn-o1-45" title="Reference 41">(41)</a> <a href="#ref-for-dfn-o1-46" title="Reference 42">(42)</a> <a href="#ref-for-dfn-o1-47" title="Reference 43">(43)</a> <a href="#ref-for-dfn-o1-48" title="Reference 44">(44)</a> <a href="#ref-for-dfn-o1-49" title="Reference 45">(45)</a> <a href="#ref-for-dfn-o1-50" title="Reference 46">(46)</a> <a href="#ref-for-dfn-o1-51" title="Reference 47">(47)</a> <a href="#ref-for-dfn-o1-52" title="Reference 48">(48)</a> <a href="#ref-for-dfn-o1-53" title="Reference 49">(49)</a> <a href="#ref-for-dfn-o1-54" title="Reference 50">(50)</a> <a href="#ref-for-dfn-o1-55" title="Reference 51">(51)</a> <a href="#ref-for-dfn-o1-56" title="Reference 52">(52)</a> <a href="#ref-for-dfn-o1-57" title="Reference 53">(53)</a> <a href="#ref-for-dfn-o1-58" title="Reference 54">(54)</a> <a href="#ref-for-dfn-o1-59" title="Reference 55">(55)</a> <a href="#ref-for-dfn-o1-60" title="Reference 56">(56)</a> <a href="#ref-for-dfn-o1-61" title="Reference 57">(57)</a> <a href="#ref-for-dfn-o1-62" title="Reference 58">(58)</a> <a href="#ref-for-dfn-o1-63" title="Reference 59">(59)</a> <a href="#ref-for-dfn-o1-64" title="Reference 60">(60)</a> <a href="#ref-for-dfn-o1-65" title="Reference 61">(61)</a> <a href="#ref-for-dfn-o1-66" title="Reference 62">(62)</a> <a href="#ref-for-dfn-o1-67" title="Reference 63">(63)</a> <a href="#ref-for-dfn-o1-68" title="Reference 64">(64)</a> <a href="#ref-for-dfn-o1-69" title="Reference 65">(65)</a> <a href="#ref-for-dfn-o1-70" title="Reference 66">(66)</a> <a href="#ref-for-dfn-o1-71" title="Reference 67">(67)</a> <a href="#ref-for-dfn-o1-72" title="Reference 68">(68)</a> <a href="#ref-for-dfn-o1-73" title="Reference 69">(69)</a> <a href="#ref-for-dfn-o1-74" title="Reference 70">(70)</a> <a href="#ref-for-dfn-o1-75" title="Reference 71">(71)</a> <a href="#ref-for-dfn-o1-76" title="Reference 72">(72)</a> <a href="#ref-for-dfn-o1-77" title="Reference 73">(73)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-o2" aria-label="Links in this document to definition: O2 Dependent Verifiable Credential">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-o2" aria-label="Permalink for definition: O2 Dependent Verifiable Credential. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-o2-1" title="§ 1.1 Description">§ 1.1 Description</a> <a href="#ref-for-dfn-o2-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-o2-3" title="Reference 3">(3)</a> <a href="#ref-for-dfn-o2-4" title="Reference 4">(4)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-o2-5" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-o2-6" title="Reference 2">(2)</a> <a href="#ref-for-dfn-o2-7" title="Reference 3">(3)</a> <a href="#ref-for-dfn-o2-8" title="Reference 4">(4)</a> <a href="#ref-for-dfn-o2-9" title="Reference 5">(5)</a> <a href="#ref-for-dfn-o2-10" title="Reference 6">(6)</a> <a href="#ref-for-dfn-o2-11" title="Reference 7">(7)</a> <a href="#ref-for-dfn-o2-12" title="Reference 8">(8)</a> <a href="#ref-for-dfn-o2-13" title="Reference 9">(9)</a> <a href="#ref-for-dfn-o2-14" title="Reference 10">(10)</a> <a href="#ref-for-dfn-o2-15" title="Reference 11">(11)</a> <a href="#ref-for-dfn-o2-16" title="Reference 12">(12)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-c1" aria-label="Links in this document to definition: C1 Publisher System">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-c1" aria-label="Permalink for definition: C1 Publisher System. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-c1-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> <a href="#ref-for-dfn-c1-2" title="Reference 2">(2)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-c1-3" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-c1-4" title="Reference 2">(2)</a> <a href="#ref-for-dfn-c1-5" title="Reference 3">(3)</a> <a href="#ref-for-dfn-c1-6" title="Reference 4">(4)</a> <a href="#ref-for-dfn-c1-7" title="Reference 5">(5)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-c2" aria-label="Links in this document to definition: C2 Issuer System">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-c2" aria-label="Permalink for definition: C2 Issuer System. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+      <li>Not referenced in this document.</li>
+    </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-c3" aria-label="Links in this document to definition: C3 Holder System">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-c3" aria-label="Permalink for definition: C3 Holder System. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-c3-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> <a href="#ref-for-dfn-c3-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-c3-3" title="Reference 3">(3)</a> 
+    </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-c4" aria-label="Links in this document to definition: C4 Verifier System">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-c4" aria-label="Permalink for definition: C4 Verifier System. Activate to close this dialog.">Permalink</a>
+         
+        
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+      <a href="#ref-for-dfn-c4-1" title="§ 1.3 Dictionary">§ 1.3 Dictionary</a> 
+    </li><li>
+      <a href="#ref-for-dfn-c4-2" title="§ 3.2 Threat Details">§ 3.2 Threat Details</a> <a href="#ref-for-dfn-c4-3" title="Reference 2">(2)</a> <a href="#ref-for-dfn-c4-4" title="Reference 3">(3)</a> <a href="#ref-for-dfn-c4-5" title="Reference 4">(4)</a> <a href="#ref-for-dfn-c4-6" title="Reference 5">(5)</a> 
+    </li>
+  </ul>
+    </div><script id="respec-highlight-vars">(() => {
+// @ts-check
+
+if (document.respec) {
+  document.respec.ready.then(setupVarHighlighter);
+} else {
+  setupVarHighlighter();
+}
+
+function setupVarHighlighter() {
+  document
+    .querySelectorAll("var")
+    .forEach(varElem => varElem.addEventListener("click", highlightListener));
+}
+
+/**
+ * @param {MouseEvent} ev
+ */
+function highlightListener(ev) {
+  ev.stopPropagation();
+  const varElem = /** @type {HTMLElement} */ (ev.target);
+  const hightligtedElems = highlightVars(varElem);
+  const resetListener = () => {
+    const hlColor = getHighlightColor(varElem);
+    hightligtedElems.forEach(el => removeHighlight(el, hlColor));
+    [...HL_COLORS.keys()].forEach(key => HL_COLORS.set(key, true));
+  };
+  if (hightligtedElems.length) {
+    document.body.addEventListener("click", resetListener, { once: true });
+  }
+}
+
+// availability of highlight colors. colors from var.css
+const HL_COLORS = new Map([
+  ["respec-hl-c1", true],
+  ["respec-hl-c2", true],
+  ["respec-hl-c3", true],
+  ["respec-hl-c4", true],
+  ["respec-hl-c5", true],
+  ["respec-hl-c6", true],
+  ["respec-hl-c7", true],
+]);
+
+/**
+ * @param {HTMLElement} target
+ */
+function getHighlightColor(target) {
+  // return current colors if applicable
+  const { value } = target.classList;
+  const re = /respec-hl-\w+/;
+  const activeClass = re.test(value) && value.match(re);
+  if (activeClass) return activeClass[0];
+
+  // first color preference
+  if (HL_COLORS.get("respec-hl-c1") === true) return "respec-hl-c1";
+
+  // otherwise get some other available color
+  return [...HL_COLORS.keys()].find(c => HL_COLORS.get(c)) || "respec-hl-c1";
+}
+
+/**
+ * @param {HTMLElement} varElem
+ */
+function highlightVars(varElem) {
+  const textContent = norm(varElem.textContent);
+  const parent = /** @type {HTMLElement} */ (
+    varElem.closest(".algorithm, section")
+  );
+  if (!parent) return [];
+  const highlightColor = getHighlightColor(varElem);
+
+  const varsToHighlight = [...parent.querySelectorAll("var")].filter(
+    el =>
+      norm(el.textContent) === textContent &&
+      el.closest(".algorithm, section") === parent
+  );
+
+  // update availability of highlight color
+  const colorStatus = varsToHighlight[0].classList.contains("respec-hl");
+  HL_COLORS.set(highlightColor, colorStatus);
+
+  // highlight vars
+  if (colorStatus) {
+    varsToHighlight.forEach(el => removeHighlight(el, highlightColor));
+    return [];
+  } else {
+    varsToHighlight.forEach(el => addHighlight(el, highlightColor));
+  }
+  return varsToHighlight;
+}
+
+/**
+ * @param {HTMLElement} el
+ * @param {string} highlightColor
+ */
+function removeHighlight(el, highlightColor) {
+  el.classList.remove("respec-hl", highlightColor);
+  // clean up empty class attributes so they don't come in export
+  if (!el.classList.length) el.removeAttribute("class");
+}
+
+/**
+ * @param {HTMLElement} elem
+ * @param {string} highlightColor
+ */
+function addHighlight(elem, highlightColor) {
+  elem.classList.add("respec-hl", highlightColor);
+}
+
+/**
+ * Same as `norm` from src/core/utils, but our build process doesn't allow
+ * imports in runtime scripts, so duplicated here.
+ * @param {string} str
+ */
+function norm(str) {
+  return str.trim().replace(/\s+/g, " ");
+}
+})()</script><script id="respec-dfn-panel">(() => {
+// @ts-check
+if (document.respec) {
+  document.respec.ready.then(setupPanel);
+} else {
+  setupPanel();
+}
+
+function setupPanel() {
+  const listener = panelListener();
+  document.body.addEventListener("keydown", listener);
+  document.body.addEventListener("click", listener);
+}
+
+function panelListener() {
+  /** @type {HTMLElement | null} */
+  let panel = null;
+  /**
+   * @param {KeyboardEvent|MouseEvent} event
+   */
+  return event => {
+    const { target, type } = event;
+
+    if (!(target instanceof HTMLElement)) return;
+
+    // For keys, we only care about Enter key to activate the panel
+    // otherwise it's activated via a click.
+    if (
+      type === "keydown" &&
+      /** @type {KeyboardEvent} */ (event).key !== "Enter"
+    )
+      return;
+
+    const action = deriveAction(event);
+
+    switch (action) {
+      case "show": {
+        hidePanel(panel);
+        /** @type {HTMLElement | null} */
+        const dfn = target.closest("dfn, .index-term");
+        if (!dfn?.id) break;
+        panel = document.getElementById(`dfn-panel-for-${dfn.id}`);
+        if (!panel) break;
+        const coords = deriveCoordinates(
+          /** @type {MouseEvent|KeyboardEvent} */ (event)
+        );
+        displayPanel(dfn, panel, coords);
+        break;
+      }
+      case "dock": {
+        if (panel) {
+          panel.style.left = "";
+          panel.style.top = "";
+          panel.classList.add("docked");
+        }
+        break;
+      }
+      case "hide": {
+        hidePanel(panel);
+        panel = null;
+        break;
+      }
+    }
+  };
+}
+
+/**
+ * @param {MouseEvent|KeyboardEvent} event
+ */
+function deriveCoordinates(event) {
+  const target = /** @type HTMLElement */ (event.target);
+
+  // We prevent synthetic AT clicks from putting
+  // the dialog in a weird place. The AT events sometimes
+  // lack coordinates, so they have clientX/Y = 0
+  const rect = target.getBoundingClientRect();
+  if (
+    event instanceof MouseEvent &&
+    event.clientX >= rect.left &&
+    event.clientY >= rect.top
+  ) {
+    // The event probably happened inside the bounding rect...
+    return { x: event.clientX, y: event.clientY };
+  }
+
+  // Offset to the middle of the element
+  const x = rect.x + rect.width / 2;
+  // Placed at the bottom of the element
+  const y = rect.y + rect.height;
+  return { x, y };
+}
+
+/**
+ * @param {Event} event
+ */
+function deriveAction(event) {
+  const target = /** @type {HTMLElement} */ (event.target);
+  const hitALink = !!target.closest("a");
+  if (target.closest("dfn:not([data-cite]), .index-term")) {
+    return hitALink ? "none" : "show";
+  }
+  if (target.closest(".dfn-panel")) {
+    if (hitALink) {
+      return target.classList.contains("self-link") ? "hide" : "dock";
+    }
+
+    const panel = /** @type {HTMLElement} */ (target.closest(".dfn-panel"));
+    return panel.classList.contains("docked") ? "hide" : "none";
+  }
+  if (document.querySelector(".dfn-panel:not([hidden])")) {
+    return "hide";
+  }
+  return "none";
+}
+
+/**
+ * @param {HTMLElement} dfn
+ * @param {HTMLElement} panel
+ * @param {{ x: number, y: number }} clickPosition
+ */
+function displayPanel(dfn, panel, { x, y }) {
+  panel.hidden = false;
+  // distance (px) between edge of panel and the pointing triangle (caret)
+  const MARGIN = 20;
+
+  const dfnRects = dfn.getClientRects();
+  // Find the `top` offset when the `dfn` can be spread across multiple lines
+  let closestTop = 0;
+  let minDiff = Infinity;
+  for (const rect of dfnRects) {
+    const { top, bottom } = rect;
+    const diffFromClickY = Math.abs((top + bottom) / 2 - y);
+    if (diffFromClickY < minDiff) {
+      minDiff = diffFromClickY;
+      closestTop = top;
+    }
+  }
+
+  const top = window.scrollY + closestTop + dfnRects[0].height;
+  const left = x - MARGIN;
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+
+  // Find if the panel is flowing out of the window
+  const panelRect = panel.getBoundingClientRect();
+  const SCREEN_WIDTH = Math.min(window.innerWidth, window.screen.width);
+  if (panelRect.right > SCREEN_WIDTH) {
+    const newLeft = Math.max(MARGIN, x + MARGIN - panelRect.width);
+    const newCaretOffset = left - newLeft;
+    panel.style.left = `${newLeft}px`;
+    /** @type {HTMLElement | null} */
+    const caret = panel.querySelector(".caret");
+    if (caret) caret.style.left = `${newCaretOffset}px`;
+  }
+
+  // As it's a dialog, we trap focus.
+  // TODO: when <dialog> becomes a implemented, we should really
+  // use that.
+  trapFocus(panel, dfn);
+}
+
+/**
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function trapFocus(panel, dfn) {
+  /** @type NodeListOf<HTMLAnchorElement> elements */
+  const anchors = panel.querySelectorAll("a[href]");
+  // No need to trap focus
+  if (!anchors.length) return;
+
+  // Move focus to first anchor element
+  const first = anchors.item(0);
+  first.focus();
+
+  const trapListener = createTrapListener(anchors, panel, dfn);
+  panel.addEventListener("keydown", trapListener);
+
+  // Hiding the panel releases the trap
+  const mo = new MutationObserver(records => {
+    const [record] = records;
+    const target = /** @type HTMLElement */ (record.target);
+    if (target.hidden) {
+      panel.removeEventListener("keydown", trapListener);
+      mo.disconnect();
+    }
+  });
+  mo.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
+}
+
+/**
+ *
+ * @param {NodeListOf<HTMLAnchorElement>} anchors
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function createTrapListener(anchors, panel, dfn) {
+  const lastIndex = anchors.length - 1;
+  let currentIndex = 0;
+  /**
+   * @param {KeyboardEvent} event
+   */
+  return event => {
+    switch (event.key) {
+      // Hitting "Tab" traps us in a nice loop around elements.
+      case "Tab": {
+        event.preventDefault();
+        currentIndex += event.shiftKey ? -1 : +1;
+        if (currentIndex < 0) {
+          currentIndex = lastIndex;
+        } else if (currentIndex > lastIndex) {
+          currentIndex = 0;
+        }
+        anchors.item(currentIndex).focus();
+        break;
+      }
+
+      // Hitting "Enter" on an anchor releases the trap.
+      case "Enter":
+        hidePanel(panel);
+        break;
+
+      // Hitting "Escape" returns focus to dfn.
+      case "Escape":
+        hidePanel(panel);
+        dfn.focus();
+        return;
+    }
+  };
+}
+
+/** @param {HTMLElement | null} panel */
+function hidePanel(panel) {
+  if (!panel) return;
+  panel.hidden = true;
+  panel.classList.remove("docked");
+}
+})()</script><script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script></body></html>
