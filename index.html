@@ -10,6 +10,8 @@
      -->
     <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
     <script class="remove" src="https://cdn.jsdelivr.net/gh/w3c/respec-mermaid@1.3.0/dist/main.js"></script>
+    <script src="threat-model/threats/js-yaml.min.js" class="remove"></script>
+    <script src="threat-model/threats/threat-model.js" class="remove"></script>
 
     <script type="text/javascript" class="remove">
       var respecConfig = {
@@ -125,7 +127,13 @@
         */
         xref: ["URL", "I18N-GLOSSARY", "INFRA", "CID", "DID", "VC-DATA-MODEL"],
         lint: { "informative-dfn": false },
-        preProcess: [window.respecMermaid.createFigures],
+        threatModelOutline: "threat-model/threats/outline.yaml",
+        threatModelUrl: "threat-model/index.html",
+        threatModelReference: "VC-RECOGNIZED-ENTITIES-THREAT-MODEL",
+        preProcess: [
+          window.respecMermaid.createFigures,
+          window.ThreatModel.renderConsiderations
+        ],
         otherLinks: [{
           key: "Meetings:",
           data: [{
@@ -135,6 +143,13 @@
         }],
         // extend the bibliography entries
         localBiblio: {
+          "VC-RECOGNIZED-ENTITIES-THREAT-MODEL": {
+            title: "Recognized Entities Threat Model v1.0",
+            href: "https://w3c.github.io/vc-recognized-entities/threat-model/",
+            authors: ["Manu Sporny"],
+            status: "ED",
+            publisher: "W3C"
+          },
           "ETSI-TRUST-LISTS": {
             title: "Electronic Signatures and Infrastructures (ESI); Trusted Lists",
             href: ["https://www.etsi.org/deliver/etsi_ts/119600_119699/119612/02.01.01_60/ts_119612v020101p.pdf"],
@@ -325,8 +340,10 @@ Section [[[#data-model]]] defines the core data model, including the
 types along with their properties and worked examples.
         </li>
         <li>
-Appendix [[[#threat-model]]] discusses security, privacy, and market competition
-considerations relevant to implementers of this specification.
+Appendices [[[#security-considerations]]], [[[#privacy-considerations]]], and
+[[[#market-competition-considerations]]] discuss the security, privacy, and
+market competition considerations relevant to implementers of this
+specification.
         </li>
       </ul>
 
@@ -1723,13 +1740,15 @@ back to a result in which only <var>recognized</var> is `true`.
       </section>
     </section>
 
-    <section class="appendix informative">
-      <h2>Threat Model</h2>
+    <section class="appendix informative" id="security-considerations">
+      <h2>Security Considerations</h2>
 
       <p>
-This section details the general threat model for this specification
-including security considerations, privacy considerations, and market
-competition considerations.
+This section details the general security considerations of deploying the
+Recognized Entities data model into production environments. Each
+consideration below summarizes a security threat identified for this
+specification. The full analysis of each threat, together with the responses
+to it, is provided in the [[[VC-RECOGNIZED-ENTITIES-THREAT-MODEL]]].
       </p>
 
       <p>
@@ -1744,194 +1763,99 @@ Implementers are expected to apply the general warnings provided in that
 specification to each specific feature provided by this specification.
       </p>
 
-      <section>
-        <h3>Target Threats</h3>
-        <ol class="threat-toc">
-          <li value="1">
-            <a href="threat-model/index.html#t1-unauthorized-issuer-spoofing">
-Unauthorized Issuer Spoofing</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-An unrecognized entity fabricates, replays, or reuses a stolen [=recognized
-entity credential=] to make its [=verifiable credentials=] appear to come from a
-legitimately recognized [=issuer=].
-          </li>
-          <li value="2">
-            <a href="threat-model/index.html#t2-recognized-entity-credential-tampering">
-Recognized Entity Credential Tampering</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A malicious intermediary swaps or modifies the [=recognized entity credential=]
-in a presented bundle so that an unrecognized [=issuer=]'s [=verifiable
-credential=] appears to be covered by a legitimate recognition chain.
-          </li>
-        </ol>
-      </section>
+        <section class="threat"
+          data-threat="unauthorized-issuer-spoofing.yaml">
+        </section>
 
-      <section>
-        <h3>Implementation Threats</h3>
-        <ol class="threat-toc">
-          <li value="3">
-            <a href="threat-model/index.html#t3-list-retrieval-denial-of-service">
-List Retrieval Denial of Service</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A flood of fetch requests, a slow-drip server, or an excessively large list
-exhausts a [=verifier=]'s connections, memory, or CPU when it retrieves and
-processes a [=recognized entity credential=].
-          </li>
-          <li value="4">
-            <a href="threat-model/index.html#t4-privacy-leakage-via-list-fetch">
-Privacy Leakage via List Fetch</a>
-            <span class="threat-tag threat-tag-privacy">privacy</span> —
-When a [=verifier=] fetches a [=recognized entity credential=] from the list
-publisher, the publisher learns which [=issuer=] is being verified, enabling
-surveillance of commercial relationships and activity patterns.
-          </li>
-          <li value="8">
-            <a href="threat-model/index.html#t8-unvetted-recognized-entity-credential-propagation">
-Unvetted Recognized Entity Credential Propagation</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A [=holder=] shares a [=recognized entity credential=] through peer-to-peer
-channels and a [=verifier=] accepts it without independently verifying its
-integrity against a trust anchor, spreading fraudulent recognition claims.
-          </li>
-          <li value="9">
-            <a href="threat-model/index.html#t9-list-publisher-impersonation">
-List Publisher Impersonation</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-An attacker fabricates a list publisher identity using a confusable identifier or
-display name so that a [=verifier=] treats an attacker-controlled registry as an
-authoritative trust anchor.
-          </li>
-          <li value="10">
-            <a href="threat-model/index.html#t10-stale-recognition-acceptance">
-Stale Recognition Acceptance</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A revoked or compromised [=issuer=] continues to pass validation because a
-[=recognized entity credential=] has an overly long validity period or because
-the [=verifier=] relies on aggressively cached, out-of-date list data.
-          </li>
-          <li value="11">
-            <a href="threat-model/index.html#t11-external-resource-substitution">
-External Resource Substitution</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-An attacker substitutes malicious content for an externally-referenced resource,
-such as a schema file, via server compromise, domain takeover, or DNS hijacking
-when the reference is not integrity-protected.
-          </li>
-          <li value="12">
-            <a href="threat-model/index.html#t12-unbounded-recognition-chain-trust">
-Unbounded Recognition Chain Trust</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A compromised entry in a lower-level registry chained via
-<code>recognizedIn</code> is transitively trusted when a [=verifier=] does not
-enforce depth limits or independently validate each link in the chain.
-          </li>
-          <li value="13">
-            <a href="threat-model/index.html#t13-abuse-of-recognized-actions">
-Abuse of Recognized Actions</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A [=verifier=] interprets the free-form <code>action</code> value more
-permissively than the list publisher intended, granting a [=recognized entity=]
-broader capabilities than were authorized.
-          </li>
-          <li value="14">
-            <a href="threat-model/index.html#t14-overly-permissive-schema-constraints">
-Overly Permissive Schema Constraints</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-Broad, incomplete, or lax <code>outputValidation</code> schema rules let a
-recognized [=issuer=] produce a wider class of [=verifiable credentials=] than
-the list publisher intended to authorize.
-          </li>
-          <li value="15">
-            <a href="threat-model/index.html#t15-json-schema-attack">
-JSON Schema Attack</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A maliciously crafted or poorly-written <code>outputValidation</code> schema
-containing pathological regular expressions or deeply nested structures causes
-catastrophic backtracking or memory exhaustion in the [=verifier=].
-          </li>
-        </ol>
-      </section>
+        <section class="threat"
+          data-threat="recognized-entity-credential-tampering.yaml">
+        </section>
 
-      <section>
-        <h3>External Threats</h3>
-        <ol class="threat-toc">
-          <li value="6">
-            <a href="threat-model/index.html#t6-surveillance-of-recognized-entity-identifiers">
-Surveillance of Recognized Entity Identifiers</a>
-            <span class="threat-tag threat-tag-privacy">privacy</span> —
-Because a [=recognized entity credential=] publicly names [=issuers=] with their
-identifiers and attributes, aggregating credentials across lists enables
-systematic profiling and surveillance of [=recognized entities=].
-          </li>
-          <li value="7">
-            <a href="threat-model/index.html#t7-harms-by-association">
-Harms by Association</a>
-            <span class="threat-tag threat-tag-privacy">privacy</span> —
-A [=recognized entity credential=] reveals the membership of an ecosystem, and a
-single onward disclosure can expose participants to targeting, discrimination, or
-reputational harm even when the ecosystem was intended to remain private.
-          </li>
-          <li value="16">
-            <a href="threat-model/index.html#t16-compromise-of-recognized-entity-identifier">
-Compromise of Recognized Entity Identifier</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-An attacker who compromises the private key material of a recognized
-[=issuer=]'s identifier can impersonate that genuinely-enrolled [=issuer=],
-producing fraudulent [=verifiable credentials=] that pass validation.
-          </li>
-          <li value="17">
-            <a href="threat-model/index.html#t17-verifier-trust-anchor-misconfiguration">
-Verifier Trust Anchor Misconfiguration</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A [=verifier=] operator accidentally configures the wrong [=recognized entity
-credential=] as a trust anchor, causing the [=verifier=] to accept
-[=issuers=] vetted by an unintended governance authority.
-          </li>
-        </ol>
-      </section>
+        <section class="threat"
+          data-threat="list-retrieval-denial-of-service.yaml">
+        </section>
 
-      <section>
-        <h3>Dependency Threats</h3>
-        <ol class="threat-toc">
-          <li value="5">
-            <a href="threat-model/index.html#t5-anti-competitive-list-gatekeeping">
-Anti-Competitive List Gatekeeping</a>
-            <span class="threat-tag threat-tag-market competition">market competition</span> —
-A first-mover list publisher selectively denies registration to competitors, or
-is coerced into revoking legitimate entities, creating anti-competitive lock-in
-for [=verifiers=] that rely on a single list.
-          </li>
-          <li value="18">
-            <a href="threat-model/index.html#t18-cryptographically-relevant-quantum-computer-breaks-cryptography">
-Cryptographically Relevant Quantum Computer Breaks Cryptography</a>
-            <span class="threat-tag threat-tag-security">security</span> —
-A cryptographically relevant quantum computer (CRQC) breaks the signature
-schemes in common use, letting an attacker forge proofs on [=recognized entity
-credentials=] and [=verifiable credentials=] and collapsing the chain of trust.
-          </li>
-        </ol>
-      </section>
+        <section class="threat"
+          data-threat="unvetted-recognized-entity-credential-propagation.yaml">
+        </section>
 
-      <section class="notoc">
-        <h3>Security Considerations</h4>
-        <p>
-W3C is migrating to a holistic threat modelling approach and is in the process
-of deprecating the Security Considerations sections in new specifications.
-Please refer to Appendix [[[#threat-model]]] for documentation related to
-security considerations.
-        </p>
-      </section>
+        <section class="threat"
+          data-threat="list-publisher-impersonation.yaml">
+        </section>
 
-      <section class="notoc">
-        <h3>Privacy Considerations</h4>
-        <p>
-W3C is migrating to a holistic threat modelling approach and is in the process
-of deprecating the Privacy Considerations sections in new specifications. Please
-refer to Appendix [[[#threat-model]]] for documentation related to privacy
-considerations.
-        </p>
-      </section>
+        <section class="threat"
+          data-threat="stale-recognition-acceptance.yaml">
+        </section>
 
+        <section class="threat"
+          data-threat="external-resource-substitution.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="unbounded-recognition-chain-trust.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="abuse-of-recognized-actions.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="overly-permissive-schema-constraints.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="json-schema-attack.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="compromise-of-recognized-entity-identifier.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="verifier-trust-anchor-misconfiguration.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="cryptographically-relevant-quantum-computer-breaks-cryptography.yaml">
+        </section>
+    </section>
+
+    <section class="appendix informative" id="privacy-considerations">
+      <h2>Privacy Considerations</h2>
+
+      <p>
+This section details the general privacy considerations and specific privacy
+implications of deploying the Recognized Entities data model into production
+environments. Each threat summarized below is analyzed in full, together with
+the responses to it, in the [[[VC-RECOGNIZED-ENTITIES-THREAT-MODEL]]].
+      </p>
+
+        <section class="threat"
+          data-threat="privacy-leakage-via-list-fetch.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="surveillance-of-recognized-entity-identifiers.yaml">
+        </section>
+
+        <section class="threat"
+          data-threat="harms-by-association.yaml">
+        </section>
+    </section>
+
+    <section class="appendix informative" id="market-competition-considerations">
+      <h2>Market Competition Considerations</h2>
+
+      <p>
+This section details the market competition considerations of deploying the
+Recognized Entities data model into production environments. Each threat
+summarized below is analyzed in full, together with the responses to it, in
+the [[[VC-RECOGNIZED-ENTITIES-THREAT-MODEL]]].
+      </p>
+
+        <section class="threat"
+          data-threat="anti-competitive-list-gatekeeping.yaml">
+        </section>
     </section>
 
     <section class="appendix informative">
