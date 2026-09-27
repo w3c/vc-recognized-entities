@@ -12,7 +12,7 @@
   <script class='remove'>
     // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
     var respecConfig = {
-      shortName: "vc-recognized-entities-threat-model-2.1",
+      shortName: "vc-recognized-entities-threat-model-1.0",
       specStatus: "DNOTE",
       group: "vc",
       edDraftURI: "https://w3c.github.io/vc-recognized-entities/threat-model/",
@@ -143,7 +143,26 @@ verifier [=F5|retrieves the published list=] from publisher storage (S1) to
 confirm the issuer's recognized status.
       </p>
 
-      <img src="diagrams/dfd.svg">
+      <img src="diagrams/dfd.svg"
+        alt="Data flow diagram showing four external entities, each above a
+dashed system boundary: the List Publisher (E1) above the Publisher System
+(C1), the Issuer (E2) above the Issuer System (C2), the Holder (E3) above the
+Holder System (C3), and the Verifier (E4) above the Verifier System (C4). The
+Publisher System contains the Create List (P1), Publish List (P2), and Update
+List (P7) processes and Publisher Storage (S1), with P2 and P7 both writing to
+S1. The Issuer System contains the Recognized Entity Credential (O1) data
+object and the Credential Issuance (P4) process. The Holder System contains
+the Dependent Verifiable Credential (O2) data object, Holder Storage (S2), and
+the Credential Presentation (P5) process. The Verifier System contains the
+Configure Verifier (P3) and Validate Credential(s) (P6) processes. The Issuer
+identifies itself to the Publisher System via flow F1 into Create List; the
+Publisher System issues a recognized entity credential to the Issuer System
+via flow F2, producing O1, which feeds Credential Issuance; the Issuer System
+issues credentials via flow F3, producing the Dependent Verifiable Credential
+and placing it in Holder Storage; the Holder System presents credentials via
+flow F4 from Credential Presentation to Validate Credential(s); and the
+Verifier System retrieves the published list from Publisher Storage via flow
+F5, which runs back along the bottom of the diagram from C4 to S1.">
 
       <p>
 The following notation is used in the diagram description and dictionary:
@@ -174,18 +193,7 @@ single authority)
 
     <section id="threat-model-architecture-dictionary">
       <h3>Dictionary</h3>
-      <style>
-        table.dictionary,
-        table.dictionary th,
-        table.dictionary td {
-          border: thin solid rgb(176, 176, 176);
-          border-collapse: collapse;
-          padding: 5px;
-        }
-        table.dictionary td.left {
-          width: 12em;
-        }
-      </style>
+
       <table class="dictionary">
         <tbody>
           <tr>
@@ -550,17 +558,6 @@ ability to function.
     </section>
     <section class="tm-details">
     </section>
-  </section>
-
-  <section id="threat-model-contributing">
-    <h3>Contributing</h3>
-    <p>
-This threat model is maintained alongside the Recognized Entities
-specification. Feedback, bug reports, and proposed additions are welcome
-via the <a
-href="https://github.com/w3c/vc-recognized-entities/issues/new">issue
-tracker</a>.
-    </p>
   </section>
 
 </body>

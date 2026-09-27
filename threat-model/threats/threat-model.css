@@ -169,3 +169,15 @@ span.threat-tag.threat-tag-privacy {
 span.threat-tag.threat-tag-market-competition {
         background-color: #cfe2b4;
 }
+
+table.dictionary,
+table.dictionary th,
+table.dictionary td {
+  border: thin solid rgb(176, 176, 176);
+  border-collapse: collapse;
+  padding: 5px;
+}
+
+table.dictionary td.left {
+  width: 12em;
+}
