@@ -17,7 +17,12 @@ description: >-
   CPU when the [=E4|verifier=] naively loads, parses, or searches the entire
   list during [=P6|Validate Credential(s)=]. High-throughput verification
   systems (such as customs authorities processing thousands of trade documents
-  per hour) are especially vulnerable to both classes of attack.
+  per hour) are especially vulnerable to both classes of attack. A third class
+  is cumulative. [=Identifier-based discovery=] traverses every candidate in a
+  [=verifiable presentation=], and each traversal can retrieve a further chain
+  of [=O1|recognized entity credentials=]. The [=E2|issuer=] controls how many
+  candidates its presentation carries. Per-fetch limits do not bound the
+  total, because every individual fetch can stay well inside them.
 elements: [O1, E1, E3, E4, F5, P6, C1, C4, S1]
 tags: [security]
 taxonomyName: STRIDE
@@ -41,3 +46,10 @@ response:
       publishers=] deploy content delivery network infrastructure, rate
       limiting, and paginated or indexed lookup mechanisms to allow
       [=E4|verifiers=] to check membership without retrieving full lists.
+      Per-fetch limits do not bound a whole discovery operation.
+      [=E4|Verifiers=] also impose a time budget covering the entire
+      operation, including every nested traversal, and fail the operation when
+      it is exceeded. A [=E4|verifier=] that fails this way has established
+      nothing about the [=E2|issuer=], and the residual risk is that a
+      [=E2|issuer=] can deny verification of its own credentials by publishing
+      a presentation too large to traverse in time.
