@@ -14,7 +14,9 @@ description: >-
   or excessive memory consumption in the [=E4|verifier=]’s JSON schema
   processor. This constitutes a denial-of-service attack against the
   [=C4|verifier system=] itself. Even without malicious intent, poorly-written
-  schemas can cause the same effect.
+  schemas can cause the same effect. Limits on a single validation do not
+  bound how many validations one operation performs, which
+  [[[#list-retrieval-denial-of-service]]] covers.
 elements: [O1, E1, E4, P1, P6, C4]
 tags: [security]
 taxonomyName: STRIDE

@@ -1248,6 +1248,13 @@ never reaches a member of <var>recognizedIssuers</var> is still returned, and
 Section [[[#recognition-validation]]] rejects it.
         </p>
 
+        <p class="note" title="This algorithm can run within a caller's time budget">
+<var>maxDepth</var> bounds this algorithm on its own. When
+[=identifier-based discovery=] invokes it, its retrievals also count against
+that caller's <var>maxDuration</var>, and exhausting the budget fails the
+caller's operation.
+        </p>
+
         <ol class="algorithm">
           <li>
 Let <var>current</var> be <var>credential</var> and let <var>chain</var> be a
@@ -1439,11 +1446,28 @@ flowchart TD
         <p>
 To perform [=identifier-based discovery=] on a [=verifiable credential=]
 (<var>credential</var>) against a configured set of recognized [=issuers=]
-(<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
+(<var>recognizedIssuers</var>), within a time budget
+(<var>maxDuration</var>), a [=verifier=] runs the following algorithm. The
 algorithm returns a list of candidate chains, where each chain is a list of
 [=verifiable credentials=] beginning with <var>credential</var>. The
 [=verifier=] then runs the algorithm in Section [[[#recognition-validation]]]
 on the returned chains, which describes how to select among their results.
+        </p>
+
+        <p>
+<var>maxDuration</var> bounds the total elapsed time of one discovery
+operation, measured from when the algorithm starts. It covers all work,
+including that of a nested [=credential-based discovery=].
+<var>maxDepth</var> bounds one chain; <var>maxDuration</var> bounds the
+operation. Exceeding it returns no chains.
+        </p>
+
+        <p class="note" title="Budget exhaustion depends on conditions and order">
+Whether the budget is exhausted depends on network conditions and on
+traversal order, so the same [=verifiable presentation=] can succeed for one
+[=verifier=] and fail for another. Because exhaustion returns no chains, a
+[=verifier=] that fails this way has established nothing about the
+[=issuer=], and can retry with a larger <var>maxDuration</var>.
         </p>
 
         <ol class="algorithm">
@@ -1489,7 +1513,8 @@ append the chain consisting of <var>credential</var> followed by
 [=credential-based discovery=] on <var>list</var> against
 <var>recognizedIssuers</var> and append the chain consisting of
 <var>credential</var> followed by the elements of the returned chain to
-<var>chains</var>.
+<var>chains</var>. If the elapsed time since this algorithm started exceeds
+<var>maxDuration</var>, return an empty list.
           </li>
           <li>
 Return <var>chains</var>.
