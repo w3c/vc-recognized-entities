@@ -14,7 +14,11 @@ description: >-
   a credential authorizing <code>issue</code> for one credential type being
   interpreted as authorizing issuance of any credential type. Overly
   permissive interpretation could enable credential forgery, regulatory
-  non-compliance, or fraud.
+  non-compliance, or fraud. Action values cause a second problem in a chain.
+  Being allowed to do something is not the same as being allowed to let
+  others do it. An action value does not say which one it means. A
+  [=E4|verifier=] that sees an entity recognized to `issue` therefore accepts
+  that entity recognizing someone else to `issue`.
 elements: [O1, E1, E2, E4, P3, P6]
 tags: [security]
 taxonomyName: STRIDE
@@ -32,4 +36,9 @@ response:
       recognize and have been configured to trust during [=P3|Configure
       Verifier=]. [=E4|Verifiers=] treat unknown, overly broad, or undefined
       action values as grounds for rejection during [=P6|Validate
-      Credential(s)=] rather than falling back to permissive defaults.
+      Credential(s)=] rather than falling back to permissive defaults. A
+      governed vocabulary names separate values where performing an action
+      and recognizing others for it are meant to be separate powers. For
+      example, a vocabulary defines `issue` for issuing credentials and
+      `recognizeIssuers` for recognizing other entities to issue them, so a
+      [=E1|list publisher=] that grants one does not grant the other.
