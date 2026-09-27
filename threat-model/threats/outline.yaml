@@ -1,0 +1,75 @@
+# Registry for the Recognized Entities threat model.
+#
+# This file defines:
+#   - categories: the threat categories (from the W3C Threat Modeling
+#     Guide) and the threat definition files belonging to each, in display
+#     order, resolved relative to this file's directory;
+#   - elements:   display labels for the data flow diagram elements
+#     defined in the Dictionary section of index.html.
+#
+# Threat IDs are not stored anywhere. Each threat is numbered T1, T2, ... by
+# its position when the categories below are walked in order, so reordering
+# the lists renumbers the model. Anchors are derived from each threat's name
+# rather than its number, so renumbering does not break inbound links.
+#
+# To add a threat: create a new YAML file following the pattern of the
+# existing threat files, name it after the threat, and add its filename to
+# the appropriate category below.
+
+categories:
+  - name: Target Threats
+    id: threat-model-target-threats
+    threats:
+      - unauthorized-issuer-spoofing.yaml
+      - recognized-entity-credential-tampering.yaml
+  - name: Implementation Threats
+    id: threat-model-implementation-threats
+    threats:
+      - list-retrieval-denial-of-service.yaml
+      - privacy-leakage-via-list-fetch.yaml
+      - unvetted-recognized-entity-credential-propagation.yaml
+      - list-publisher-impersonation.yaml
+      - stale-recognition-acceptance.yaml
+      - external-resource-substitution.yaml
+      - unbounded-recognition-chain-trust.yaml
+      - abuse-of-recognized-actions.yaml
+      - overly-permissive-schema-constraints.yaml
+      - json-schema-attack.yaml
+  - name: External Threats
+    id: threat-model-external-threats
+    threats:
+      - surveillance-of-recognized-entity-identifiers.yaml
+      - harms-by-association.yaml
+      - compromise-of-recognized-entity-identifier.yaml
+      - verifier-trust-anchor-misconfiguration.yaml
+  - name: Dependency Threats
+    id: threat-model-dependency-threats
+    threats:
+      - anti-competitive-list-gatekeeping.yaml
+      - cryptographically-relevant-quantum-computer-breaks-cryptography.yaml
+
+elements:
+  E1: "E1: List Publisher"
+  E2: "E2: Issuer"
+  E3: "E3: Holder"
+  E4: "E4: Verifier"
+  P1: "P1: Create List"
+  P2: "P2: Publish List"
+  P3: "P3: Configure Verifier"
+  P4: "P4: Credential Issuance"
+  P5: "P5: Credential Presentation"
+  P6: "P6: Validate Credential(s)"
+  P7: "P7: Update List"
+  F1: "F1: Identify Entity"
+  F2: "F2: Issue Recognized Entity Credential"
+  F3: "F3: Issue Credential(s)"
+  F4: "F4: Present Credential(s)"
+  F5: "F5: Retrieve List"
+  S1: "S1: Publisher Storage"
+  S2: "S2: Holder Storage"
+  O1: "O1: Recognized Entity Credential"
+  O2: "O2: Dependent Verifiable Credential"
+  C1: "C1: Publisher System"
+  C2: "C2: Issuer System"
+  C3: "C3: Holder System"
+  C4: "C4: Verifier System"
