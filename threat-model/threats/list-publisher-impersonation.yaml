@@ -10,7 +10,7 @@ description: >-
   independently validate the issuer identifier against a known root of trust
   during [=P3|Configure Verifier=] could be deceived into treating an
   attacker-controlled list as authoritative. This is distinct from
-  unauthorized issuer spoofing (T1): rather than an unrecognized [=E2|issuer=]
+  [[[#unauthorized-issuer-spoofing]]]: rather than an unrecognized [=E2|issuer=]
   presenting fraudulent credentials, the attacker here fabricates the
   [=E1|list publisher=] identity itself — causing the [=E4|verifier=] to
   accept an entirely attacker-controlled recognition registry as a legitimate

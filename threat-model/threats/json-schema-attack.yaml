@@ -8,7 +8,8 @@ description: >-
   credential=] references JSON schema files used during [=P6|Validate
   Credential(s)=]. A maliciously crafted schema — introduced by a
   compromised [=E1|list publisher=], an attacker who has tampered with a
-  schema hosted at an unprotected URL (see T11), or via a crafted
+  schema hosted at an unprotected URL (see
+  [[[#external-resource-substitution]]]), or via a crafted
   [=O1|recognized entity credential=] — may contain pathological regular
   expressions or deeply nested structures that cause catastrophic backtracking
   or excessive memory consumption in the [=E4|verifier=]’s JSON schema
