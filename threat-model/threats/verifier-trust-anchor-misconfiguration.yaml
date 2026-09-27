@@ -1,4 +1,8 @@
 name: Verifier Trust Anchor Misconfiguration
+summary: >-
+  A [=verifier=] operator accidentally configures the wrong [=recognized
+  entity credential=] as a trust anchor, causing the [=verifier=] to accept
+  [=issuers=] vetted by an unintended governance authority.
 description: >-
   During [=P3|Configure Verifier=], a [=E4|verifier=] operator may
   accidentally or incorrectly configure the system to reference the wrong

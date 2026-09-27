@@ -1,4 +1,8 @@
 name: Surveillance of Recognized Entity Identifiers
+summary: >-
+  Because a [=recognized entity credential=] publicly names [=issuers=] with
+  their identifiers and attributes, aggregating credentials across lists
+  enables systematic profiling and surveillance of [=recognized entities=].
 description: >-
   A [=O1|recognized entity credential=] publicly names [=E2|issuers=] with
   their identifiers, legal names, and other attributes. Aggregating these

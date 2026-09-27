@@ -1,4 +1,8 @@
 name: Overly Permissive Schema Constraints
+summary: >-
+  Broad, incomplete, or lax <code>outputValidation</code> schema rules let a
+  recognized [=issuer=] produce a wider class of [=verifiable credentials=]
+  than the list publisher intended to authorize.
 description: >-
   A [=E1|list publisher=] who creates a [=O1|recognized entity credential=]
   may specify <code>outputValidation</code> schema rules that are too broad,

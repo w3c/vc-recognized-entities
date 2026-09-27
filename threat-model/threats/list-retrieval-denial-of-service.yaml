@@ -1,4 +1,8 @@
 name: List Retrieval Denial of Service
+summary: >-
+  A flood of fetch requests, a slow-drip server, or an excessively large list
+  exhausts a [=verifier=]'s connections, memory, or CPU when it retrieves and
+  processes a [=recognized entity credential=].
 description: >-
   When [=E4|verifiers=] fetch [=O1|recognized entity credential=] resources
   directly from external URLs, two classes of denial-of-service condition can

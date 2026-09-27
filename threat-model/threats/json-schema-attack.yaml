@@ -1,4 +1,8 @@
 name: JSON Schema Attack
+summary: >-
+  A maliciously crafted or poorly-written <code>outputValidation</code> schema
+  containing pathological regular expressions or deeply nested structures
+  causes catastrophic backtracking or memory exhaustion in the [=verifier=].
 description: >-
   The <code>outputValidation</code> property of a [=O1|recognized entity
   credential=] references JSON schema files used during [=P6|Validate

@@ -1,4 +1,11 @@
 name: Privacy Leakage via List Fetch
+summary: >-
+  When a [=verifier=] fetches a [=recognized entity credential=] over the
+  network, the party serving that fetch learns which [=issuer=] is being
+  verified, enabling surveillance of commercial relationships and activity
+  patterns; a `whois` service endpoint discloses the most, because it serves a
+  single [=issuer=], which therefore learns of every verification of its own
+  credentials.
 description: >-
   When a [=E4|verifier=] fetches a [=O1|recognized entity credential=] over
   the network to confirm an [=E2|issuer=]’s status, the party serving that

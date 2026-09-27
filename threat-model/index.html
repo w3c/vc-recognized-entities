@@ -6,14 +6,15 @@
   <title>Recognized Entities Threat Model v1.0</title>
   <script src="https://www.w3.org/Tools/respec/respec-w3c"
     class="remove"></script>
-  <script src="threats/threat-model.js"></script>
+  <script src="threats/js-yaml.min.js" class="remove"></script>
+  <script src="threats/threat-model.js" class="remove"></script>
 
   <script class='remove'>
     // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
     var respecConfig = {
+      shortName: "vc-recognized-entities-threat-model-2.1",
       specStatus: "DNOTE",
       group: "vc",
-      shortName: "vc-recognized-entities-threat-model",
       edDraftURI: "https://w3c.github.io/vc-recognized-entities/threat-model/",
       github: {
         repoURL: "https://github.com/w3c/vc-recognized-entities/",
@@ -26,31 +27,11 @@
       }],
       noRecTrack: "true",
       maxTocLevel: 4,
-      threatModelTocSelector: "#threat-model-toc",
-      threatModelDetailsSelector: "#threat-model-details",
-      preProcess: [window.ThreatModel.render],
+      threatModelOutline: "threats/outline.yaml",
+      preProcess: [window.ThreatModel.render]
     };
   </script>
-  <script src="threats/outline.js"></script>
   <link rel="stylesheet" href="threats/threat-model.css" />
-  <script src="threats/t1-unauthorized-issuer-spoofing.js"></script>
-  <script src="threats/t2-recognized-entity-credential-tampering.js"></script>
-  <script src="threats/t3-list-fetch-denial-of-service.js"></script>
-  <script src="threats/t4-privacy-leakage-via-list-fetch.js"></script>
-  <script src="threats/t5-anti-competitive-list-gatekeeping.js"></script>
-  <script src="threats/t6-surveillance-of-recognized-entity-identifiers.js"></script>
-  <script src="threats/t7-harms-by-association.js"></script>
-  <script src="threats/t8-unvetted-rec-propagation.js"></script>
-  <script src="threats/t9-list-publisher-impersonation.js"></script>
-  <script src="threats/t10-inappropriate-validity-periods.js"></script>
-  <script src="threats/t11-external-resource-tampering.js"></script>
-  <script src="threats/t12-unbounded-recognition-chain-trust.js"></script>
-  <script src="threats/t13-abuse-of-recognized-actions.js"></script>
-  <script src="threats/t14-overly-permissive-schema-constraints.js"></script>
-  <script src="threats/t15-json-schema-attack.js"></script>
-  <script src="threats/t16-compromise-of-recognized-entity-identifier.js"></script>
-  <script src="threats/t17-verifier-trust-anchor-misconfiguration.js"></script>
-  <script src="threats/t18-crqc-breaks-cryptography.js"></script>
 </head>
 
 <body>
@@ -565,9 +546,9 @@ ability to function.
 
   <section id="threat-model-threats">
     <h2>Threats</h2>
-    <section id="threat-model-toc">
+    <section class="tm-toc">
     </section>
-    <section id="threat-model-details">
+    <section class="tm-details">
     </section>
   </section>
 
@@ -580,42 +561,6 @@ via the <a
 href="https://github.com/w3c/vc-recognized-entities/issues/new">issue
 tracker</a>.
     </p>
-    <section id="threat-model-adding-a-threat">
-      <h4>Adding a Threat</h4>
-      <p>
-To add a new threat to the model, provide the following components:
-      </p>
-      <ol>
-        <li>A short, descriptive name</li>
-        <li>
-A unique ID (letter <strong>T</strong> followed by an integer,
-e.g., <strong>T6</strong>)
-        </li>
-        <li>
-A description of the threat with enough detail for readers to understand
-its scope
-        </li>
-        <li>
-One or more responses, each with a name, unique ID (letter <strong>R
-</strong> followed by an integer), response type (Eliminate, Reduce,
-Transfer, or Accept), and description
-        </li>
-        <li>
-A list of affected DFD elements drawn from the dictionary above
-        </li>
-        <li>
-The threat taxonomy used (e.g., STRIDE) and the threat class within
-that taxonomy
-        </li>
-      </ol>
-      <p>
-Create a JavaScript file following the pattern of the existing threat
-files, register it with <code>window.ThreatModel.register(threat)</code>,
-add a <code>&lt;script&gt;</code> tag in <code>index.html</code>, and add
-the threat ID to the appropriate category in
-<code>threats/outline.js</code>.
-      </p>
-    </section>
   </section>
 
 </body>

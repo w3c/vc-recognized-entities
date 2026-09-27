@@ -1,4 +1,8 @@
 name: External Resource Substitution
+summary: >-
+  An attacker substitutes malicious content for an externally-referenced
+  resource, such as a schema file, via server compromise, domain takeover, or
+  DNS hijacking when the reference is not integrity-protected.
 description: >-
   A [=O1|recognized entity credential=] may reference external resources —
   such as <code>outputValidation</code> schema files or governance documents

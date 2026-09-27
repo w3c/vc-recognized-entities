@@ -1,4 +1,8 @@
 name: Anti-Competitive List Gatekeeping
+summary: >-
+  A first-mover list publisher selectively denies registration to competitors,
+  or is coerced into revoking legitimate entities, creating anti-competitive
+  lock-in for [=verifiers=] that rely on a single list.
 description: >-
   A first-mover that establishes the initial [=O1|recognized entity
   credential=] list for a market vertical — such as a national business

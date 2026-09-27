@@ -1,4 +1,8 @@
 name: Unbounded Recognition Chain Trust
+summary: >-
+  A compromised entry in a lower-level registry chained via
+  <code>recognizedIn</code> is transitively trusted when a [=verifier=] does
+  not enforce depth limits or independently validate each link in the chain.
 description: >-
   The <code>recognizedIn</code> property allows [=O1|recognized entity
   credentials=] to chain to other registries — such as ETSI Trust Service

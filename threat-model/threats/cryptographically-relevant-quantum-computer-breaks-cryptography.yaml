@@ -1,4 +1,9 @@
 name: Cryptographically Relevant Quantum Computer Breaks Cryptography
+summary: >-
+  A cryptographically relevant quantum computer (CRQC) breaks the signature
+  schemes in common use, letting an attacker forge proofs on [=recognized
+  entity credentials=] and [=verifiable credentials=] and collapsing the chain
+  of trust.
 description: >-
   The trust model for [=O1|recognized entity credentials=] and [=O2|dependent
   verifiable credentials=] depends on the cryptographic integrity of digital

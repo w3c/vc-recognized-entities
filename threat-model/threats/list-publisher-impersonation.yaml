@@ -1,4 +1,8 @@
 name: List Publisher Impersonation
+summary: >-
+  An attacker fabricates a list publisher identity using a confusable
+  identifier or display name so that a [=verifier=] treats an
+  attacker-controlled registry as an authoritative trust anchor.
 description: >-
   A malicious actor could create a [=O1|recognized entity credential=] that
   mimics a well-known [=E1|list publisher=] by using a similar or confusable

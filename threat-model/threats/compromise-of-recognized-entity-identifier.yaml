@@ -1,4 +1,8 @@
 name: Compromise of Recognized Entity Identifier
+summary: >-
+  An attacker who compromises the private key material of a recognized
+  [=issuer=]'s identifier can impersonate that genuinely-enrolled [=issuer=],
+  producing fraudulent [=verifiable credentials=] that pass validation.
 description: >-
   A [=E2|issuer=] recognized in a [=O1|recognized entity credential=] is
   identified by a cryptographic identifier (such as a DID or a public key). If

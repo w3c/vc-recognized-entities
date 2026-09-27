@@ -1,4 +1,8 @@
 name: Abuse of Recognized Actions
+summary: >-
+  A [=verifier=] interprets the free-form <code>action</code> value more
+  permissively than the list publisher intended, granting a [=recognized
+  entity=] broader capabilities than were authorized.
 description: >-
   The <code>action</code> property in a [=O1|recognized entity credential=] is
   a free-form string (e.g., <code>issue</code>, <code>verify</code>). Without

@@ -1,4 +1,9 @@
 name: Harms by Association
+summary: >-
+  A [=recognized entity credential=] reveals the membership of an ecosystem,
+  and a single onward disclosure can expose participants to targeting,
+  discrimination, or reputational harm even when the ecosystem was intended to
+  remain private.
 description: >-
   A [=O1|recognized entity credential=] reveals the membership structure of
   the ecosystem it governs. Even in ecosystems intended to remain private, the

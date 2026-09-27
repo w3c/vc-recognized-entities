@@ -1,4 +1,8 @@
 name: Unauthorized Issuer Spoofing
+summary: >-
+  An unrecognized entity fabricates, replays, or reuses a stolen [=recognized
+  entity credential=] to make its [=verifiable credentials=] appear to come
+  from a legitimately recognized [=issuer=].
 description: >-
   An entity that has not been granted a
   <code>RecognizedEntityCredential</code> by a legitimate [=E1|list

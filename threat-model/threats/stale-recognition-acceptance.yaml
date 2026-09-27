@@ -1,4 +1,9 @@
 name: Stale Recognition Acceptance
+summary: >-
+  A revoked or compromised [=issuer=] continues to pass validation because a
+  [=recognized entity credential=] has an overly long validity period or
+  because the [=verifier=] relies on aggressively cached, out-of-date list
+  data.
 description: >-
   A revoked or compromised [=E2|issuer=] may continue to pass [=P6|Validate
   Credential(s)=] through two related failure modes. First, a [=O1|recognized
