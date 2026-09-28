@@ -1248,6 +1248,13 @@ never reaches a member of <var>recognizedIssuers</var> is still returned, and
 Section [[[#recognition-validation]]] rejects it.
         </p>
 
+        <p class="note" title="This algorithm can run within a caller's time budget">
+<var>maxDepth</var> bounds this algorithm on its own. When
+[=identifier-based discovery=] invokes it, its retrievals also count against
+that caller's <var>maxDuration</var>, and exhausting the budget raises an
+error from the caller's operation.
+        </p>
+
         <ol class="algorithm">
           <li>
 Let <var>current</var> be <var>credential</var> and let <var>chain</var> be a
@@ -1256,7 +1263,7 @@ list containing <var>credential</var>.
           <li>
 Let <var>maxDepth</var> be the maximum recognition chain depth the [=verifier=]
 is configured to traverse. If the length of <var>chain</var> exceeds
-<var>maxDepth</var>, return <var>chain</var>.
+<var>maxDepth</var>, raise a `LIMIT_EXCEEDED_ERROR`.
           </li>
           <li>
 Let <var>issuer</var> be the value of the `issuer` property of
@@ -1278,7 +1285,8 @@ Let <var>listReference</var> be the value of the `recognizedIn` property and let
 Let <var>list</var> be the [=recognized entity credential=] identified by
 <var>listId</var>, obtained from <var>providedDocuments</var> if present and
 sufficiently fresh, or otherwise retrieved from <var>listId</var>. If
-<var>list</var> cannot be obtained, return <var>chain</var>.
+<var>list</var> cannot be obtained, raise a `RETRIEVAL_ERROR` identifying
+<var>listId</var>.
           </li>
           <li>
 Append <var>list</var> to <var>chain</var>, set <var>current</var> to
@@ -1439,11 +1447,29 @@ flowchart TD
         <p>
 To perform [=identifier-based discovery=] on a [=verifiable credential=]
 (<var>credential</var>) against a configured set of recognized [=issuers=]
-(<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
+(<var>recognizedIssuers</var>), within a time budget
+(<var>maxDuration</var>), a [=verifier=] runs the following algorithm. The
 algorithm returns a list of candidate chains, where each chain is a list of
 [=verifiable credentials=] beginning with <var>credential</var>. The
 [=verifier=] then runs the algorithm in Section [[[#recognition-validation]]]
 on the returned chains, which describes how to select among their results.
+        </p>
+
+        <p>
+<var>maxDuration</var> bounds the total elapsed time of one discovery
+operation, measured from when the algorithm starts. It covers all work,
+including that of a nested [=credential-based discovery=].
+<var>maxDepth</var> bounds one chain; <var>maxDuration</var> bounds the
+operation. Exceeding it raises a `LIMIT_EXCEEDED_ERROR`.
+        </p>
+
+        <p class="note" title="Budget exhaustion depends on conditions and order">
+Whether the budget is exhausted depends on network conditions and on
+traversal order, so the same [=verifiable presentation=] can succeed for one
+[=verifier=] and fail for another. A [=verifier=] whose budget runs out has
+established nothing about the [=issuer=]. The error says the budget was
+exceeded, not that recognition failed, so a [=verifier=] can retry with a
+larger <var>maxDuration</var>.
         </p>
 
         <ol class="algorithm">
@@ -1457,7 +1483,7 @@ Let <var>issuer</var> be the value of the `issuer` property of
           <li>
 Resolve or dereference <var>issuerId</var> to obtain a controlled identifier
 document, <var>idDocument</var>. If <var>issuerId</var> cannot be resolved,
-return <var>chains</var>.
+raise a `RETRIEVAL_ERROR` identifying <var>issuerId</var>.
           </li>
           <li>
 Let <var>service</var> be a service in the `service` array of
@@ -1468,11 +1494,13 @@ identifier-based discovery is not supported for this [=issuer=].
           <li>
 Let <var>endpoint</var> be the `serviceEndpoint` of <var>service</var> and
 retrieve the [=verifiable presentation=], <var>presentation</var>, published at
-<var>endpoint</var>. If retrieval fails, return <var>chains</var>.
+<var>endpoint</var>. If retrieval fails, raise a `RETRIEVAL_ERROR` identifying
+<var>endpoint</var>.
           </li>
           <li>
 Verify the proof on <var>presentation</var> and confirm that it is bound to
-<var>issuerId</var>. If verification fails, return <var>chains</var>.
+<var>issuerId</var>. If verification fails, raise a
+`CRYPTOGRAPHIC_SECURITY_ERROR`.
           </li>
           <li>
 Let <var>candidates</var> be the [=recognized entity credentials=] contained in
@@ -1489,7 +1517,9 @@ append the chain consisting of <var>credential</var> followed by
 [=credential-based discovery=] on <var>list</var> against
 <var>recognizedIssuers</var> and append the chain consisting of
 <var>credential</var> followed by the elements of the returned chain to
-<var>chains</var>.
+<var>chains</var>. If the elapsed time since this algorithm started exceeds
+<var>maxDuration</var>, raise a `LIMIT_EXCEEDED_ERROR` identifying
+<var>maxDuration</var> and the [=URL=] being retrieved, if any.
           </li>
           <li>
 Return <var>chains</var>.
@@ -1737,6 +1767,55 @@ both <var>recognized</var> and <var>actionRecognized</var> are `true`, falling
 back to a result in which only <var>recognized</var> is `true`.
         </p>
 
+      </section>
+
+      <section>
+        <h3>Errors</h3>
+
+        <p>
+When an algorithm in this section fails, a [=verifier=] raises an error and
+describes it with a
+<a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> object, as
+defined in the [[[VC-DATA-MODEL]]] specification. The `type` property
+identifies what went wrong. The types below are used by the algorithms in
+this section.
+        </p>
+
+        <p class="issue">
+The first two types below are not yet defined in the [[[VC-DATA-MODEL]]]
+specification. This specification proposes that they be added to it, so that
+other specifications can use them as well.
+        </p>
+
+        <dl>
+          <dt id="RETRIEVAL_ERROR">
+https://www.w3.org/TR/vc-data-model#RETRIEVAL_ERROR
+          </dt>
+          <dd>
+A resource could not be retrieved. This covers an identifier that does not
+resolve, a [=recognized entity credential=] that cannot be obtained, and a
+[=verifiable presentation=] that cannot be fetched from a service endpoint.
+The [=URL=] that was being retrieved SHOULD be provided in the
+`ProblemDetails` object.
+          </dd>
+          <dt id="LIMIT_EXCEEDED_ERROR">
+https://www.w3.org/TR/vc-data-model#LIMIT_EXCEEDED_ERROR
+          </dt>
+          <dd>
+A configured limit was exceeded. This covers the time a [=verifier=] allots
+to an operation and the maximum recognition chain depth it traverses. The
+limit that was exceeded SHOULD be identified in the `ProblemDetails` object.
+When a time limit runs out during a retrieval, the [=URL=] being retrieved
+SHOULD be provided as well.
+          </dd>
+          <dt>
+https://www.w3.org/TR/vc-data-model#CRYPTOGRAPHIC_SECURITY_ERROR
+          </dt>
+          <dd>
+A proof failed to verify. This type is already defined in the
+[[[VC-DATA-MODEL]]] specification.
+          </dd>
+        </dl>
       </section>
     </section>
 

@@ -14,7 +14,9 @@ description: >-
   of any single compromised registry: an attacker who compromises a registry
   at any depth gains the ability to assert recognition claims that propagate
   upward through the entire chain to [=E4|verifiers=] that have configured
-  only a top-level trust anchor.
+  only a top-level trust anchor. Depth limits bound one chain. They do not
+  bound how many chains a [=E4|verifier=] traverses, which
+  [[[#list-retrieval-denial-of-service]]] covers.
 elements: [O1, E1, E4, F5, P6]
 tags: [security]
 taxonomyName: STRIDE
