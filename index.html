@@ -1642,11 +1642,11 @@ credential=] conforms to it.
         </p>
 
         <p>
-<var>currentDateTime</var> is the point in time at which recognition is
+<var>evaluationDateTime</var> is the point in time at which recognition is
 evaluated. A [=verifier=] normally sets it to the current date and time. A
 [=verifier=] that asks whether recognition held at some past date sets it to
 that date instead. Every date comparison in this algorithm uses
-<var>currentDateTime</var>. Validity period endpoints are inclusive. An
+<var>evaluationDateTime</var>. Validity period endpoints are inclusive. An
 instant equal to a `validFrom` or a `validUntil` value is within the period
 that value bounds.
         </p>
@@ -1681,7 +1681,7 @@ and end at the earliest `validUntil` property in <var>chain</var>. A
 [=verifiable credential=] that expresses no `validFrom` property does not
 constrain the start, and one that expresses no `validUntil` property does not
 constrain the end. If <var>window</var> ends before it starts, no such period
-exists, so return <var>result</var>. If <var>currentDateTime</var> falls
+exists, so return <var>result</var>. If <var>evaluationDateTime</var> falls
 outside <var>window</var>, no [=verifiable credential=] in <var>chain</var> is
 valid at the evaluation time, so return <var>result</var>.
           </li>
@@ -1713,7 +1713,7 @@ following conditions.
 Its `action` value is equal to <var>action</var>.
               </li>
               <li>
-Its validity period includes <var>currentDateTime</var>. If it expresses
+Its validity period includes <var>evaluationDateTime</var>. If it expresses
 neither a `validFrom` nor a `validUntil` property, the validity period of the
 enclosing [=recognized entity credential=] applies. If it expresses one but
 not the other, the enclosing credential's corresponding property applies to
