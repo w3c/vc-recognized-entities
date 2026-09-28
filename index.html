@@ -792,7 +792,9 @@ perform the action. The value MUST be an
 <a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
 value expressed in UTC with no sub-second precision, for example
 `2025-01-01T00:00:00Z`. This property is OPTIONAL; if absent, the validity
-period of the enclosing [=recognized entity credential=] applies.
+period of the enclosing [=recognized entity credential=] applies. This point
+in time is inclusive. A [=verifier=] checks it against the evaluation time,
+as described in Section [[[#recognition-validation]]].
               </td>
             </tr>
             <tr>
@@ -804,7 +806,9 @@ recognized to perform the action. The value MUST be an
 <a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
 value expressed in UTC with no sub-second precision, for example
 `2030-01-01T00:00:00Z`. This property is OPTIONAL; if absent, the validity
-period of the enclosing [=recognized entity credential=] applies.
+period of the enclosing [=recognized entity credential=] applies. This point
+in time is inclusive. A [=verifier=] checks it against the evaluation time,
+as described in Section [[[#recognition-validation]]].
               </td>
             </tr>
           </tbody>
@@ -1626,7 +1630,8 @@ been established.
 To perform [=recognition validation=] on a chain (<var>chain</var>) produced
 by any discovery mechanism, for a specific action (<var>action</var>, for
 example `issue`), against a configured set of recognized [=issuers=]
-(<var>recognizedIssuers</var>), a [=verifier=] runs the following algorithm. The
+(<var>recognizedIssuers</var>), at an evaluation time
+(<var>currentDateTime</var>), a [=verifier=] runs the following algorithm. The
 algorithm returns a result with two boolean outcomes: <var>entityRecognized</var>,
 indicating whether the [=issuer=] of the first [=verifiable credential=] in
 <var>chain</var> is ultimately recognized by a member of
@@ -1634,6 +1639,16 @@ indicating whether the [=issuer=] of the first [=verifiable credential=] in
 whether that [=issuer=] is recognized to perform <var>action</var> and, where a
 [=recognized action=] declares an `outputValidation`, whether the [=verifiable
 credential=] conforms to it.
+        </p>
+
+        <p>
+<var>evaluationDateTime</var> is the point in time at which recognition is
+evaluated. A [=verifier=] normally sets it to the current date and time. A
+[=verifier=] that asks whether recognition held at some past date sets it to
+that date instead. Every date comparison in this algorithm uses
+<var>evaluationDateTime</var>. Validity period endpoints are inclusive. An
+instant equal to a `validFrom` or a `validUntil` value is within the period
+that value bounds.
         </p>
 
         <ol class="algorithm">
@@ -1666,7 +1681,9 @@ and end at the earliest `validUntil` property in <var>chain</var>. A
 [=verifiable credential=] that expresses no `validFrom` property does not
 constrain the start, and one that expresses no `validUntil` property does not
 constrain the end. If <var>window</var> ends before it starts, no such period
-exists, so return <var>result</var>.
+exists, so return <var>result</var>. If <var>evaluationDateTime</var> falls
+outside <var>window</var>, no [=verifiable credential=] in <var>chain</var> is
+valid at the evaluation time, so return <var>result</var>.
           </li>
           <li>
 For each adjacent pair of [=verifiable credentials=] in <var>chain</var>, where
@@ -1696,8 +1713,11 @@ following conditions.
 Its `action` value is equal to <var>action</var>.
               </li>
               <li>
-Its validity period, if it expresses a `validFrom` or `validUntil` property,
-includes at least part of <var>window</var>.
+Its validity period includes <var>evaluationDateTime</var>. If it expresses
+neither a `validFrom` nor a `validUntil` property, the validity period of the
+enclosing [=recognized entity credential=] applies. If it expresses one but
+not the other, the enclosing credential's corresponding property applies to
+the unexpressed value.
               </li>
               <li>
 It declares no `outputValidation`, or <var>credential</var> conforms to every

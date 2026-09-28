@@ -17,7 +17,11 @@ description: >-
   freshness window, accepting credentials from issuers whose recognition has
   since changed. Both failure modes share the same impact — a credential
   that should fail validation passes — but require complementary mitigations
-  at the publisher and verifier levels respectively.
+  at the publisher and verifier levels respectively. A third mode is
+  narrower. An individual [=recognized action=] can carry its own dates.
+  Those dates can expire while the [=O1|recognized entity credential=]
+  carrying them is still valid. An [=E4|verifier=] that checks only the
+  credential's dates treats the expired action as live.
 elements: [O1, E1, E2, E3, E4, P1, P6, P7, F5]
 tags: [security]
 taxonomyName: STRIDE
@@ -27,17 +31,26 @@ response:
     name: Risk-Proportionate Validity Periods, Revocation, and Cache Freshness Controls
     type: Reduce
     description: >-
-      [=E1|List publishers=] select validity periods appropriate to the risk
-      profile and operational capacity of the ecosystem. High-risk or large
-      ecosystems prefer short validity periods (24–48 hours); smaller,
-      lower-risk ecosystems might use longer periods provided robust
-      revocation mechanisms are also deployed. [=E1|List publishers=] provide
-      revocation status endpoints that allow point-in-time queries rather than
-      requiring full list re-fetches. [=E4|Verifier=] implementations check
-      the <code>validUntil</code> field during [=P6|Validate Credential(s)=]
-      and do not accept expired credentials. [=E4|Verifiers=] respect
-      cache-control directives from [=E1|list publishers=] and enforce maximum
-      cache TTLs appropriate to the ecosystem risk profile, performing fresh
-      retrieval or live revocation checks when cached data exceeds the
-      configured staleness threshold. Governance frameworks specify acceptable
-      cache freshness windows for compliant [=E4|verifier=] implementations.
+      This response separates four concerns. <strong>Credential
+      validity.</strong> [=E1|List publishers=] select validity periods
+      appropriate to the risk profile and operational capacity of the
+      ecosystem. High-risk or large ecosystems prefer short validity periods
+      (24–48 hours). Smaller, lower-risk ecosystems might use longer periods,
+      provided robust revocation is also deployed. [=E4|Verifier=]
+      implementations check <code>validUntil</code> during [=P6|Validate
+      Credential(s)=] and do not accept expired credentials. <strong>Action
+      validity.</strong> A [=O1|recognized entity credential=] can set
+      separate dates on an individual [=recognized action=]. Those dates can
+      expire while the enclosing credential is still valid. [=E4|Verifiers=]
+      check the action's dates against the evaluation time, not only against
+      the credential's dates. An action whose period has passed does not
+      recognize the entity to perform it. <strong>Freshness.</strong>
+      [=E4|Verifiers=] respect cache-control directives from [=E1|list
+      publishers=]. They enforce maximum cache TTLs appropriate to the
+      ecosystem risk profile. When cached data exceeds the configured
+      staleness threshold, they retrieve it again. Governance frameworks
+      specify acceptable cache freshness windows. <strong>Revocation.</strong>
+      [=E1|List publishers=] provide revocation status endpoints that allow
+      point-in-time queries, rather than requiring full list re-fetches.
+      [=E4|Verifiers=] perform live revocation checks for high-value
+      validation.
