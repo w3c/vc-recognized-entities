@@ -48,8 +48,9 @@ response:
       [=E4|verifiers=] to check membership without retrieving full lists.
       Per-fetch limits do not bound a whole discovery operation.
       [=E4|Verifiers=] also impose a time budget covering the entire
-      operation, including every nested traversal, and fail the operation when
-      it is exceeded. A [=E4|verifier=] that fails this way has established
-      nothing about the [=E2|issuer=], and the residual risk is that a
-      [=E2|issuer=] can deny verification of its own credentials by publishing
-      a presentation too large to traverse in time.
+      operation, including every nested traversal, and raise an error when it
+      is exceeded. The error names the budget rather than reporting that the
+      [=E2|issuer=] is unrecognized, so a [=E4|verifier=] can tell the two
+      apart and retry. The residual risk is that a [=E2|issuer=] can deny
+      verification of its own credentials by publishing a presentation too
+      large to traverse in time.
