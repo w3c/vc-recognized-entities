@@ -1248,6 +1248,14 @@ never reaches a member of <var>recognizedIssuers</var> is still returned, and
 Section [[[#recognition-validation]]] rejects it.
         </p>
 
+        <p class="note" title="Discovery does not check intermediate authority">
+This algorithm follows `recognizedIn` references and does not read
+`recognizedTo`. It does not check whether an intermediate was allowed to
+perform the action for which another entity was recognized. Section
+[[[#recognition-validation]]] makes that check on the returned
+<var>chain</var>.
+        </p>
+
         <ol class="algorithm">
           <li>
 Let <var>current</var> be <var>credential</var> and let <var>chain</var> be a
@@ -1444,6 +1452,14 @@ algorithm returns a list of candidate chains, where each chain is a list of
 [=verifiable credentials=] beginning with <var>credential</var>. The
 [=verifier=] then runs the algorithm in Section [[[#recognition-validation]]]
 on the returned chains, which describes how to select among their results.
+        </p>
+
+        <p class="note" title="Discovery does not check intermediate authority">
+This algorithm assembles candidate chains and does not read `recognizedTo`.
+Section [[[#recognition-validation]]] checks each returned chain, including
+whether every intermediate was allowed to perform the action for which
+another entity was recognized. A candidate chain that fails that check is
+not used, even though discovery returned it.
         </p>
 
         <ol class="algorithm">
@@ -1706,9 +1722,35 @@ schema referenced by its `outputValidation`.
             </ol>
           </li>
           <li>
+If <var>result.actionRecognized</var> is `false`, return <var>result</var>.
+Otherwise, check each [=recognized entity credential=] in <var>chain</var>
+after the second one. For each such [=verifiable credential=],
+<var>outer</var>, let <var>inner</var> be the [=verifiable credential=] that
+precedes it in <var>chain</var>, and let <var>intermediate</var> be the
+[=recognized entity=] in the `credentialSubject` of <var>outer</var> whose `id`
+is the identifier of the [=issuer=] of <var>inner</var>. If no [=recognized
+action=] declared by the `recognizedTo` property of <var>intermediate</var> has
+an `action` value equal to <var>action</var>, then the [=issuer=] of
+<var>inner</var> recognized an entity to perform an action that it was not
+itself recognized to perform. Set <var>result.actionRecognized</var> to `false`
+and return <var>result</var>.
+          </li>
+          <li>
 Return <var>result</var>.
           </li>
         </ol>
+
+        <p class="note" title="What the intermediate check establishes">
+An intermediate that recognizes another entity to perform an action is
+required to be allowed to perform that same action itself. This stops a
+chain from granting an action that no intermediate was ever allowed to
+perform. It does not separate performing an action from recognizing others
+to perform it. An entity recognized to `issue` can recognize others to
+`issue`, and this algorithm treats that as valid. An ecosystem that wants to
+keep those two powers apart names separate actions for them, such as one
+action for issuing and another for recognizing issuers, and the check above
+then applies to each.
+        </p>
 
         <p class="note" title="Recognition and action recognition are distinct outcomes">
 A result in which <var>recognized</var> is `true` and
@@ -2114,6 +2156,17 @@ discovery terminates there, completing a recognition chain from a single trade
 item to the root of the GS1 federation. A [=holder=], such as the product's
 distributor, might staple all three credentials into a single presentation so
 that the [=verifier=] does not need to fetch any of them.
+      </p>
+
+      <p>
+[=Recognition validation=] then checks the assembled chain. Healthy Tots is
+recognized to `issue` by GS1 Utopia, which is what the key credential needs.
+GS1 Utopia is an intermediate in this chain, so it is checked as well: the
+GS1 Global Office credential recognizes GS1 Utopia to `issue`, so GS1 Utopia
+was allowed to perform the action it recognized Healthy Tots to perform. Had
+the GS1 Global Office recognized GS1 Utopia to perform some or no other
+action(s), the chain would be rejected even though every `recognizedIn`
+reference resolves and every proof verifies.
       </p>
 
       </section>
