@@ -1251,7 +1251,7 @@ Section [[[#recognition-validation]]] rejects it.
         <p class="note" title="Discovery does not check intermediate authority">
 This algorithm follows `recognizedIn` references and does not read
 `recognizedTo`. It does not check whether an intermediate was allowed to
-perform the action it recognized another entity for. Section
+perform the action for which another entity was recognized. Section
 [[[#recognition-validation]]] makes that check on the returned
 <var>chain</var>.
         </p>
@@ -1457,9 +1457,9 @@ on the returned chains, which describes how to select among their results.
         <p class="note" title="Discovery does not check intermediate authority">
 This algorithm assembles candidate chains and does not read `recognizedTo`.
 Section [[[#recognition-validation]]] checks each returned chain, including
-whether every intermediate was allowed to perform the action it recognized
-another entity for. A candidate chain that fails that check is not used,
-even though discovery returned it.
+whether every intermediate was allowed to perform the action for which
+another entity was recognized. A candidate chain that fails that check is
+not used, even though discovery returned it.
         </p>
 
         <ol class="algorithm">
@@ -2163,10 +2163,10 @@ that the [=verifier=] does not need to fetch any of them.
 recognized to `issue` by GS1 Utopia, which is what the key credential needs.
 GS1 Utopia is an intermediate in this chain, so it is checked as well: the
 GS1 Global Office credential recognizes GS1 Utopia to `issue`, so GS1 Utopia
-was allowed to perform the action it recognized Healthy Tots for. Had the
-GS1 Global Office recognized GS1 Utopia for some other action, or for none,
-the chain would be rejected even though every `recognizedIn` reference
-resolves and every proof verifies.
+was allowed to perform the action it recognized Healthy Tots to perform. Had
+the GS1 Global Office recognized GS1 Utopia to perform some or no other
+action(s), the chain would be rejected even though every `recognizedIn`
+reference resolves and every proof verifies.
       </p>
 
       </section>

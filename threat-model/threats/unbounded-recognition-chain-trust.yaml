@@ -15,10 +15,10 @@ description: >-
   at any depth gains the ability to assert recognition claims that propagate
   upward through the entire chain to [=E4|verifiers=] that have configured
   only a top-level trust anchor. Depth limits and per-link validation check
-  that each link is genuine. They do not check what each link was allowed to
+  that each link is genuine; they do not check what each link was allowed to
   pass on. An intermediate that was recognized for one action can recognize
   another entity for a different action, and a [=E4|verifier=] that checks
-  only the first two [=verifiable credentials=] in the chain accepts it.
+  only the first two [=verifiable credentials=] in the chain will accept it.
 elements: [O1, E1, E4, F5, P6]
 tags: [security]
 taxonomyName: STRIDE
@@ -40,4 +40,4 @@ response:
       governance configuration. [=E4|Verifiers=] also check every
       intermediate in the chain, not only the credential that directly
       recognizes the [=E2|issuer=]. An intermediate is required to be allowed
-      to perform the action it recognized another entity for.
+      to perform the action for which it recognized another entity.
