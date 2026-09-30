@@ -143,20 +143,15 @@ property:
     domain: RecognizedAction
     range: URL
 
-  - id: issuer
+  - id: cred:issuer
     label: Issuer of a Recognized Entity Credential
-    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-issuer
-    upper_value: cred:issuer
-    domain: RecognizedEntityCredential
-    range: RecognizedIssuer
+    comment: When used in a recognized entity credential, the value must be restricted to recognized issuer.
+    scope: RecognizedEntityCredential
 
-  - id: credentialSubject
+  - id: cred:credentialSubject
     label: Credential subject for recognized entities
-    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-credentialsubject
     comment: When used in a recognized entity credential, the value must be restricted to recognized entities.
-    upper_value: cred:credentialSubject
-    domain: RecognizedEntityCredential
-    range: RecognizedEntity
+    scope: RecognizedEntityCredential
 
 
 

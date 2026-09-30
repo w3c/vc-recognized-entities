@@ -145,7 +145,7 @@
         </p>
         <dl>
             <dt>Published:</dt>
-            <dd><time property="dc:date" id="time">2026-09-24</time></dd>
+            <dd><time property="dc:date" id="time">2026-09-30</time></dd>
             <dt>Version Info:</dt>
             <dd>1.0</dd>
             <dt id="see_also">See Also: <a
@@ -260,6 +260,11 @@
                     <summary>term list</summary>
                     <ul>
                         <li><a
+                                href="#e2d5b626929c13d8aa768b72420dca4808855889e4ccefb69e0aa051ce0a06b1"><code>credentialSubject<code></code></code></a>
+                        </li>
+                        <li><a href="#79a6029425e48d25277bb0f069aa517894431c11815f186f1522399373c7ea3e"><code>issuer<code></code></code></a>
+                        </li>
+                        <li><a
                                 href="#b97a7ba078df5cc33a0bd09c25db536012f09984707459bf18d8b8a8606181be"><code>validFrom<code></code></code></a>
                         </li>
                         <li><a
@@ -271,9 +276,7 @@
                         <li><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential<code></code></code></a></li>
                         <li><a href="#RecognizedIssuer"><code>RecognizedIssuer<code></code></code></a></li>
                         <li><a href="#action"><code>action<code></code></code></a></li>
-                        <li><a href="#credentialSubject"><code>credentialSubject<code></code></code></a></li>
                         <li><a href="#image"><code>image<code></code></code></a></li>
-                        <li><a href="#issuer"><code>issuer<code></code></code></a></li>
                         <li><a href="#legalName"><code>legalName<code></code></code></a></li>
                         <li><a href="#outputValidation"><code>outputValidation<code></code></code></a></li>
                         <li><a href="#recognizedBy"><code>recognizedBy<code></code></code></a></li>
@@ -306,11 +309,9 @@
                 <p><em>Recognized Entity</em></p>
                 <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-recognized-entity">formal definition of the term</a>.
                 </p>
-                <div>An entity that is recognized an <a href="#RecognizedEntityCredential">Recognized Entity Credential</a> to perform a
+                <div>An entity that is recognized in a <a href="#RecognizedEntityCredential">Recognized Entity Credential</a> to perform a
                     specific action.</div>
                 <dl class="terms">
-                    <dt>Range of:</dt>
-                    <dd><a href="#credentialSubject"><code>credentialSubject</code></a></dd>
                     <dt>Domain of:</dt>
                     <dd><a href="#recognizedTo"><code>recognizedTo</code></a></dd>
                     <dt>In the domain of:</dt>
@@ -349,7 +350,7 @@
                 <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-recognized-entity-credential">formal definition of the
                         term</a>.</p>
                 <div>A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a
-                        href="#RecognizedEntity">Recognized Entities</a> entities.</div>
+                        href="#RecognizedEntity">Recognized Entities</a>.</div>
                 <dl class="terms">
                     <dt>Subclass of:</dt>
                     <dd><a href="https://www.w3.org/2018/credentials#VerifiableCredential"><code>cred:VerifiableCredential</code></a></dd>
@@ -357,8 +358,6 @@
                 <dl class="terms">
                     <dt>Includes the range of:</dt>
                     <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
-                    <dt>Domain of:</dt>
-                    <dd><a href="#issuer"><code>issuer</code></a>, <a href="#credentialSubject"><code>credentialSubject</code></a></dd>
                 </dl>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
@@ -373,8 +372,6 @@
                 <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-recognizedissuer">formal definition of the term</a>.
                 </p>
                 <dl class="terms">
-                    <dt>Range of:</dt>
-                    <dd><a href="#issuer"><code>issuer</code></a></dd>
                     <dt>In the domain of:</dt>
                     <dd><a href="#recognizedIn"><code>recognizedIn</code></a></dd>
                 </dl>
@@ -635,20 +632,16 @@
                     </dd>
                 </dl>
             </section>
-            <section id="issuer">
+            <section id="79a6029425e48d25277bb0f069aa517894431c11815f186f1522399373c7ea3e">
                 <h4><code>issuer</code></h4>
                 <p><em>Issuer of a Recognized Entity Credential</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-issuer">formal definition of the term</a>.</p>
-                <dl class="terms">
-                    <dt>Subproperty of:</dt>
-                    <dd><span><a href="https://www.w3.org/2018/credentials#issuer"><code>cred:issuer</code></a></span><br></dd>
-                </dl>
-                <dl class="terms">
-                    <dt>Domain:</dt>
-                    <dd><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
-                    <dt>Range:</dt>
-                    <dd><a href="#RecognizedIssuer"><code>RecognizedIssuer</code></a></dd>
-                </dl>
+                <div>When used in a recognized entity credential, the value must be restricted to recognized issuer.</div>
+                <p class="note">
+                    <b>This term is formally defined in another vocabulary</b>
+                    (as <a href="https://www.w3.org/2018/credentials#issuer">cred:issuer</a>), but is frequently used with this vocabulary
+                    and has been
+                    included to aid readability of this document.
+                </p>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
@@ -656,24 +649,16 @@
                     </dd>
                 </dl>
             </section>
-            <section id="credentialSubject">
+            <section id="e2d5b626929c13d8aa768b72420dca4808855889e4ccefb69e0aa051ce0a06b1">
                 <h4><code>credentialSubject</code></h4>
                 <p><em>Credential subject for recognized entities</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-credentialsubject">formal definition of the term</a>.
-                </p>
                 <div>When used in a recognized entity credential, the value must be restricted to recognized entities.</div>
-                <dl class="terms">
-                    <dt>Subproperty of:</dt>
-                    <dd><span><a
-                                href="https://www.w3.org/2018/credentials#credentialSubject"><code>cred:credentialSubject</code></a></span><br>
-                    </dd>
-                </dl>
-                <dl class="terms">
-                    <dt>Domain:</dt>
-                    <dd><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential</code></a></dd>
-                    <dt>Range:</dt>
-                    <dd><a href="#RecognizedEntity"><code>RecognizedEntity</code></a></dd>
-                </dl>
+                <p class="note">
+                    <b>This term is formally defined in another vocabulary</b>
+                    (as <a href="https://www.w3.org/2018/credentials#credentialSubject">cred:credentialSubject</a>), but is frequently used
+                    with this vocabulary and has been
+                    included to aid readability of this document.
+                </p>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a

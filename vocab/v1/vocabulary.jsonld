@@ -63,7 +63,7 @@
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:seeAlso": "https://www.w3.org/TR/vc-recognized-entities/",
-        "dc:date": "2026-09-24"
+        "dc:date": "2026-09-30"
     }, {
         "@id": "re:legalName",
         "@type": "rdf:Property",
@@ -165,33 +165,11 @@
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-outputvalidation", "https://www.w3.org/ns/credentials/recognized-entities#"],
         "vs:term_status": "stable"
     }, {
-        "@id": "re:issuer",
-        "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:subPropertyOf": ["cred:issuer"],
-        "rdfs:domain": "re:RecognizedEntityCredential",
-        "rdfs:range": "re:RecognizedIssuer",
-        "rdfs:label": "Issuer of a Recognized Entity Credential",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-issuer", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
-        "@id": "re:credentialSubject",
-        "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:subPropertyOf": ["cred:credentialSubject"],
-        "rdfs:domain": "re:RecognizedEntityCredential",
-        "rdfs:range": "re:RecognizedEntity",
-        "rdfs:label": "Credential subject for recognized entities",
-        "rdfs:comment": {
-            "@value": "<div>When used in a recognized entity credential, the value must be restricted to recognized entities.</div>",
-            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
-        },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-credentialsubject", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
         "@id": "re:RecognizedEntity",
         "@type": "rdfs:Class",
         "rdfs:label": "Recognized Entity",
         "rdfs:comment": {
-            "@value": "<div>An entity that is recognized an <a href=\"#RecognizedEntityCredential\">Recognized Entity Credential</a> to perform a specific action.</div>",
+            "@value": "<div>An entity that is recognized in a <a href=\"#RecognizedEntityCredential\">Recognized Entity Credential</a> to perform a specific action.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-recognized-entity", "https://www.w3.org/ns/credentials/recognized-entities#"],
@@ -212,7 +190,7 @@
         "rdfs:subClassOf": ["cred:VerifiableCredential"],
         "rdfs:label": "Recognized Entity Credential",
         "rdfs:comment": {
-            "@value": "<div>A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href=\"#RecognizedEntity\">Recognized Entities</a> entities.</div>",
+            "@value": "<div>A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href=\"#RecognizedEntity\">Recognized Entities</a>.</div>",
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-recognized-entity-credential", "https://www.w3.org/ns/credentials/recognized-entities#"],
@@ -236,6 +214,6 @@
     }, {
         "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:RecognizedIssuer", "re:action", "re:credentialSubject", "re:image", "re:issuer", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "schema:description", "schema:name", "sec:digestMultibase"]
+        "mentions": ["cred:credentialSubject", "cred:issuer", "cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:RecognizedIssuer", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "schema:description", "schema:name", "sec:digestMultibase"]
     }]
 }
