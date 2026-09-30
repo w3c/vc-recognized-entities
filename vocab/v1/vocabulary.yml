@@ -42,7 +42,7 @@ class:
   - id: RecognizedEntityCredential
     label: Recognized Entity Credential
     defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-recognized-entity-credential
-    comment: A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href="#RecognizedEntity">Recognized Entities</a> entities.
+    comment: A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href="#RecognizedEntity">Recognized Entities</a>.
     upper_value: cred:VerifiableCredential
 
   - id: RecognizedIssuer
