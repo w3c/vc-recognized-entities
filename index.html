@@ -4127,10 +4127,15 @@ Recognized Entity Credential Propagation</a>.
             </figure>
 
             <p>
-                The national business register recognizes the manufacturer. As the root of its
-                chain, its `issuer` object carries no `recognizedIn`. The subject is also a
+                The national business register recognizes the manufacturer. The register is the
+                root of this chain: a [=verifier=] trusts its DID directly. The subject is also a
                 `RegisteredIdentity`, so the credential doubles as a Digital Identity Anchor
                 [[?UNTP-DIA]] binding the manufacturer's DID to its commercial register number.
+                Because a German register number is unique only within one register court,
+                the `idScheme` is scoped to the court. `publicInformation` links to the
+                entry's current public record, and `relatedResource` fixes the version of the
+                entry the register attested to, using the URLs described in
+                [[[#business-register-entry-urls]]].
             </p>
 
             <pre class="example nohighlight"
@@ -4155,19 +4160,23 @@ Recognized Entity Credential Propagation</a>.
     "legalName": "Handelsregister — Amtsgericht Düsseldorf"
   },
   "validFrom": "2026-04-10T00:00:00Z",
+  "relatedResource": [{
+    "id": "https://handelsregister.example/entry/r3101/hrb/123456/history/7",
+    "mediaType": "application/ld+json",
+    "digestMultibase": "uEiBq7XnR2tKpLmVwYs4dCfHj8gNzE3aQoUbT6rWkM5xP1A"
+  }],
   "credentialSubject": [{
     "id": "did:web:alphacell.example",
     "type": ["RecognizedEntity", <span class="highlight">"RegisteredIdentity"</span>],
     "name": "AlphaCell Batteries GmbH",
-    "sameAs": ["https://gleif.example/record/529900T8BM49AURSDO55"],
     <span class="highlight">"registeredId": "HRB 123456"</span>,
     <span class="highlight">"idScheme": {
-      "id": "https://handelsregister.example/",
+      "id": "https://handelsregister.example/entry/r3101/",
       "type": "IdentifierScheme",
-      "name": "Handelsregister"
+      "name": "Handelsregister — Amtsgericht Düsseldorf"
     }</span>,
     <span class="highlight">"registerType": "Business"</span>,
-    <span class="highlight">"registrationScopeList": ["https://handelsregister.example/id/HRB123456"]</span>,
+    <span class="highlight">"publicInformation": "https://handelsregister.example/entry/r3101/hrb/123456"</span>,
     "recognizedTo": {
       "type": "RecognizedAction",
       "action": "issue",
@@ -4191,10 +4200,13 @@ Recognized Entity Credential Propagation</a>.
       </pre>
 
             <p>
-                The national accreditation body accredits the conformity assessment body. Its
-                `issuer` object points, through `recognizedIn`, at the credential in which the
-                European co-operation for Accreditation recognizes it; that credential points
-                in turn at the International Accreditation Forum, where the chain terminates.
+                The national accreditation body accredits the conformity assessment body. Every
+                entity in the chain is identified by a `did:web` DID, and `recognizedBy` names
+                the entity that did the recognizing. The accreditation body is itself the
+                subject of a credential issued by the European co-operation for Accreditation,
+                which in turn is the subject of one issued by the International Accreditation
+                Forum, where the chain terminates. The credentials carry no `recognizedIn`; a
+                [=verifier=] links them by matching each `issuer` to a `credentialSubject`.
             </p>
 
             <pre class="example nohighlight"
@@ -4217,12 +4229,7 @@ Recognized Entity Credential Propagation</a>.
   "issuer": {
     "id": "did:web:dakks.example",
     "type": "RecognizedIssuer",
-    "name": "German Accreditation Body",
-    "recognizedIn": {
-      "id": "https://european-accreditation.example/credentials/recognition/3d9f8c14",
-      "type": "RecognizedEntityCredential",
-      "name": "Recognition of national accreditation bodies"
-    }
+    "name": "German Accreditation Body"
   },
   "validFrom": "2026-02-20T00:00:00Z",
   "validUntil": "2031-02-20T00:00:00Z",
@@ -4230,12 +4237,8 @@ Recognized Entity Credential Propagation</a>.
     "id": "did:web:cab.example",
     "type": ["RecognizedEntity", <span class="highlight">"RegisteredIdentity"</span>],
     "name": "Example Conformity Assessment GmbH",
-    "recognizedIn": {
-      "id": "https://dakks.example/accredited-bodies/D-ZE-12345-01-00",
-      "type": "ExternalEntityList",
-      "name": "Register of accredited bodies"
-    },
     <span class="highlight">"registeredId": "D-ZE-12345-01-00"</span>,
+    <span class="highlight">"publicInformation": "https://dakks.example/accredited-bodies/D-ZE-12345-01-00"</span>,
     <span class="highlight">"registerType": "Accreditation"</span>,
     <span class="highlight">"registrationScopeList": [
       "https://dakks.example/accredited-bodies/D-ZE-12345-01-00/scope"
@@ -4283,25 +4286,43 @@ Recognized Entity Credential Propagation</a>.
             <p class="note" title="ScopedRecognizedAction's place in the class hierarchy">
                 `ScopedRecognizedAction` is a type defined by the CE marking ecosystem
                 vocabulary, declared as a subclass of this specification's
-                `RecognizedAction`:
+                `RecognizedAction`. The scope properties it carries are defined by UNTP, so
+                the vocabulary does not redefine them. It also does not give them an
+                `rdfs:domain`: a domain is a global inference rule, and would make every
+                resource that uses, for example, `referenceRegulation` — including UNTP's own
+                conformity credentials — a `ScopedRecognizedAction`. Instead, a SHACL
+                [[?SHACL]] shape states which properties a `ScopedRecognizedAction` is
+                expected to carry, without changing what they mean elsewhere. The UNTP IRIs
+                are from UNTP's working-draft namespace.
             </p>
-            <pre class="example nohighlight" title="RDF-level class hierarchy for ScopedRecognizedAction">
+            <pre class="example nohighlight" title="RDF class hierarchy and SHACL shape for ScopedRecognizedAction">
 @prefix ce:   &lt;https://ce-marking.example/vocabulary/v1#&gt; .
 @prefix re:   &lt;https://www.w3.org/ns/credentials/recognized-entities#&gt; .
+@prefix untp: &lt;https://test.uncefact.org/vocabulary/untp/core/working/&gt; .
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix sh:   &lt;http://www.w3.org/ns/shacl#&gt; .
 
 ce:ScopedRecognizedAction
     a rdfs:Class ;
     rdfs:subClassOf re:RecognizedAction ;
     rdfs:label "Scoped Recognized Action" ;
     rdfs:comment "A RecognizedAction whose authorization is bounded by jurisdiction, standard, regulation, assessment criteria, or product category — properties reused from the UNTP vocabulary." .
+
+ce:ScopedRecognizedActionShape
+    a sh:NodeShape ;
+    sh:targetClass ce:ScopedRecognizedAction ;
+    sh:property [ sh:path untp:jurisdictionCountry ; sh:maxCount 1 ] ;
+    sh:property [ sh:path untp:referenceStandard ] ;
+    sh:property [ sh:path untp:referenceRegulation ; sh:minCount 1 ] ;
+    sh:property [ sh:path untp:assessmentCriteria ] ;
+    sh:property [ sh:path untp:productCategory ] .
             </pre>
 
             <p>
                 The notifying authority notifies the same body under the Battery Regulation.
                 Notification presumes accreditation, so the accreditation credential above is
-                cited as `evidence`. The subject's own `recognizedIn` names the European
-                Commission's published register as an `ExternalEntityList`.
+                cited as `evidence`. The subject's `publicInformation` links to its entry in
+                the European Commission's register of notified bodies.
             </p>
 
             <pre class="example nohighlight"
@@ -4320,12 +4341,7 @@ ce:ScopedRecognizedAction
   "issuer": {
     "id": "did:web:notifying-authority.example",
     "type": "RecognizedIssuer",
-    "name": "National Notifying Authority",
-    "recognizedIn": {
-      "id": "https://ec.europa.example/credentials/recognition/0f2f1a2c",
-      "type": "RecognizedEntityCredential",
-      "name": "Recognition of notifying authorities"
-    }
+    "name": "National Notifying Authority"
   },
   "validFrom": "2026-03-01T00:00:00Z",
   "validUntil": "2031-03-01T00:00:00Z",
@@ -4333,12 +4349,8 @@ ce:ScopedRecognizedAction
     "id": "did:web:cab.example",
     "type": ["RecognizedEntity", <span class="highlight">"Party"</span>],
     "name": "Example Conformity Assessment GmbH",
-    "recognizedIn": {
-      "id": "https://ec.europa.example/nando/notifiedbody/0123",
-      "type": "ExternalEntityList",
-      "name": "Register of notified and designated organisations"
-    },
     <span class="highlight">"registeredId": "0123"</span>,
+    <span class="highlight">"publicInformation": "https://ec.europa.example/nando/notifiedbody/0123"</span>,
     <span class="highlight">"idScheme": {
       "id": "https://ec.europa.example/nando",
       "type": "IdentifierScheme",
@@ -4393,13 +4405,12 @@ ce:ScopedRecognizedAction
       </pre>
 
             <p>
-                The conformity certificate the body then issues carries both links: its
-                `issuer.recognizedIn` enters the notification chain, and its `evidence` enters
-                the accreditation chain.
+                The conformity certificate the body then issues identifies its issuer only by
+                DID. Its `evidence` cites the accreditation the body relied on.
             </p>
 
             <pre class="example nohighlight"
-                 title="A conformity certificate that supports credential-based discovery">
+                 title="A conformity certificate issued by a notified body">
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
@@ -4412,12 +4423,7 @@ ce:ScopedRecognizedAction
   "issuer": {
     "id": "did:web:cab.example",
     "type": "RecognizedIssuer",
-    "name": "Example Conformity Assessment GmbH",
-    "recognizedIn": {
-      "id": "https://notifying-authority.example/credentials/notification/7c0a52ab",
-      "type": "RecognizedEntityCredential",
-      "name": "Notification of notified bodies"
-    }
+    "name": "Example Conformity Assessment GmbH"
   },
   "validFrom": "2026-05-04T00:00:00Z",
   "credentialSubject": {
@@ -4446,10 +4452,121 @@ ce:ScopedRecognizedAction
       </pre>
 
             <p>
-                A market surveillance authority that encounters the product passport runs
-                [=credential-based discovery=] from the bottom of the stack, following
-                `issuer.recognizedIn` at each step until it reaches an [=issuer=] it has
-                configured as a root.
+                A market surveillance authority that inspects the battery may have no network
+                access. The manufacturer therefore hands over the product passport together
+                with every credential needed to verify it, stapled into one
+                [=verifiable presentation=]. Besides the four credentials above, the bundle
+                contains the passport and the three credentials in which the roots recognize
+                the intermediate authorities. The presentation itself needs no proof; each
+                credential carries its own.
+            </p>
+
+            <pre class="example nohighlight"
+                 title="A product passport with its recognition chain stapled">
+{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "type": "VerifiablePresentation",
+  "holder": "did:web:alphacell.example",
+  "verifiableCredential": [
+    <span class="comment">// each entry is a complete credential with its proof; only the</span>
+    <span class="comment">// properties used to assemble the chain are shown</span>
+    {
+      "id": "https://alphacell.example/credentials/passport/battery-123",
+      "type": ["VerifiableCredential", <span class="highlight">"DigitalProductPassport"</span>],
+      "issuer": "did:web:alphacell.example"
+    },
+    {
+      "id": "https://cab.example/credentials/certificate/5b1e7740",
+      "type": ["VerifiableCredential", <span class="highlight">"DigitalConformityCredential"</span>],
+      "issuer": "did:web:cab.example"
+    },
+    {
+      "id": "https://handelsregister.example/credentials/registration/b47c1e90",
+      "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+      "issuer": "did:web:handelsregister.example",
+      "credentialSubject": [{
+        "id": "did:web:alphacell.example",
+        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:handelsregister.example" }
+      }]
+    },
+    {
+      "id": "https://notifying-authority.example/credentials/notification/7c0a52ab",
+      "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+      "issuer": "did:web:notifying-authority.example",
+      "credentialSubject": [{
+        "id": "did:web:cab.example",
+        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:notifying-authority.example" }
+      }]
+    },
+    {
+      "id": "https://dakks.example/credentials/accreditation/91b6f2d4",
+      "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+      "issuer": "did:web:dakks.example",
+      "credentialSubject": [{
+        "id": "did:web:cab.example",
+        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:dakks.example" }
+      }]
+    },
+    {
+      "id": "https://ec.europa.example/credentials/recognition/0f2f1a2c",
+      "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+      "issuer": "did:web:ec.europa.example",
+      "credentialSubject": [{
+        "id": "did:web:notifying-authority.example",
+        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:ec.europa.example" }
+      }]
+    },
+    {
+      "id": "https://european-accreditation.example/credentials/recognition/3d9f8c14",
+      "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+      "issuer": "did:web:european-accreditation.example",
+      "credentialSubject": [{
+        "id": "did:web:dakks.example",
+        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:european-accreditation.example" }
+      }]
+    },
+    {
+      "id": "https://iaf.example/credentials/recognition/5e7a21c9",
+      "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+      "issuer": "did:web:iaf.example",
+      "credentialSubject": [{
+        "id": "did:web:european-accreditation.example",
+        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:iaf.example" }
+      }]
+    }
+  ]
+}
+            </pre>
+
+            <p>
+                The authority has configured three root DIDs: `did:web:ec.europa.example`,
+                `did:web:iaf.example`, and `did:web:handelsregister.example`. Starting from the
+                passport and the conformity certificate the passport cites, it repeats the
+                following for each credential until every branch ends at a root:
+            </p>
+
+            <ol>
+                <li>
+                    Take the credential's `issuer`. If it is a configured root, verify the proof
+                    and stop.
+                </li>
+                <li>
+                    Otherwise, find the stapled [=recognized entity credentials=] whose
+                    `credentialSubject` `id` equals that `issuer` and whose `recognizedTo`
+                    permits what the credential does — the same `action`, an
+                    `outputValidation` the credential conforms to, and, for
+                    `ScopedRecognizedAction`, a scope that covers it.
+                </li>
+                <li>
+                    Check that `recognizedTo.recognizedBy` in each of them equals that
+                    credential's own `issuer`, verify its proof and validity period, and
+                    continue with it.
+                </li>
+            </ol>
+
+            <p>
+                The conformity assessment body is the subject of two credentials, so the chain
+                branches: one branch ends at the European Commission, the other at the IAF.
             </p>
 
             <figure>
@@ -4457,13 +4574,13 @@ ce:ScopedRecognizedAction
                      font-family="Inter, Helvetica, Arial, sans-serif" role="img"
                      aria-labelledby="cev-t cev-d">
                     <title id="cev-t">A market surveillance authority verifying a battery's digital product passport</title>
-                    <desc id="cev-d">The authority scans the battery, retrieves its product passport and
-                        then walks the recognition chain upwards: at each hop it follows the
-                        issuer.recognizedIn property of the credential it is holding, until it reaches
-                        an issuer on its own list of configured roots. Two branches close — notification
-                        at the European Commission and accreditation at the IAF — after which it checks
-                        that the notified body's recognition scope actually covers the Battery
-                        Regulation.</desc>
+                    <desc id="cev-d">The authority scans the battery and receives its product passport
+                        with the recognition chain stapled to it. Without network access it walks the
+                        chain upwards: at each hop it finds the stapled credential whose subject is the
+                        current issuer's DID and follows its recognizedBy, until it reaches a DID on its
+                        own list of configured roots. Two branches close — notification at the European
+                        Commission and accreditation at the IAF — after which it checks that the
+                        notified body's recognition scope actually covers the Battery Regulation.</desc>
 
                     <style>
                         .cev-rot   { fill:#0b5288; stroke:#0f766e; }
@@ -4513,7 +4630,7 @@ ce:ScopedRecognizedAction
                     </defs>
 
                     <text class="cev-hd" x="40" y="42">Market surveillance authority verifies Battery #123</text>
-                    <text class="cev-cap" x="40" y="64">Credential-based discovery, Recognized Entities v1.0 §4.1 — follow issuer.recognizedIn until a configured root is reached. 20 s loop.</text>
+                    <text class="cev-cap" x="40" y="64">Offline, from a stapled presentation — match each issuer DID to a credential subject, follow recognizedBy until a configured root is reached. 20 s loop.</text>
 
                     <!-- everything below the title is shifted down so the "configured root"
                          rings and their captions clear the subtitle -->
@@ -4549,13 +4666,13 @@ ce:ScopedRecognizedAction
                         </g>
 
                         <g text-anchor="middle">
-                            <text class="cev-lw" x="110"  y="86">European Commission<tspan class="cev-sub" x="110" dy="17">notification root</tspan></text>
+                            <text class="cev-lw" x="110"  y="86">European Commission<tspan class="cev-sub" x="110" dy="17">did:web:ec.europa.example</tspan></text>
                             <text class="cev-lw" x="370"  y="86">National Notifying Authority<tspan class="cev-sub" x="370" dy="17">e.g. BMWK</tspan></text>
-                            <text class="cev-lw" x="110"  y="296">IAF<tspan class="cev-sub" x="110" dy="17">accreditation root</tspan></text>
+                            <text class="cev-lw" x="110"  y="296">IAF<tspan class="cev-sub" x="110" dy="17">did:web:iaf.example</tspan></text>
                             <text class="cev-lw" x="370"  y="296">European Accreditation<tspan class="cev-sub" x="370" dy="17">EA</tspan></text>
                             <text class="cev-lw" x="630"  y="296">Accreditation body<tspan class="cev-sub" x="630" dy="17">e.g. DAkkS</tspan></text>
                             <text class="cev-ld" x="900"  y="296">Conformity assessment<tspan class="cev-sub" x="900" dy="17">TÜV — notified body 0123</tspan></text>
-                            <text class="cev-lw" x="110"  y="536">Business register<tspan class="cev-sub" x="110" dy="17">commercial register root</tspan></text>
+                            <text class="cev-lw" x="110"  y="536">Business register<tspan class="cev-sub" x="110" dy="17">did:web:handelsregister.example</tspan></text>
                             <text class="cev-ld" x="630"  y="536">Manufacturer<tspan class="cev-sub" x="630" dy="17">AlphaCell Batteries GmbH</tspan></text>
                             <text class="cev-ld" x="870"  y="536">Battery #123<tspan class="cev-sub" x="870" dy="17">physical product</tspan></text>
                             <text class="cev-lw" x="1120" y="536">Market surveillance<tspan class="cev-sub" x="1120" dy="17">authority — verifier</tspan></text>
@@ -4563,15 +4680,16 @@ ce:ScopedRecognizedAction
 
                         <!-- ─── the query walking the chain ──────────────────────────────────────
                              20 s loop. Each hop: wait, travel, vanish. Fractions of the loop:
-                               v1  0.5→2.5   scan
-                               v2  2.5→4.5   resolve DPP issuer
-                               v3  5.0→7.0   recognizedIn → business register      (root reached)
+                               every hop is resolved inside the stapled presentation, offline
+                               v1  0.5→2.5   scan, receive passport + stapled chain
+                               v2  2.5→4.5   passport issuer: AlphaCell
+                               v3  5.0→7.0   recognizedBy → business register      (root reached)
                                v4  5.0→7.0   follow C_DOC → C_CC to the notified body
-                               v5  7.5→9.5   recognizedIn → notifying authority
-                               v6  7.5→9.5   evidence     → accreditation body
-                               v7 10.0→12.0  recognizedIn → European Commission    (root reached)
-                               v8 10.0→12.0  recognizedIn → European Accreditation
-                               v9 12.5→14.5  recognizedIn → IAF                    (root reached)
+                               v5  7.5→9.5   recognizedBy → notifying authority
+                               v6  7.5→9.5   recognizedBy → accreditation body
+                               v7 10.0→12.0  recognizedBy → European Commission    (root reached)
+                               v8 10.0→12.0  recognizedBy → European Accreditation
+                               v9 12.5→14.5  recognizedBy → IAF                    (root reached)
                         ──────────────────────────────────────────────────────────────────────── -->
                         <g class="mover">
                             <g opacity="1">
@@ -4582,7 +4700,7 @@ ce:ScopedRecognizedAction
                                                keyPoints="0;0;1;1" keyTimes="0;0.025;0.125;1"><mpath href="#cev-v1"/></animateMotion>
                             </g>
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">C_DPP · issuer?</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">C_DPP + stapled chain</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.125;0.225"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
@@ -4590,7 +4708,7 @@ ce:ScopedRecognizedAction
                             </g>
 
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedIn</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedBy</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.25;0.35"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
@@ -4605,14 +4723,14 @@ ce:ScopedRecognizedAction
                             </g>
 
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedIn</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedBy</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.375;0.475"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
                                                keyPoints="0;0;1;1" keyTimes="0;0.375;0.475;1"><mpath href="#cev-v5"/></animateMotion>
                             </g>
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">evidence</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedBy</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.375;0.475"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
@@ -4620,14 +4738,14 @@ ce:ScopedRecognizedAction
                             </g>
 
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedIn</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedBy</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.5;0.6"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
                                                keyPoints="0;0;1;1" keyTimes="0;0.5;0.6;1"><mpath href="#cev-v7"/></animateMotion>
                             </g>
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedIn</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedBy</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.5;0.6"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
@@ -4635,7 +4753,7 @@ ce:ScopedRecognizedAction
                             </g>
 
                             <g opacity="1">
-                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedIn</text>
+                                <circle class="cev-dot" r="11"/><text class="cev-qt" y="-18">recognizedBy</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete"
                                          values="1;0;1;0" keyTimes="0;0.001;0.625;0.725"/>
                                 <animateMotion dur="20s" repeatCount="indefinite" calcMode="linear"
@@ -4684,31 +4802,32 @@ ce:ScopedRecognizedAction
 
                         <!-- ─── running commentary ───────────────────────────────────────────── -->
                         <g transform="translate(40,610)">
-                            <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">1</text><text class="cev-step" x="18" y="0">Scan the battery, retrieve its Digital Product Passport.</text>
+                            <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">1</text><text class="cev-step" x="18" y="0">Scan the battery. Its Digital Product Passport arrives with the whole recognition chain stapled to it — no network needed from here on.</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;0.025;0.225"/></g>
-                            <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">2</text><text class="cev-step" x="18" y="0">The passport's issuer, AlphaCell, is unknown to the authority — follow its issuer.recognizedIn.</text>
+                            <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">2</text><text class="cev-step" x="18" y="0">The passport's issuer, AlphaCell, is unknown — find the stapled credential whose subject is its DID and follow recognizedBy.</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;0.225;0.375"/></g>
                             <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">3</text><text class="cev-step" x="18" y="0">Business register reached — a configured root. In parallel, the passport's conformity claim leads to the certificate issued by TÜV.</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;0.375;0.5"/></g>
-                            <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">4</text><text class="cev-step" x="18" y="0">TÜV is unknown too: recognizedIn leads to the notifying authority, evidence to the accreditation body. The chain branches.</text>
+                            <g class="timed" opacity="0"><text class="cev-stepn" x="0" y="0">4</text><text class="cev-step" x="18" y="0">TÜV is unknown too: two stapled credentials name its DID, recognized by the notifying authority and the accreditation body. The chain branches.</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;0.5;0.625"/></g>
-                            <g class="timed" opacity="1"><text class="cev-stepn" x="0" y="0">5</text><text class="cev-step" x="18" y="0">Both branches close: European Commission on notification, IAF on accreditation. Every hop's proof, validity period and status checked.</text>
+                            <g class="timed" opacity="1"><text class="cev-stepn" x="0" y="0">5</text><text class="cev-step" x="18" y="0">Both branches close at configured root DIDs: European Commission on notification, IAF on accreditation. Every hop's proof and validity period checked.</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" values="1;0;1;0" keyTimes="0;0.001;0.625;0.75"/></g>
-                            <g class="timed" opacity="1"><text class="cev-stepn" x="0" y="0">6</text><text class="cev-step" x="18" y="0">Last — and outside §4.1: does TÜV's recognition scope actually cover this regulation and module? It does. Passport accepted.</text>
+                            <g class="timed" opacity="1"><text class="cev-stepn" x="0" y="0">6</text><text class="cev-step" x="18" y="0">Last: does TÜV's recognition scope actually cover this regulation and module? It does. Passport accepted.</text>
                                 <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" values="1;0;1;0" keyTimes="0;0.001;0.75;0.98"/></g>
                         </g>
 
                         <g transform="translate(40,640)">
                             <circle class="cev-dot" cx="8" cy="-4" r="8"/>
-                            <text class="cev-cap" x="26" y="0">query following a credential reference · a green tick marks a hop whose proof, validity and status verified · gold marks the authority's own trust anchors</text>
+                            <text class="cev-cap" x="26" y="0">lookup inside the stapled presentation · a green tick marks a hop whose proof and validity period verified offline · gold marks the authority's own trust anchors</text>
                         </g>
 
 
                     </g>
                 </svg>
                 <figcaption>
-                    Verification. The query follows each recognition link until it reaches one
-                    of the verifier's configured roots.
+                    Offline verification. Inside the stapled presentation, the verifier matches
+                    each issuer's DID to a credential subject and follows `recognizedBy` until
+                    it reaches one of its configured root DIDs.
                 </figcaption>
             </figure>
 
@@ -4722,6 +4841,322 @@ ce:ScopedRecognizedAction
                 reusing UNTP terms for the values. A body notified only for toys would present
                 a structurally identical recognition chain.
             </p>
+
+            <p class="note" title="Assembling a chain without recognizedIn">
+                This specification defines two ways to find a recognition chain:
+                [=credential-based discovery=], which follows `recognizedIn`, and
+                [=identifier-based discovery=], which resolves the [=issuer=]'s DID and needs
+                network access. This example uses neither. Its credentials carry no
+                `recognizedIn`, and the [=verifier=] assembles the chain from the stapled
+                credentials by matching each `issuer` to a `credentialSubject` and checking
+                `recognizedBy`. This specification does not yet define that procedure; the
+                steps above are illustrative. A [=verifier=] that is online and finds the
+                bundle incomplete can fall back to [=identifier-based discovery=].
+            </p>
+
+            <section id="ce-offline-keys">
+                <h4>Verifying Issuer Keys Offline</h4>
+
+                <p>
+                    Stapling removes the need to fetch recognition credentials, but checking a
+                    proof still needs the [=issuer=]'s public key. A `did:web` DID document is
+                    fetched over HTTPS, and a stapled copy proves nothing, because a `did:web`
+                    document is not self-certifying. Two approaches close this gap; they are
+                    compared here.
+                </p>
+
+                <p>
+                    <strong>Key bound by the parent credential.</strong> Each recognized entity
+                    credential also states the key its subject signs with. The parent's proof
+                    then vouches for the child's key, as in an X.509 certificate chain, and the
+                    [=verifier=] only needs the root keys installed in advance. The identifiers
+                    stay `did:web`. The `verificationMethod` property on the subject is not
+                    defined by this specification; it comes from [[?CID]].
+                </p>
+
+                <pre class="example nohighlight"
+                     title="An accreditation that also binds the subject's signing key">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// purple text is from the Controlled Identifiers vocabulary</span>
+    <span class="external">"https://www.w3.org/ns/cid/v1"</span>
+  ],
+  "id": "https://dakks.example/credentials/accreditation/91b6f2d4",
+  "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+  "issuer": "did:web:dakks.example",
+  "credentialSubject": [{
+    "id": "did:web:cab.example",
+    "type": "RecognizedEntity",
+    <span class="external">"verificationMethod": [{
+      "id": "did:web:cab.example#issuance-key-1",
+      "type": "Multikey",
+      "controller": "did:web:cab.example",
+      "publicKeyMultibase": "zDnaerDaTF5BXEavCrfRZEk316dpbLsfPDZ3WJ5hRTPFU2169"
+    }]</span>,
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:dakks.example"
+    }
+  }]
+}
+                </pre>
+
+                <p>
+                    <strong>Self-certifying DIDs.</strong> Each entity uses `did:webvh` instead
+                    of `did:web`. A `did:webvh` DID embeds a hash of its first log entry, and its
+                    DID log is a hash-linked, signed history of every DID document version. The
+                    [=holder=] staples each [=issuer=]'s DID log, and the [=verifier=] checks it
+                    against the DID itself, without network access. A `did:webvh` controller can
+                    also publish a `did:web` document for resolvers that only support `did:web`.
+                </p>
+
+                <pre class="nohighlight">
+did:web:cab.example
+did:webvh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:cab.example
+                </pre>
+
+                <table class="simple">
+                    <thead>
+                        <tr><th></th><th>Key bound by parent</th><th>Self-certifying DIDs</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Identifier</td>
+                            <td>`did:web`, unchanged</td>
+                            <td>`did:webvh`; `did:web` only as a parallel alias</td>
+                        </tr>
+                        <tr>
+                            <td>Preinstalled at the verifier</td>
+                            <td>Root DIDs and root keys</td>
+                            <td>Root DIDs only</td>
+                        </tr>
+                        <tr>
+                            <td>Stapled in addition</td>
+                            <td>Nothing</td>
+                            <td>One DID log per issuer</td>
+                        </tr>
+                        <tr>
+                            <td>Key rotation</td>
+                            <td>The parent reissues the credential</td>
+                            <td>The entity appends a log entry; no reissue</td>
+                        </tr>
+                        <tr>
+                            <td>Main risk</td>
+                            <td>Credential and DID document can name different keys</td>
+                            <td>A stapled log can omit a later rotation or deactivation</td>
+                        </tr>
+                        <tr>
+                            <td>Defined by this specification</td>
+                            <td>No; needs a subject `verificationMethod`</td>
+                            <td>No; relies on the `did:webvh` method</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    Neither approach checks revocation offline: none of the credentials in this
+                    example carries a `credentialStatus`, and a stapled status list is only as
+                    current as the moment it was stapled. Schemas referenced by
+                    `outputValidation`, and the register entry referenced by `relatedResource`,
+                    have to be cached in advance; their digests let the [=verifier=] check the
+                    cached copies. As described in [[[#recognizedentitycredential]]], a
+                    [=verifier=] that needs fresher information can reject stapled credentials
+                    and fetch them instead.
+                </p>
+            </section>
+
+            <section id="business-register-entry-urls">
+                <h4>Identifying Business Register Entries</h4>
+
+                <p>
+                    The business register credential above cites the manufacturer's register
+                    entry by URL. This section describes the URL scheme used in that example.
+                    It is one possible design. The scheme itself is generic; each register
+                    defines a <em>profile</em> that fixes the values of its segments. The
+                    profile shown here is for the German Handelsregister. Court codes and EUID
+                    values in the examples are illustrative.
+                </p>
+
+                <p>
+                    A URL of this scheme identifies a <em>register entry</em> — the record
+                    the register keeps — not the company it describes. The company is
+                    identified by its DID, and the credential links the DID to the entry.
+                    Entry URLs are not suitable as the `id` of the company itself.
+                </p>
+
+                <pre class="nohighlight">
+https://{register-host}/entry/{court}/{type}/{number}
+https://{register-host}/entry/{court}/{type}/{number}/history/{seq}
+https://{register-host}/euid/{euid}
+                </pre>
+
+                <p>For example:</p>
+
+                <pre class="nohighlight">
+https://handelsregister.example/entry/r3101/hrb/123456
+https://handelsregister.example/entry/r3101/hrb/123456/history/7
+https://handelsregister.example/euid/DER3101.HRB123456
+                </pre>
+
+                <p>The generic grammar, in ABNF [[?RFC5234]]:</p>
+
+                <pre class="nohighlight">
+entry-url = "https://" host "/entry/" court "/" type "/" number
+            [ "/history/" seq ]
+euid-url  = "https://" host "/euid/" euid
+host      = label *( "." label )        ; DNS name only: no IP literal,
+                                        ; port, or userinfo
+label     = alnum [ *( alnum / "-" ) alnum ]
+court     = token                       ; values fixed by the profile
+type      = token                       ; values fixed by the profile
+number    = token                       ; syntax fixed by the profile
+seq       = nonzero *DIGIT
+euid      = 1*( ALPHA / DIGIT / "." / "-" )
+token     = 1*alnum
+alnum     = lowalpha / DIGIT
+lowalpha  = %x61-7A
+nonzero   = %x31-39
+                </pre>
+
+                <p>The German Handelsregister profile narrows `type` and `number`:</p>
+
+                <pre class="nohighlight">
+type      = "hra" / "hrb" / "gnr" / "pr" / "vr" / "gsr"
+number    = nonzero *DIGIT *lowalpha    ; no leading zeros
+                </pre>
+
+                <dl>
+                    <dt>`host`</dt>
+                    <dd>
+                        A DNS name controlled by the register. When it matches the host of the
+                        issuer's `did:web` identifier, a [=verifier=] knows that the same
+                        domain minted both. That is a consistency check only: whether the
+                        register is an authority follows from the recognition chain, not from
+                        the URL.
+                    </dd>
+                    <dt>`court`</dt>
+                    <dd>
+                        A stable code for the authority that keeps the entry. In Germany, a
+                        register number is unique only within one register court, so the court
+                        is part of the key. The profile names the code list it draws from, such
+                        as the court codes used in German judicial data exchange. A code is
+                        used instead of the court's name because names change when courts
+                        merge. A retired code keeps resolving.
+                    </dd>
+                    <dt>`type`</dt>
+                    <dd>
+                        The register, or the section of a register, that holds the entry. In
+                        the German profile: `hra` and `hrb` are parts A (sole traders and
+                        partnerships) and B (corporations) of the Handelsregister; `gnr`
+                        (cooperatives), `pr` (partnerships of professionals), `vr`
+                        (associations) and `gsr` (registered civil-law partnerships) are
+                        separate registers kept by the same courts. The same number under two
+                        types names two different entries.
+                    </dd>
+                    <dt>`number`</dt>
+                    <dd>
+                        The register number, lowercase, without spaces or leading zeros.
+                        Letter suffixes are part of the number and are kept: "HRB 123456 B"
+                        becomes `123456b`. Other profiles can allow letters anywhere, as in
+                        UK company numbers such as `sc123456`.
+                    </dd>
+                    <dt>`seq`</dt>
+                    <dd>
+                        Names the state of the entry after its `seq`-th registration event.
+                        Without it, the URL names the entry's current state, which changes
+                        when, for example, a managing director is replaced. A history URL
+                        never changes. Profiles for registers that do not number their
+                        registration events omit this form.
+                    </dd>
+                    <dt>`euid`</dt>
+                    <dd>
+                        The European Unique Identifier used by the Business Registers
+                        Interconnection System: a country code, a register identifier, the
+                        registration number, and an optional check digit. The `euid` URL lets
+                        a [=verifier=] in another Member State find an entry without knowing
+                        national court codes. It is an alias that redirects to the entry URL;
+                        it is never used in credentials and is not subject to the canonical
+                        form below.
+                    </dd>
+                </dl>
+
+                <h5>Canonical form and comparison</h5>
+
+                <p>
+                    Only canonical entry URLs appear in credentials: lowercase, no whitespace,
+                    no percent-encoding, no port, no trailing slash, no leading zeros in
+                    numeric segments. [=Verifiers=] compare entry URLs byte for byte and do not
+                    normalize them. The register redirects other spellings, such as
+                    `/entry/R3101/HRB/0123456/`, to the canonical URL.
+                </p>
+
+                <p>
+                    The entry URL follows mechanically from `idScheme` and `registeredId`: the
+                    `idScheme` `id` names the court, and `registeredId` supplies the type and
+                    number, lowercased with whitespace removed. "HRB 123456" under
+                    `https://handelsregister.example/entry/r3101/` becomes
+                    `https://handelsregister.example/entry/r3101/hrb/123456`.
+                </p>
+
+                <h5>Citing an entry</h5>
+
+                <p>
+                    The current entry URL goes in `publicInformation`, which links to the
+                    register's public record. Because that record changes, a credential that
+                    attests to the entry also cites the history URL of the version it attests
+                    to in `relatedResource`, with a digest of that version's JSON-LD
+                    representation. A [=verifier=] that looks up the history URL can then
+                    detect any change to what was attested.
+                </p>
+
+                <h5>Lifecycle</h5>
+
+                <p>
+                    The scheme assumes a register never reuses a number within one court and
+                    type. A register that does reuse numbers has to use history URLs only.
+                    Entry URLs keep resolving for the life of the register. A deleted entry
+                    still resolves, marked as deleted, so a [=verifier=] can tell it from an
+                    entry that never existed. When a company moves its seat to another court
+                    and receives a new entry there, the old entry keeps its history and points
+                    to the new one with a `Link` header of relation type `successor-version`
+                    [[?RFC5829]] instead of redirecting to it. Paths below
+                    `/entry/{court}/{type}/{number}/` other than `history` are reserved for
+                    later sub-resources, such as filed documents.
+                </p>
+
+                <h5>Security and privacy</h5>
+
+                <p>
+                    A [=verifier=] does not need to look up an entry URL to verify the
+                    credential; the proof and the recognition chain are sufficient. Looking it
+                    up tells the register which company is being checked, by whom, and when.
+                    A [=verifier=] that does look up entry URLs restricts lookups to hosts it
+                    already trusts, uses HTTPS only, does not follow redirects to another
+                    host, and caches results. Because entries contain personal data, such as
+                    the names of managing directors, and their URLs are predictable, the
+                    register protects itself against bulk harvesting, for example with rate
+                    limits. A register that wants its answers to serve as evidence later can
+                    serve them signed, for example as a [=verifiable credential=], since TLS
+                    protects them only in transit.
+                </p>
+
+                <p>
+                    Embedding the operating domain in every identifier means that a change of
+                    domain breaks every credential that cites it. A register that expects its
+                    portal to move can mint entry URLs on a separate, long-lived host that
+                    only redirects to the current portal. The host check against the issuer's
+                    `did:web` identifier then no longer applies.
+                </p>
+
+                <p>
+                    Registers with a single national number space, such as the UK's Companies
+                    House, use one fixed `court` value in their profile and keep the rest of
+                    the scheme unchanged.
+                </p>
+            </section>
         </section>
 
     </section>
