@@ -709,6 +709,22 @@ the [[[VC-DATA-MODEL]]] specification and SHOULD be `ExternalEntityList`
 or `RecognizedEntityCredential`.
               </td>
             </tr>
+            <tr>
+              <td>registration</td>
+              <td>
+One or more objects, each of which describes how the [=recognized entity=] is
+recorded in a register maintained by the [=issuer=], such as a national
+business register, an accreditation register, or the allocation records of a
+federated identifier scheme. Each object is expected to carry properties, such
+as the identifier the register assigned to the [=recognized entity=] and the
+scope of the registration, drawn from vocabularies defined by the ecosystem in
+which the register operates. Section [[[#un-grid-cross-border-trade-example]]]
+demonstrates a `registration` expressed using properties defined by the UNTP
+Digital Identity Anchor [[?UNTP-DIA]]. This property might occur more than once
+if the [=recognized entity=] holds more than one registration with the
+[=issuer=].
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -728,6 +744,17 @@ entity list resource referenced by the `id` property in order to determine the e
 that the resource complies with, determine if it supports that specification, and process/terminate accordingly.
 A list with a `type` property value of `RecognizedEntityCredential` MUST conform
 to [[[VC-RECOGNIZED-ENTITIES]]].
+        </p>
+
+        <p>
+The `registration` and `recognizedTo` properties are independent of one
+another; either, both, or neither can be expressed for a given [=recognized
+entity=]. A `registration` describes the standing of the [=recognized entity=]
+in a register that the [=issuer=] maintains, such as its business registration
+number and legal form, the scope of its accreditation, or the identifier range
+it has been allocated. The `recognizedTo` property describes an action whose
+outputs the [=issuer=] recognizes, such as [=verifiable credentials=] that
+conform to a particular schema.
         </p>
 
     </section>
@@ -2311,7 +2338,7 @@ Utopian Business Register.
     "controller": "did:web:register.business.utopia.example",
     "publicKeyMultibase": "z6Mkf5rGMoatrSj1f4CyvuHBeXJELe9RPdzo2PKGNCKVtZxP"
   }],
-  <span class="highlight">service": [{
+  <span class="highlight">"service": [{
     "id": "#whois",
     "type": ["WhoisService", "PathService"],
     "serviceEndpoint": "https://register.business.utopia.example/whois.vp"
@@ -2325,7 +2352,13 @@ In the next example, the Utopian Business Register issues a
 Ltd. The credential asserts that the company's corporate registration number,
 `UTB-2019-041872`, is bound to the DID
 `did:web:acme-exports.utopia.example`. Before issuing this credential, the
-Utopian Business Register verified that ACME Exports controls that DID.
+Utopian Business Register verified that ACME Exports controls that DID. The
+`registration` property describes the company's entry in the register using
+the properties of a `RegisteredIdentity` from the UNTP Digital Identity Anchor
+[[?UNTP-DIA]]: `registeredId` holds the registration number, `idScheme`
+identifies the register that assigned it, `registerType` states that the
+register is a business register, and `registrationScopeList` identifies the
+company's legal form as published by the register.
       </p>
 
       <pre class="example nohighlight"
@@ -2351,13 +2384,26 @@ Utopian Business Register verified that ACME Exports controls that DID.
   "validUntil": "2030-03-15T00:00:00Z",
   "credentialSubject": [{
     "id": "did:web:acme-exports.utopia.example",
-    "type": ["RecognizedEntity", "Party"]
+    "type": ["RecognizedEntity", "Party"],
     "name": "ACME Exports",
     "legalName": "ACME Exports Ltd.",
     "url": "https://acme-exports.utopia.example/",
     "description": "A registered exporter in Utopia, corporate registration number UTB-2019-041872.",
-    <span class="highlight">"registeredId": "UTB-2019-041872"</span>,
-    <span class="highlight">"registrationCountry": "UTO"</span>
+    "registration": {
+      "id": "https://register.business.utopia.example/entities/UTB-2019-041872",
+      <span class="highlight">"type": "RegisteredIdentity"</span>,
+      <span class="highlight">"registeredId": "UTB-2019-041872"</span>,
+      <span class="highlight">"registrationCountry": "UTO"</span>,
+      <span class="highlight">"idScheme": {
+        "id": "https://register.business.utopia.example",
+        "type": "IdentifierScheme",
+        "name": "Utopian Business Register"
+      }</span>,
+      <span class="highlight">"registerType": "Business"</span>,
+      <span class="highlight">"registrationScopeList": [
+        "https://register.business.utopia.example/entity-types/private-company"
+      ]</span>
+    }
   }],
   "proof": {
     "type": "DataIntegrityProof",
@@ -2465,6 +2511,16 @@ invoice.
       </p>
 
       <p>
+The [=verifier=] also confirms that the exporter named in the invoice is the
+registered entity. It compares the `seller.registeredId` value in the invoice,
+`UTB-2019-041872`, with the `registration.registeredId` value in the
+`RecognizedEntityCredential`, and confirms that `registration.idScheme`
+identifies the Utopian Business Register. This rule belongs to the UNTP
+ecosystem; the algorithm in Section [[[#recognition-validation]]] does not
+evaluate the `registration` property.
+      </p>
+
+      <p>
 If the [=verifier=] does not directly recognize the Utopian Business Register,
 it performs [=identifier-based discovery=] on the Utopian Business Register's
 DID in turn. The [=verifier=] resolves
@@ -2480,12 +2536,16 @@ global trade identity infrastructure.
 
       <p class="note"
         title="A credential subject can contain ecosystem-specific information">
-The `registeredId` and `registrationCountry` properties used in the examples
-above are ecosystem-specific extensions defined by UNTP vocabulary [[?UNTP-DIA]]
-and carries the registrar-assigned corporate registration number and country.
-Those properties are not defined by this specification; they appear in the
-examples solely to illustrate the kind of information a registrar-issued
-`RecognizedEntityCredential` might carry in practice.
+The `RegisteredIdentity` type and the `registeredId`, `idScheme`,
+`registerType`, `registrationScopeList`, and `registrationCountry` properties
+used in the examples above are ecosystem-specific extensions defined by UNTP
+vocabulary [[?UNTP-DIA]]. They carry the registrar-assigned corporate
+registration number, the register that assigned it, the kind of register, the
+legal form of the registered entity, and the country of registration. Those
+properties are not defined by this specification; they appear in the examples
+solely to illustrate the kind of information a registrar-issued
+`RecognizedEntityCredential` might carry in practice. This specification
+defines only the `registration` property that contains them.
       </p>
 
       </section>
