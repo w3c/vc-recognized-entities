@@ -2550,6 +2550,238 @@ defines only the `registration` property that contains them.
 
       </section>
 
+      <section>
+        <h3>Metrology Calibration Example</h3>
+
+        <p class="issue">
+This entire example is based on input from the Swiss Federal Institute of
+Metrology and the Australian National Accreditation Authority in
+<a href="https://github.com/w3c/vc-recognized-entities/issues/139">issue
+139</a> and might be changed based on input from the metrology community and
+others.
+        </p>
+
+        <p>
+Under the CIPM Mutual Recognition Arrangement (CIPM MRA), national metrology
+institutes demonstrate the international equivalence of their measurements. The
+Bureau International des Poids et Mesures (BIPM) publishes the participating
+institutes in its key comparison database (KCDB), where each institute is
+identified by an institute code that is unique within the KCDB. The KCDB also
+publishes each institute's Calibration and Measurement Capabilities (CMCs). A
+CMC states a measurand, a range, and the smallest uncertainty the institute
+provides. Each CMC identifier includes a version, such as
+`EURAMET-EM-CH-00000GFB-6`, and each version has a permanent URL that remains
+resolvable after the CMC is revised. The KCDB service categories are published
+as a SKOS concept scheme, also with permanent URLs.
+        </p>
+
+        <p>
+Participation in the CIPM MRA does not cover any calibration certificate by
+itself. A calibration certificate is covered only if it falls within one of
+the issuing institute's published CMCs, and institutes are recommended to cite
+the CMC identifier in each certificate. Recognition in this ecosystem is
+therefore a matter of scope rather than of action: the question a [=verifier=]
+asks is whether the CMC cited by a certificate is one that the KCDB lists for
+the institute that issued it.
+        </p>
+
+<figure>
+  <pre class="diagram mermaid" style="max-width:40%">
+flowchart TD
+    BIPM["BIPM KCDB\n(trust anchor)"]
+    NMI["METAS\nnational metrology institute"]
+
+    REC["RecognizedEntityCredential\nsubject: METAS"]
+    CAL["CalibrationCertificateCredential\ncites CMC EURAMET-EM-CH-00000GFB-6"]
+
+    BIPM -->|issues| REC
+    REC -->|recognizes| NMI
+    NMI -->|issues| CAL
+
+    CAL -.->|"issuer.recognizedIn"| REC
+
+    style BIPM fill:#005a9c,color:#fff
+    style REC fill:darkgray, color:white
+    style CAL fill:teal
+  </pre>
+  <figcaption>Relationship of organizations and credentials in the CIPM MRA ecosystem</figcaption>
+</figure>
+
+        <p>
+In the first example below, the BIPM publishes a `RecognizedEntityCredential`
+recognizing the Swiss Federal Institute of Metrology (METAS) as a participant
+in the CIPM MRA. The `registration` property uses the same `RegisteredIdentity`
+properties from the UNTP Digital Identity Anchor [[?UNTP-DIA]] as the national
+business register in Section [[[#un-grid-cross-border-trade-example]]]:
+`registeredId` holds the KCDB institute code, `idScheme` identifies the KCDB
+list of participating institutes, and `registrationScopeList` lists the
+versioned CMC identifiers and the KCDB service category that the registration
+covers. The credential carries no `recognizedTo` property, because the
+recognition does not concern any particular action. The DIDs in these examples
+are illustrative.
+        </p>
+
+        <pre class="example nohighlight"
+          title="The BIPM recognizes a national metrology institute and its
+            calibration and measurement capabilities">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// highlighted text is from the UNTP vocabulary</span>
+    <span class="highlight">"https://vocabulary.uncefact.org/untp/v2"</span>
+  ],
+  "id": "https://kcdb.bipm.example/credentials/institutes/METAS",
+  "type": [
+    "VerifiableCredential",
+    "RecognizedEntityCredential"
+  ],
+  "issuer": {
+    "id": "did:web:bipm.example",
+    "type": "RecognizedIssuer",
+    "name": "Bureau International des Poids et Mesures",
+    "url": "https://www.bipm.org/"
+  },
+  "validFrom": "2026-03-01T00:00:00Z",
+  "validUntil": "2031-03-01T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:web:metas.example",
+    "type": "RecognizedEntity",
+    "name": "METAS",
+    "legalName": "Federal Institute of Metrology METAS",
+    "url": "https://www.metas.ch/",
+    "registration": {
+      "id": "https://kcdb.bipm.example/institutes/METAS",
+      <span class="highlight">"type": "RegisteredIdentity"</span>,
+      <span class="highlight">"registeredId": "METAS"</span>,
+      <span class="highlight">"registrationCountry": "CH"</span>,
+      <span class="highlight">"idScheme": {
+        "id": "https://kcdb.bipm.example/institutes",
+        "type": "IdentifierScheme",
+        "name": "KCDB participating institutes"
+      }</span>,
+      <span class="highlight">"registrationScopeList": [
+        "https://si-digital-framework.org/kcdb-cmc/EURAMET-EM-CH-00000GFB-6",
+        "https://si-digital-framework.org/kcdb-sc/EM/DC-2.1"
+      ]</span>
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-03-01T08:00:00Z",
+    "verificationMethod": "did:web:bipm.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+        </pre>
+
+        <p>
+In the next example, METAS issues a calibration certificate as a
+[=verifiable credential=]. The certificate cites the CMC identifier under which
+the calibration was performed, including its version. The `issuer` object
+carries a `recognizedIn` property referencing the BIPM credential from the
+previous example. The properties of the calibration certificate are
+illustrative.
+        </p>
+
+        <pre class="example nohighlight"
+          title="A calibration certificate issued by a national metrology
+            institute">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    "https://www.w3.org/ns/credentials/examples/v2"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "CalibrationCertificateCredential"
+  ],
+  "issuer": {
+    "id": "did:web:metas.example",
+    "name": "METAS",
+    "recognizedIn": {
+      "id": "https://kcdb.bipm.example/credentials/institutes/METAS",
+      "type": "RecognizedEntityCredential",
+      "name": "KCDB participating institutes"
+    }
+  },
+  "validFrom": "2026-06-12T00:00:00Z",
+  "credentialSubject": {
+    "id": "https://metas.example/certificates/2026-04127",
+    "type": "CalibrationCertificate",
+    "calibrationDate": "2026-06-10",
+    "calibratedItem": {
+      "name": "Coaxial attenuator, 20 dB, 3.5 mm",
+      "serialNumber": "AT-20-77213"
+    },
+    "calibrationAndMeasurementCapability":
+      "https://si-digital-framework.org/kcdb-cmc/EURAMET-EM-CH-00000GFB-6",
+    "measurementResults": "https://metas.example/certificates/2026-04127/results.json"
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-06-12T09:30:00Z",
+    "verificationMethod": "did:web:metas.example#issuance-key-1",
+    "cryptosuite": "ecdsa-rdfc-2019",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z36XPGByaH3rvtKfwoEQXsnUXUAjwd2Ceiqke1GPfjAPAFYoXKo5ftPdwE7QZ8Mw22SC5LSRQg1d8bhe3252hYJoH"
+  }
+}
+        </pre>
+
+        <p>
+A [=verifier=] receiving the calibration certificate, such as a laboratory
+relying on it for traceability, follows the `recognizedIn` reference on the
+certificate's `issuer` object using [=credential-based discovery=], verifies
+the proof on the BIPM credential, and confirms that METAS appears there as a
+[=recognized entity=]. Because the BIPM is a trust anchor the [=verifier=] has
+configured, [=recognition validation=] returns a <var>recognized</var> value
+of `true`. It returns an <var>actionRecognized</var> value of `false`, because
+the BIPM credential expresses no `recognizedTo` property; in this ecosystem
+that outcome is expected and is not a failure.
+        </p>
+
+        <p>
+The [=verifier=] then applies a rule defined by the CIPM MRA ecosystem: the
+value of `calibrationAndMeasurementCapability` in the certificate is compared,
+using simple string comparison, with the values of
+`registration.registrationScopeList` in the BIPM credential. A match
+establishes which CMC applies. It does not establish that the certificate is
+covered by that CMC, which also requires that the measured values lie within
+the CMC's range and that the stated uncertainties are no smaller than the
+CMC's at those values. The [=verifier=] evaluates those conditions against the
+CMC data published at the CMC's URL; that evaluation is specific to metrology
+and is outside the scope of this specification.
+        </p>
+
+        <p>
+Because each CMC identifier includes its version, a certificate is always
+compared with the CMC as it stood when the certificate was issued. CMCs are
+revised more often, and more independently of one another, than an
+institute's participation in the CIPM MRA changes. The BIPM can therefore
+publish an institute's CMCs across several `RecognizedEntityCredential`s for
+the same subject, so that revising one CMC does not require reissuing the
+others. When a CMC is revised, the BIPM ends the validity period of the
+credential that lists the earlier version instead of revoking it, which
+records that the earlier version was in force until that date.
+        </p>
+
+        <p class="note"
+          title="A credential subject can contain ecosystem-specific information">
+The `RegisteredIdentity` type and the `registeredId`, `registrationCountry`,
+`idScheme`, and `registrationScopeList` properties are defined by UNTP
+vocabulary [[?UNTP-DIA]], as described in Section
+[[[#un-grid-cross-border-trade-example]]]. The
+`CalibrationCertificateCredential` type and the properties of its
+`credentialSubject` are illustrative and are not defined by this
+specification or by the CIPM MRA.
+        </p>
+
+      </section>
+
       <section class="informative">
         <h3>Holder-Based Delivery</h3>
 
