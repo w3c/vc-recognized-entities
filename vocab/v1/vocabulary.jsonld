@@ -1,6 +1,7 @@
 {
     "@context": {
         "re": "https://www.w3.org/ns/credentials/recognized-entities#",
+        "sch": "https://schema.org/",
         "cred": "https://www.w3.org/2018/credentials#",
         "sec": "https://w3id.org/security#",
         "dc": "http://purl.org/dc/terms/",
@@ -63,43 +64,7 @@
             "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
         },
         "rdfs:seeAlso": "https://www.w3.org/TR/vc-recognized-entities/",
-        "dc:date": "2026-09-30"
-    }, {
-        "@id": "re:legalName",
-        "@type": "rdf:Property",
-        "rdfs:range": {
-            "@type": "ows:Class",
-            "owl:unionOf": ["rdf:langString", "rdf:dirLangString", "xsd:string"]
-        },
-        "rdfs:label": "Legal name",
-        "rdfs:comment": {
-            "@value": "<div>Legal name of the entity</div>",
-            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
-        },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-legalname", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
-        "@id": "re:image",
-        "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:label": "Visual representation of the entity",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-image", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
-        "@id": "re:url",
-        "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:label": "Web site of the entity",
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-url", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
-    }, {
-        "@id": "re:sameAs",
-        "@type": ["rdf:Property", "owl:ObjectProperty"],
-        "rdfs:label": "Same as",
-        "rdfs:comment": {
-            "@value": "<div>One or more URLs that refer to the same entity in other contexts or systems</div>",
-            "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML"
-        },
-        "rdfs:isDefinedBy": ["https://www.w3.org/TR/vc-recognized-entities/#dfn-sameas", "https://www.w3.org/ns/credentials/recognized-entities#"],
-        "vs:term_status": "stable"
+        "dc:date": "2026-10-19"
     }, {
         "@id": "re:recognizedTo",
         "@type": ["rdf:Property", "owl:ObjectProperty"],
@@ -214,6 +179,6 @@
     }, {
         "@id": "https://www.w3.org/ns/credentials/recognized-entities/v1",
         "@type": "jsonld:Context",
-        "mentions": ["cred:credentialSubject", "cred:issuer", "cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:RecognizedIssuer", "re:action", "re:image", "re:legalName", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "re:sameAs", "re:url", "schema:description", "schema:name", "sec:digestMultibase"]
+        "mentions": ["cred:credentialSubject", "cred:issuer", "cred:validFrom", "cred:validUntil", "re:ExternalEntityList", "re:RecognizedAction", "re:RecognizedEntity", "re:RecognizedEntityCredential", "re:RecognizedIssuer", "re:action", "re:outputValidation", "re:recognizedBy", "re:recognizedIn", "re:recognizedTo", "sch:description", "sch:image", "sch:legalName", "sch:name", "sch:sameAs", "sch:url", "sec:digestMultibase"]
     }]
 }

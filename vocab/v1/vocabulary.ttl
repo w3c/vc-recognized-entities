@@ -1,4 +1,5 @@
 @prefix re: <https://www.w3.org/ns/credentials/recognized-entities#> .
+@prefix sch: <https://schema.org/> .
 @prefix cred: <https://www.w3.org/2018/credentials#> .
 @prefix sec: <https://w3id.org/security#> .
 @prefix dc: <http://purl.org/dc/terms/> .
@@ -15,37 +16,10 @@ re: a owl:Ontology ;
     dc:title """Recognized Entities Vocabulary"""@en ;
     dc:description """RDFS [[rdf-schema]] defined by the [[[?vc-recognized-entities]]] [[?vc-recognized-entities]] specification."""^^rdf:HTML ;
     rdfs:seeAlso <https://www.w3.org/TR/vc-recognized-entities/> ;
-    dc:date "2026-09-30"^^xsd:date ;
+    dc:date "2026-10-19"^^xsd:date ;
 .
 
 # Property definitions
-re:legalName a rdf:Property ;
-    rdfs:range [ a owl:Class; owl:unionOf (rdf:langString rdf:dirLangString xsd:string) ] ;
-    rdfs:label "Legal name" ;
-    rdfs:comment """<div>Legal name of the entity</div>"""^^rdf:HTML ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities/#dfn-legalname>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
-re:image a rdf:Property, owl:ObjectProperty ;
-    rdfs:label "Visual representation of the entity" ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities/#dfn-image>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
-re:url a rdf:Property, owl:ObjectProperty ;
-    rdfs:label "Web site of the entity" ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities/#dfn-url>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
-re:sameAs a rdf:Property, owl:ObjectProperty ;
-    rdfs:label "Same as" ;
-    rdfs:comment """<div>One or more URLs that refer to the same entity in other contexts or systems</div>"""^^rdf:HTML ;
-    rdfs:isDefinedBy <https://www.w3.org/TR/vc-recognized-entities/#dfn-sameas>, <https://www.w3.org/ns/credentials/recognized-entities#> ;
-    vs:term_status "stable" ;
-.
-
 re:recognizedTo a rdf:Property, owl:ObjectProperty ;
     rdfs:domain re:RecognizedEntity ;
     rdfs:range re:RecognizedAction ;
@@ -140,16 +114,16 @@ re:ExternalEntityList a rdfs:Class ;
         re:RecognizedEntityCredential,
         re:RecognizedIssuer,
         re:action,
-        re:image,
-        re:legalName,
         re:outputValidation,
         re:recognizedBy,
         re:recognizedIn,
         re:recognizedTo,
-        re:sameAs,
-        re:url,
-        schema:description,
-        schema:name,
+        sch:description,
+        sch:image,
+        sch:legalName,
+        sch:name,
+        sch:sameAs,
+        sch:url,
         sec:digestMultibase ;
 .
 

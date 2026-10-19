@@ -57,20 +57,20 @@
                 "language": "@language",
                 "direction": "@direction",
                 "id": "@id",
-                "legalName": "https://www.w3.org/ns/credentials/recognized-entities#legalName",
+                "legalName": "https://schema.org/legalName",
                 "image": {
-                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#image",
+                    "@id": "https://schema.org/image",
                     "@type": "@id"
                 },
                 "url": {
-                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#url",
+                    "@id": "https://schema.org/url",
                     "@type": "@id"
                 },
                 "sameAs": {
-                    "@id": "https://www.w3.org/ns/credentials/recognized-entities#sameAs",
+                    "@id": "https://schema.org/sameAs",
                     "@type": "@id"
                 },
-                "description": "http://schema.org/description",
+                "description": "https://schema.org/description",
                 "digestMultibase": "https://w3id.org/security#digestMultibase",
                 "validFrom": {
                     "@id": "https://www.w3.org/2018/credentials#validFrom",
@@ -80,7 +80,7 @@
                     "@id": "https://www.w3.org/2018/credentials#validUntil",
                     "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
                 },
-                "name": "http://schema.org/name",
+                "name": "https://schema.org/name",
                 "issuer": "https://www.w3.org/2018/credentials#issuer",
                 "credentialSubject": "https://www.w3.org/2018/credentials#credentialSubject"
             }
@@ -98,14 +98,6 @@
                 }
             }
         },
-        "ExternalEntityList": {
-            "@id": "https://www.w3.org/ns/credentials/recognized-entities#ExternalEntityList",
-            "@context": {
-                "@protected": true,
-                "language": "@language",
-                "direction": "@direction",
-                "id": "@id"
-            }
-        }
+        "ExternalEntityList": "https://www.w3.org/ns/credentials/recognized-entities#ExternalEntityList"
     }
 }

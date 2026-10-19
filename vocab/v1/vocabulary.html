@@ -145,7 +145,7 @@
         </p>
         <dl>
             <dt>Published:</dt>
-            <dd><time property="dc:date" id="time">2026-09-30</time></dd>
+            <dd><time property="dc:date" id="time">2026-10-19</time></dd>
             <dt>Version Info:</dt>
             <dd>1.0</dd>
             <dt id="see_also">See Also: <a
@@ -229,6 +229,8 @@
         <dl class="terms" id="namespaces">
             <dt><code>re</code></dt>
             <dd><code>https://www.w3.org/ns/credentials/recognized-entities#</code></dd>
+            <dt><code>sch</code></dt>
+            <dd><code>https://schema.org/</code></dd>
             <dt><code>cred</code></dt>
             <dd><code>https://www.w3.org/2018/credentials#</code></dd>
             <dt><code>sec</code></dt>
@@ -243,8 +245,6 @@
             <dd><code>http://www.w3.org/2000/01/rdf-schema#</code></dd>
             <dt><code>xsd</code></dt>
             <dd><code>http://www.w3.org/2001/XMLSchema#</code></dd>
-            <dt><code>schema</code></dt>
-            <dd><code>http://schema.org/</code></dd>
         </dl>
     </section>
 
@@ -276,18 +276,23 @@
                         <li><a href="#RecognizedEntityCredential"><code>RecognizedEntityCredential<code></code></code></a></li>
                         <li><a href="#RecognizedIssuer"><code>RecognizedIssuer<code></code></code></a></li>
                         <li><a href="#action"><code>action<code></code></code></a></li>
-                        <li><a href="#image"><code>image<code></code></code></a></li>
-                        <li><a href="#legalName"><code>legalName<code></code></code></a></li>
                         <li><a href="#outputValidation"><code>outputValidation<code></code></code></a></li>
                         <li><a href="#recognizedBy"><code>recognizedBy<code></code></code></a></li>
                         <li><a href="#recognizedIn"><code>recognizedIn<code></code></code></a></li>
                         <li><a href="#recognizedTo"><code>recognizedTo<code></code></code></a></li>
-                        <li><a href="#sameAs"><code>sameAs<code></code></code></a></li>
-                        <li><a href="#url"><code>url<code></code></code></a></li>
                         <li><a
-                                href="#bd67ab3de4befa12ddca1ae5092c89be951e565f05919d9bcb1e77eecb6d76ba"><code>description<code></code></code></a>
+                                href="#2b7079413f75cd55cc9e96a1d5022b16150f802784f25b95006fbfc735e79166"><code>description<code></code></code></a>
                         </li>
-                        <li><a href="#104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37"><code>name<code></code></code></a>
+                        <li><a href="#28077f08467860058d9d1ef016c58f855c67cc1bfa9ed1296dc8e88cd88e371f"><code>image<code></code></code></a>
+                        </li>
+                        <li><a
+                                href="#c9e83cbb810c0d7816132f999bdfef046010c84109f18bcf7f30ea28fae17e1d"><code>legalName<code></code></code></a>
+                        </li>
+                        <li><a href="#edee3caf434e4e47dba7c8e262a98ab19d50b16125bc3ac9df7cbff212e435e8"><code>name<code></code></code></a>
+                        </li>
+                        <li><a href="#662ea06a54ad1467a6760e758f1ffc90ab5ab21a41c44d02aef72694b114eb71"><code>sameAs<code></code></code></a>
+                        </li>
+                        <li><a href="#6ea44d161e319fb815b31b7d7fda2c80497f314b5f5e40f9445d20ba43bbfc48"><code>url<code></code></code></a>
                         </li>
                         <li><a
                                 href="#1c2059d8a9b5c10a54ba77dae600e4c97cd023c056cdd48fab98ea2c496fc99f"><code>digestMultibase<code></code></code></a>
@@ -405,15 +410,15 @@
         <section id="property_definitions" class="term_definitions">
             <h2>Property definitions</h2>
             <p>The following are property definitions in the <code>re</code> namespace.</p>
-            <section id="legalName">
+            <section id="c9e83cbb810c0d7816132f999bdfef046010c84109f18bcf7f30ea28fae17e1d">
                 <h4><code>legalName</code></h4>
                 <p><em>Legal name</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-legalname">formal definition of the term</a>.</p>
-                <div>Legal name of the entity<br><br>The property's value is expected to be a localizable string.</div>
-                <dl class="terms">
-                    <dt>Range:</dt>
-                    <dd><code>rdf:langString</code> ⊔&nbsp;<code>rdf:dirLangString</code> ⊔&nbsp;<code>xsd:string</code></dd>
-                </dl>
+                <div>Legal name of the entity</div>
+                <p class="note">
+                    <b>This term is formally defined in another vocabulary</b>
+                    (as <a href="https://schema.org/legalName">sch:legalName</a>), but is frequently used with this vocabulary and has been
+                    included to aid readability of this document.
+                </p>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
@@ -421,11 +426,15 @@
                     </dd>
                 </dl>
             </section>
-            <section id="image">
+            <section id="28077f08467860058d9d1ef016c58f855c67cc1bfa9ed1296dc8e88cd88e371f">
                 <h4><code>image</code></h4>
                 <p><em>Visual representation of the entity</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-image">formal definition of the term</a>.</p>
                 <p>The property's value should be a URL, i.e., not a literal.</p>
+                <p class="note">
+                    <b>This term is formally defined in another vocabulary</b>
+                    (as <a href="https://schema.org/image">sch:image</a>), but is frequently used with this vocabulary and has been
+                    included to aid readability of this document.
+                </p>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
@@ -433,11 +442,15 @@
                     </dd>
                 </dl>
             </section>
-            <section id="url">
+            <section id="6ea44d161e319fb815b31b7d7fda2c80497f314b5f5e40f9445d20ba43bbfc48">
                 <h4><code>url</code></h4>
                 <p><em>Web site of the entity</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-url">formal definition of the term</a>.</p>
                 <p>The property's value should be a URL, i.e., not a literal.</p>
+                <p class="note">
+                    <b>This term is formally defined in another vocabulary</b>
+                    (as <a href="https://schema.org/url">sch:url</a>), but is frequently used with this vocabulary and has been
+                    included to aid readability of this document.
+                </p>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
@@ -445,12 +458,16 @@
                     </dd>
                 </dl>
             </section>
-            <section id="sameAs">
+            <section id="662ea06a54ad1467a6760e758f1ffc90ab5ab21a41c44d02aef72694b114eb71">
                 <h4><code>sameAs</code></h4>
                 <p><em>Same as</em></p>
-                <p>See the <a href="https://www.w3.org/TR/vc-recognized-entities/#dfn-sameas">formal definition of the term</a>.</p>
                 <div>One or more URLs that refer to the same entity in other contexts or systems<br><br>The property's value should be a
                     URL, i.e., not a literal.</div>
+                <p class="note">
+                    <b>This term is formally defined in another vocabulary</b>
+                    (as <a href="https://schema.org/sameAs">sch:sameAs</a>), but is frequently used with this vocabulary and has been
+                    included to aid readability of this document.
+                </p>
                 <dl class="terms">
                     <dt>Relevant <code>@context</code>:</dt>
                     <dd><a
@@ -458,13 +475,13 @@
                     </dd>
                 </dl>
             </section>
-            <section id="bd67ab3de4befa12ddca1ae5092c89be951e565f05919d9bcb1e77eecb6d76ba">
+            <section id="2b7079413f75cd55cc9e96a1d5022b16150f802784f25b95006fbfc735e79166">
                 <h4><code>description</code></h4>
                 <p><em>description</em></p>
                 <div>Human-readable description providing details about the entity</div>
                 <p class="note">
                     <b>This term is formally defined in another vocabulary</b>
-                    (as <a href="http://schema.org/description">schema:description</a>), but is frequently used with this vocabulary and has
+                    (as <a href="https://schema.org/description">sch:description</a>), but is frequently used with this vocabulary and has
                     been
                     included to aid readability of this document.
                 </p>
@@ -524,13 +541,13 @@
                     </dd>
                 </dl>
             </section>
-            <section id="104320a85a67bdb05592c4f95a24b049fa7069dd318c44531214a955c3f1fa37">
+            <section id="edee3caf434e4e47dba7c8e262a98ab19d50b16125bc3ac9df7cbff212e435e8">
                 <h4><code>name</code></h4>
                 <p><em>name</em></p>
                 <div>name of an entity</div>
                 <p class="note">
                     <b>This term is formally defined in another vocabulary</b>
-                    (as <a href="http://schema.org/name">schema:name</a>), but is frequently used with this vocabulary and has been
+                    (as <a href="https://schema.org/name">sch:name</a>), but is frequently used with this vocabulary and has been
                     included to aid readability of this document.
                 </p>
                 <dl class="terms">
