@@ -163,6 +163,12 @@
             authors: ["UN/CEFACT"],
             status: "UN Transparency Protocol Specification (Draft)",
             publisher: "United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)"
+          },
+          "JSONATA": {
+            title: "JSONata - JSON Query and Transformation Language",
+            href: "https://docs.jsonata.org/",
+            authors: ["Andrew Coleman"],
+            publisher: "JSONata"
           }
         }
       }
@@ -771,16 +777,12 @@ A [=URL=], or object containing properties from Section
             <tr>
               <td>outputValidation</td>
               <td>
-The value of the `outputValidation`
-property MUST be one or more data
-schemas that provide [=verifiers=] with enough information to determine whether
-the provided data conforms to the provided schema(s). Each validator MUST
-specify its `type` (for example, `JsonSchema`) and an `id`
-property that MUST be a [=URL=]
-identifying the schema file. The specific type definition determines the precise
-contents of each data schema. If multiple schemas are present, validity is
-determined according to the processing rules outlined by each associated `type`
-property.
+One or more output validation objects that provide [=verifiers=] with enough
+information to determine whether a [=verifiable credential=] produced by the
+[=recognized entity=] conforms to the constraints imposed by the recognizing
+authority. The value of this property MUST be a single output validation
+object or an array of output validation objects as defined in Section
+[[[#outputvalidation]]].
               </td>
             </tr>
             <tr>
@@ -809,6 +811,7 @@ period of the enclosing [=recognized entity credential=] applies.
             </tr>
           </tbody>
         </table>
+
     </section>
 
     <section>
@@ -1130,6 +1133,83 @@ using the generic `ExternalEntityList` type.
       </pre>
 
     </section>
+
+    <section>
+        <h3>Output Validation</h3>
+
+        <p>
+An <dfn class="export">output validation</dfn> object describes a constraint
+that a [=verifiable credential=] produced by a [=recognized entity=] MUST
+satisfy. The value of the `outputValidation` property MUST be a single
+output validation object or an array of output validation objects. When
+multiple output validation objects are present, the [=verifiable credential=]
+MUST conform to <strong>every</strong> output validation object in the array.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>type</td>
+              <td>
+The `type` property MUST be present and identifies the processing rules
+for the output validation object.
+              </td>
+            </tr>
+            <tr>
+              <td>id</td>
+              <td>
+The `id` [=property=] is REQUIRED. The value is defined in
+<a data-cite="VC-DATA-MODEL#identifiers">Section 4.4: Identifiers</a>
+and identifies the validation resource.
+              </td>
+            </tr>
+            <tr>
+              <td>digestMultibase</td>
+              <td>
+If present, a cryptographic digest used to verify the integrity of the resource identified
+by `id`. The value is defined in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+The following output validation types are defined by this specification. The
+processing rules for each type, including the steps a [=verifier=] follows to
+determine conformance, are defined in Section [[[#output-validation]]].
+        </p>
+
+        <dl>
+          <dt>`JsonSchema`</dt>
+          <dd>
+The `id` property MUST be a [=URL=] identifying a JSON Schema file.
+          </dd>
+
+          <dt>`JsonataSchema`</dt>
+          <dd>
+The `id` property MUST be a [=URL=] identifying a [[JSONATA]] expression file
+that generates a JSON Schema. The expression evaluation and its inputs are
+defined in Section [[[#output-validation]]].
+          </dd>
+        </dl>
+
+        <p class="note" title="Extensibility of output validation types">
+This specification defines the `JsonSchema` and `JsonataSchema` types. Other
+specifications MAY define additional output validation types by specifying
+the meaning of the `type` value, the nature of the resource identified by
+`id`, and the processing rules a [=verifier=] follows to determine conformance.
+        </p>
+
+    </section>
+
     </section>
 
     <section>
@@ -1700,8 +1780,10 @@ Its validity period, if it expresses a `validFrom` or `validUntil` property,
 includes at least part of <var>window</var>.
               </li>
               <li>
-It declares no `outputValidation`, or <var>credential</var> conforms to every
-schema referenced by its `outputValidation`.
+It declares no `outputValidation`, or <var>credential</var> satisfies every
+[=output validation=] object declared by its `outputValidation` property,
+as determined by the algorithm in Section [[[#output-validation]]], passing
+<var>chain</var> as the recognition chain.
               </li>
             </ol>
           </li>
@@ -1738,6 +1820,85 @@ back to a result in which only <var>recognized</var> is `true`.
         </p>
 
       </section>
+
+      <section>
+        <h3>Output Validation</h3>
+
+        <p>
+[=Output validation=] is the process by which a
+[=verifier=] determines whether a [=verifiable credential=] conforms to the
+constraints declared by one or more [=output validation=] objects in a
+[=recognized action=]. This algorithm is invoked by Section
+[[[#recognition-validation]]] during recognition chain evaluation.
+        </p>
+
+        <p>
+To perform output validation on a [=verifiable credential=]
+(<var>credential</var>) against the [=output validation=] objects declared by a
+[=recognized action=], given the recognition chain
+(<var>chain</var>) from which the [=recognized action=] was obtained, a
+[=verifier=] runs the following algorithm. The algorithm returns `true` if
+<var>credential</var> satisfies every [=output validation=] object, and `false`
+otherwise.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Let <var>validations</var> be the value of the `outputValidation` property of
+the [=recognized action=]. If `outputValidation` is a single object, treat it
+as an array containing that object.
+          </li>
+          <li>
+For each <var>validation</var> in <var>validations</var>, perform the following
+steps. If any <var>validation</var> does not pass, return `false`.
+            <ol class="algorithm">
+              <li>
+Let <var>validationType</var> be the value of the `type` property of
+<var>validation</var>.
+              </li>
+              <li>
+If <var>validationType</var> is not recognized by the [=verifier=], return
+`false`.
+              </li>
+              <li>
+Let <var>resource</var> be the resource identified by the [=URL=] in the `id`
+property of <var>validation</var>. If <var>resource</var> is unavailable, return `false`.
+              </li>
+              <li>
+If <var>validation</var> includes a `digestMultibase` property, verify the
+integrity of <var>resource</var> against that digest. If verification fails,
+return `false`.
+              </li>
+              <li>
+If <var>validationType</var> is `JsonSchema`, let <var>schema</var> be
+<var>resource</var>. Validate <var>credential</var> against <var>schema</var>
+using the JSON Schema validation process defined in [[JSON-SCHEMA]]. If
+validation fails, return `false`.
+              </li>
+              <li>
+If <var>validationType</var> is `JsonataSchema`, let <var>expression</var> be
+<var>resource</var>. Let <var>inputArray</var> be an array of [=verifiable
+credentials=] constructed from <var>chain</var> as follows: the [=recognized
+entity credential=] that contains the [=recognized action=] declaring this
+[=output validation=] is placed at index 0, and the remaining [=verifiable
+credentials=] below it in the chain follow in order. Evaluate
+<var>expression</var> with <var>inputArray</var> as the input document. The
+expression MUST produce a JSON Schema as its result; let
+<var>generatedSchema</var> be that result. If evaluation fails or the result is
+not a valid JSON Schema, return `false`. Otherwise,
+validate <var>credential</var> against <var>generatedSchema</var> using the JSON
+Schema validation process defined in [[JSON-SCHEMA]]. If validation fails,
+return `false`.
+              </li>
+            </ol>
+          </li>
+          <li>
+If every <var>validation</var> in <var>validations</var> passed, return `true`.
+          </li>
+        </ol>
+
+      </section>
+
     </section>
 
     <section class="appendix informative" id="security-considerations">
@@ -2605,7 +2766,7 @@ The identifiers of the [=issuers=] it accepts as trust anchors, along with the
 verify proofs from those [=issuers=] without resolving their identifiers.
           </li>
           <li>
-Any schemas referenced by the `outputValidation` property of a [=recognized
+Any resources referenced by the `outputValidation` property of a [=recognized
 action=] it intends to enforce, since those cannot be fetched while offline.
           </li>
           <li>
