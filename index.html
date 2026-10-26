@@ -3970,16 +3970,16 @@ Recognized Entity Credential Propagation</a>.
                         .cef-lw    { fill:#ffffff; font-size:13px; font-weight:600; }
                         .cef-ld    { fill:#111111; font-size:13px; font-weight:600; }
                         .cef-sub   { font-size:10.5px; font-weight:400; opacity:.8; }
-                        .cef-ray   { stroke:#9aa7ad; stroke-width:1.5; fill:none; }
+                        .cef-ray   { stroke:#687880; stroke-width:1.5; fill:none; }
                         .cef-vc    { fill:#a6a6a6; stroke:#0f766e; stroke-width:1.5; }
-                        .cef-vct   { fill:#0f766e; font-size:10px; font-weight:600; text-anchor:middle; }
-                        .cef-cap   { fill:#4b5563; font-size:11.5px; }
-                        .cef-hd    { fill:#111111; font-size:16px; font-weight:700; }
+                        .cef-vct   { fill:#11847b; font-size:10px; font-weight:600; text-anchor:middle; }
+                        .cef-cap   { fill:var(--text, #000); font-size:11.5px; }
+                        .cef-hd    { fill:var(--text, #000); font-size:16px; font-weight:700; }
                     </style>
 
                     <defs>
                         <marker id="cef-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
-                            <path d="M0 0 L8 4 L0 8 z" fill="#9aa7ad"/>
+                            <path d="M0 0 L8 4 L0 8 z" fill="#687880"/>
                         </marker>
 
                         <!-- one ray per issuance edge; the credentials ride these -->
@@ -4135,8 +4135,7 @@ Recognized Entity Credential Propagation</a>.
                 `registrationScopeList` names the company's legal form, and, because a German
                 register number is unique only within one register court, the `idScheme` is
                 scoped to the court. `relatedResource` fixes the version of the entry the
-                register attested to. Both URLs follow the scheme described in
-                [[[#business-register-entry-urls]]].
+                register attested to.
             </p>
 
             <pre class="example nohighlight"
@@ -4621,24 +4620,24 @@ ce:ScopedRecognizedActionShape
                         .cev-ld    { fill:#111111; font-size:13px; font-weight:600; }
                         .cev-sub   { font-size:10.5px; font-weight:400; opacity:.8; }
                         .cev-ray   { stroke:#c8ced2; stroke-width:1.5; fill:none; }
-                        .cev-qry   { stroke:#b45309; stroke-width:1.8; stroke-dasharray:5 4; fill:none; }
-                        .cev-dot   { fill:#fbbf24; stroke:#b45309; stroke-width:1.5; }
-                        .cev-qt    { fill:#b45309; font-size:10px; font-weight:600; text-anchor:middle; }
+                        .cev-qry   { stroke:#be5809; stroke-width:1.8; stroke-dasharray:5 4; fill:none; }
+                        .cev-dot   { fill:#fbbf24; stroke:#be5809; stroke-width:1.5; }
+                        .cev-qt    { fill:#be5809; font-size:10px; font-weight:600; text-anchor:middle; }
                         .cev-ok    { fill:#15803d; stroke:#ffffff; stroke-width:1.5; }
                         .cev-okm   { stroke:#ffffff; stroke-width:2.2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-                        .cev-root  { fill:none; stroke:#f59e0b; stroke-width:2.5; rx:9; }
-                        .cev-roott { fill:#b45309; font-size:9.5px; font-weight:700; text-anchor:middle; letter-spacing:.4px; }
-                        .cev-step  { fill:#111111; font-size:13px; }
-                        .cev-stepn { fill:#b45309; font-size:13px; font-weight:700; }
-                        .cev-cap   { fill:#4b5563; font-size:11.5px; }
-                        .cev-hd    { fill:#111111; font-size:16px; font-weight:700; }
+                        .cev-root  { fill:none; stroke:#a36907; stroke-width:2.5; rx:9; }
+                        .cev-roott { fill:#be5809; font-size:9.5px; font-weight:700; text-anchor:middle; letter-spacing:.4px; }
+                        .cev-step  { fill:var(--text, #000); font-size:13px; }
+                        .cev-stepn { fill:#be5809; font-size:13px; font-weight:700; }
+                        .cev-cap   { fill:var(--text, #000); font-size:11.5px; }
+                        .cev-hd    { fill:var(--text, #000); font-size:16px; font-weight:700; }
                         .cev-pill  { fill:#ecfdf5; stroke:#15803d; stroke-width:1.5; rx:11; }
                         .cev-pillt { fill:#15803d; font-size:11px; font-weight:600; }
                     </style>
 
                     <defs>
                         <marker id="cev-qa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
-                            <path d="M0 0 L8 4 L0 8 z" fill="#b45309"/>
+                            <path d="M0 0 L8 4 L0 8 z" fill="#be5809"/>
                         </marker>
 
                         <!-- verification rays: the issuance arrows of CE-marking-flow.svg, reversed -->
@@ -5006,197 +5005,6 @@ did:webvh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:cab.example
                     to be cached in advance, and so does the register entry referenced by
                     `relatedResource`; their digests let the [=verifier=] check the cached
                     copies.
-                </p>
-            </section>
-
-            <section id="business-register-entry-urls">
-                <h4>Identifying Business Register Entries</h4>
-
-                <p>
-                    The business register credential above cites the manufacturer's register
-                    entry by URL. This section describes the URL scheme used in that example.
-                    It is one possible design. The scheme itself is generic; each register
-                    defines a <em>profile</em> that fixes the values of its segments. The
-                    profile shown here is for the German Handelsregister. Court codes and EUID
-                    values in the examples are illustrative.
-                </p>
-
-                <p>
-                    A URL of this scheme identifies a <em>register entry</em> — the record
-                    the register keeps — not the company it describes. The company is
-                    identified by its DID, and the credential links the DID to the entry.
-                    Entry URLs are not suitable as the `id` of the company itself.
-                </p>
-
-                <pre class="nohighlight">
-https://{register-host}/entry/{court}/{type}/{number}
-https://{register-host}/entry/{court}/{type}/{number}/history/{seq}
-https://{register-host}/euid/{euid}
-                </pre>
-
-                <p>For example:</p>
-
-                <pre class="nohighlight">
-https://handelsregister.example/entry/r3101/hrb/123456
-https://handelsregister.example/entry/r3101/hrb/123456/history/7
-https://handelsregister.example/euid/DER3101.HRB123456
-                </pre>
-
-                <p>The generic grammar, in ABNF [[?RFC5234]]:</p>
-
-                <pre class="nohighlight">
-entry-url = "https://" host "/entry/" court "/" type "/" number
-            [ "/history/" seq ]
-euid-url  = "https://" host "/euid/" euid
-host      = label *( "." label )        ; DNS name only: no IP literal,
-                                        ; port, or userinfo
-label     = alnum [ *( alnum / "-" ) alnum ]
-court     = token                       ; values fixed by the profile
-type      = token                       ; values fixed by the profile
-number    = token                       ; syntax fixed by the profile
-seq       = nonzero *DIGIT
-euid      = 1*( ALPHA / DIGIT / "." / "-" )
-token     = 1*alnum
-alnum     = lowalpha / DIGIT
-lowalpha  = %x61-7A
-nonzero   = %x31-39
-                </pre>
-
-                <p>The German Handelsregister profile narrows `type` and `number`:</p>
-
-                <pre class="nohighlight">
-type      = "hra" / "hrb" / "gnr" / "pr" / "vr" / "gsr"
-number    = nonzero *DIGIT *lowalpha    ; no leading zeros
-                </pre>
-
-                <dl>
-                    <dt>`host`</dt>
-                    <dd>
-                        A DNS name controlled by the register. When it matches the host of the
-                        issuer's `did:web` identifier, a [=verifier=] knows that the same
-                        domain minted both. That is a consistency check only: whether the
-                        register is an authority follows from the recognition chain, not from
-                        the URL.
-                    </dd>
-                    <dt>`court`</dt>
-                    <dd>
-                        A stable code for the authority that keeps the entry. In Germany, a
-                        register number is unique only within one register court, so the court
-                        is part of the key. The profile names the code list it draws from, such
-                        as the court codes used in German judicial data exchange. A code is
-                        used instead of the court's name because names change when courts
-                        merge. A retired code keeps resolving.
-                    </dd>
-                    <dt>`type`</dt>
-                    <dd>
-                        The register, or the section of a register, that holds the entry. In
-                        the German profile: `hra` and `hrb` are parts A (sole traders and
-                        partnerships) and B (corporations) of the Handelsregister; `gnr`
-                        (cooperatives), `pr` (partnerships of professionals), `vr`
-                        (associations) and `gsr` (registered civil-law partnerships) are
-                        separate registers kept by the same courts. The same number under two
-                        types names two different entries.
-                    </dd>
-                    <dt>`number`</dt>
-                    <dd>
-                        The register number, lowercase, without spaces or leading zeros.
-                        Letter suffixes are part of the number and are kept: "HRB 123456 B"
-                        becomes `123456b`. Other profiles can allow letters anywhere, as in
-                        UK company numbers such as `sc123456`.
-                    </dd>
-                    <dt>`seq`</dt>
-                    <dd>
-                        Names the state of the entry after its `seq`-th registration event.
-                        Without it, the URL names the entry's current state, which changes
-                        when, for example, a managing director is replaced. A history URL
-                        never changes. Profiles for registers that do not number their
-                        registration events omit this form.
-                    </dd>
-                    <dt>`euid`</dt>
-                    <dd>
-                        The European Unique Identifier used by the Business Registers
-                        Interconnection System: a country code, a register identifier, the
-                        registration number, and an optional check digit. The `euid` URL lets
-                        a [=verifier=] in another Member State find an entry without knowing
-                        national court codes. It is an alias that redirects to the entry URL;
-                        it is never used in credentials and is not subject to the canonical
-                        form below.
-                    </dd>
-                </dl>
-
-                <h5>Canonical form and comparison</h5>
-
-                <p>
-                    Only canonical entry URLs appear in credentials: lowercase, no whitespace,
-                    no percent-encoding, no port, no trailing slash, no leading zeros in
-                    numeric segments. [=Verifiers=] compare entry URLs byte for byte and do not
-                    normalize them. The register redirects other spellings, such as
-                    `/entry/R3101/HRB/0123456/`, to the canonical URL.
-                </p>
-
-                <p>
-                    The entry URL follows mechanically from `idScheme` and `registeredId`: the
-                    `idScheme` `id` names the court, and `registeredId` supplies the type and
-                    number, lowercased with whitespace removed. "HRB 123456" under
-                    `https://handelsregister.example/entry/r3101/` becomes
-                    `https://handelsregister.example/entry/r3101/hrb/123456`.
-                </p>
-
-                <h5>Citing an entry</h5>
-
-                <p>
-                    The current entry URL is the `id` of the subject's `registration`, which
-                    describes the subject's standing in the register. Because that record
-                    changes, a credential that
-                    attests to the entry also cites the history URL of the version it attests
-                    to in `relatedResource`, with a digest of that version's JSON-LD
-                    representation. A [=verifier=] that looks up the history URL can then
-                    detect any change to what was attested.
-                </p>
-
-                <h5>Lifecycle</h5>
-
-                <p>
-                    The scheme assumes a register never reuses a number within one court and
-                    type. A register that does reuse numbers has to use history URLs only.
-                    Entry URLs keep resolving for the life of the register. A deleted entry
-                    still resolves, marked as deleted, so a [=verifier=] can tell it from an
-                    entry that never existed. When a company moves its seat to another court
-                    and receives a new entry there, the old entry keeps its history and points
-                    to the new one with a `Link` header of relation type `successor-version`
-                    [[?RFC5829]] instead of redirecting to it. Paths below
-                    `/entry/{court}/{type}/{number}/` other than `history` are reserved for
-                    later sub-resources, such as filed documents.
-                </p>
-
-                <h5>Security and privacy</h5>
-
-                <p>
-                    A [=verifier=] does not need to look up an entry URL to verify the
-                    credential; the proof and the recognition chain are sufficient. Looking it
-                    up tells the register which company is being checked, by whom, and when.
-                    A [=verifier=] that does look up entry URLs restricts lookups to hosts it
-                    already trusts, uses HTTPS only, does not follow redirects to another
-                    host, and caches results. Because entries contain personal data, such as
-                    the names of managing directors, and their URLs are predictable, the
-                    register protects itself against bulk harvesting, for example with rate
-                    limits. A register that wants its answers to serve as evidence later can
-                    serve them signed, for example as a [=verifiable credential=], since TLS
-                    protects them only in transit.
-                </p>
-
-                <p>
-                    Embedding the operating domain in every identifier means that a change of
-                    domain breaks every credential that cites it. A register that expects its
-                    portal to move can mint entry URLs on a separate, long-lived host that
-                    only redirects to the current portal. The host check against the issuer's
-                    `did:web` identifier then no longer applies.
-                </p>
-
-                <p>
-                    Registers with a single national number space, such as the UK's Companies
-                    House, use one fixed `court` value in their profile and keep the rest of
-                    the scheme unchanged.
                 </p>
             </section>
         </section>
