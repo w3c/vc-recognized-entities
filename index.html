@@ -717,11 +717,11 @@ recorded in a register maintained by the [=issuer=], such as a national
 business register, an accreditation register, or the allocation records of a
 federated identifier scheme. Each object is expected to carry properties, such
 as the identifier the register assigned to the [=recognized entity=] and the
-scope of the registration, drawn from vocabularies defined by the ecosystem in
+scope of the `registration`, drawn from vocabularies defined by the ecosystem in
 which the register operates. Section [[[#un-grid-cross-border-trade-example]]]
 demonstrates a `registration` expressed using properties defined by the UNTP
 Digital Identity Anchor [[?UNTP-DIA]]. This property might occur more than once
-if the [=recognized entity=] holds more than one registration with the
+if the [=recognized entity=] holds more than one `registration` with the
 [=issuer=].
               </td>
             </tr>
@@ -2355,7 +2355,7 @@ Ltd. The credential asserts that the company's corporate registration number,
 Utopian Business Register verified that ACME Exports controls that DID. The
 `registration` property describes the company's entry in the register using
 the properties of a `RegisteredIdentity` from the UNTP Digital Identity Anchor
-[[?UNTP-DIA]]: `registeredId` holds the registration number, `idScheme`
+[[?UNTP-DIA]]: `registeredId` holds the `registration` number, `idScheme`
 identifies the register that assigned it, `registerType` states that the
 register is a business register, and `registrationScopeList` identifies the
 company's legal form as published by the register.
@@ -2543,7 +2543,7 @@ vocabulary [[?UNTP-DIA]]. They carry the registrar-assigned corporate
 registration number, the register that assigned it, the kind of register, the
 legal form of the registered entity, and the country of registration. Those
 properties are not defined by this specification; they appear in the examples
-solely to illustrate the kind of information a registrar-issued
+only to illustrate the kind of information a registrar-issued
 `RecognizedEntityCredential` might carry in practice. This specification
 defines only the `registration` property that contains them.
       </p>
