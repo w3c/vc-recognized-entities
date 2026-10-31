@@ -1185,7 +1185,9 @@ trade-off made to keep implementation burden low for identifier comparison.
       <p>
 Both processes assume that each [=verifiable credential=] has already been
 validated individually. That is: its proof verifies; it is within its validity
-period; and its status, if any, has been checked, according to
+period at the evaluation time described in Section
+[[[#recognition-validation]]]; and its status, if any, has been checked,
+according to
 <a data-cite="VC-DATA-MODEL#verification">Section 7.1: Verification</a> and
 <a data-cite="VC-DATA-MODEL#validation">Appendix A: Validation</a> of the
 [[[VC-DATA-MODEL]]] specification. Those processes apply to any [=verifiable
@@ -1631,8 +1633,8 @@ To perform [=recognition validation=] on a chain (<var>chain</var>) produced
 by any discovery mechanism, for a specific action (<var>action</var>, for
 example `issue`), against a configured set of recognized [=issuers=]
 (<var>recognizedIssuers</var>), at an evaluation time
-(<var>currentDateTime</var>), a [=verifier=] runs the following algorithm. The
-algorithm returns a result with two boolean outcomes: <var>entityRecognized</var>,
+(<var>evaluationDateTime</var>), a [=verifier=] runs the following algorithm. The
+algorithm returns a result with two boolean outcomes: <var>recognized</var>,
 indicating whether the [=issuer=] of the first [=verifiable credential=] in
 <var>chain</var> is ultimately recognized by a member of
 <var>recognizedIssuers</var>, and <var>actionRecognized</var>, indicating
@@ -1682,8 +1684,9 @@ and end at the earliest `validUntil` property in <var>chain</var>. A
 constrain the start, and one that expresses no `validUntil` property does not
 constrain the end. If <var>window</var> ends before it starts, no such period
 exists, so return <var>result</var>. If <var>evaluationDateTime</var> falls
-outside <var>window</var>, no [=verifiable credential=] in <var>chain</var> is
-valid at the evaluation time, so return <var>result</var>.
+outside <var>window</var>, at least one [=verifiable credential=] in
+<var>chain</var> is not valid at the evaluation time, so return
+<var>result</var>.
           </li>
           <li>
 For each adjacent pair of [=verifiable credentials=] in <var>chain</var>, where
