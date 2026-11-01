@@ -2693,11 +2693,12 @@ illustrative.
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
     "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// highlighted text is specific to the metrology ecosystem</span>
     "https://www.w3.org/ns/credentials/examples/v2"
   ],
   "type": [
     "VerifiableCredential",
-    "CalibrationCertificateCredential"
+    <span class="highlight">"CalibrationCertificateCredential"</span>
   ],
   "issuer": {
     "id": "did:web:metas.example",
@@ -2711,15 +2712,15 @@ illustrative.
   "validFrom": "2026-06-12T00:00:00Z",
   "credentialSubject": {
     "id": "https://metas.example/certificates/2026-04127",
-    "type": "CalibrationCertificate",
-    "calibrationDate": "2026-06-10",
+    <span class="highlight">"type": "CalibrationCertificate"</span>,
+    <span class="highlight">"calibrationDate": "2026-06-10",
     "calibratedItem": {
       "name": "Coaxial attenuator, 20 dB, 3.5 mm",
       "serialNumber": "AT-20-77213"
     },
     "calibrationAndMeasurementCapability":
       "https://si-digital-framework.org/kcdb-cmc/EURAMET-EM-CH-00000GFB-6",
-    "measurementResults": "https://metas.example/certificates/2026-04127/results.json"
+    "measurementResults": "https://metas.example/certificates/2026-04127/results.json"</span>
   },
   "proof": {
     "type": "DataIntegrityProof",
