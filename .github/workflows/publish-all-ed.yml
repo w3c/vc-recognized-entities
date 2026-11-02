@@ -32,7 +32,7 @@ jobs:
           node-version: 22
       - name: Generate vocabularies
         run: |
-          npm install
+          npm install yml2vocab
           ./node_modules/.bin/yml2vocab -v vocab/v1/vocabulary.yml -t vocab/v1/template.html
           rm -rf node_modules
       - name: Setup Github Pages
