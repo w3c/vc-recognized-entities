@@ -4,7 +4,7 @@ summary: >-
   identifier document, so an [=issuer=] can aim the [=verifier=]'s requests at
   hosts it cannot reach itself.
 description: >-
-  Discovery fetches [=URLs=] that come from documents nobody has checked yet.
+  Discovery fetches URLs that come from documents nobody has checked yet.
   [=Credential-based discovery=] fetches the <code>recognizedIn</code> list
   named by a [=O2|verifiable credential=]. [=Identifier-based discovery=]
   resolves the [=E2|issuer=]'s identifier, then fetches the
@@ -16,7 +16,7 @@ description: >-
   the firewall. The [=E4|verifier=] verifies proofs only after the response
   arrives. A failed proof check does not recall the request, and the attack
   does not need the response to be valid, or to come back at all. A redirect
-  reaches the same destination from a [=URL=] that looked acceptable when the
+  reaches the same destination from a URL that looked acceptable when the
   request was sent. This is distinct from External Resource Substitution,
   which is about the content that comes back; here the request itself is the
   attack.
@@ -30,7 +30,7 @@ response:
     type: Reduce
     description: >-
       [=E4|Verifiers=] apply a retrieval policy to every fetch that discovery
-      performs. The policy allows a named set of [=URL=] schemes and rejects
+      performs. The policy allows a named set of URL schemes and rejects
       the rest. It rejects destinations that are not publicly routable, such
       as loopback, link-local, and private-network addresses. Names are
       resolved before a request goes out, so the policy checks the address
