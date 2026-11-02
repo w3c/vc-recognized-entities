@@ -11,6 +11,9 @@ vocab:
   context: https://www.w3.org/ns/credentials/recognized-entities/v1
 
 prefix:
+  - id: sch
+    value: https://schema.org/
+
   - id: cred
     value: https://www.w3.org/2018/credentials#
 
@@ -28,7 +31,6 @@ ontology:
     value: https://www.w3.org/TR/vc-recognized-entities/
 
 class:
-
   - id: RecognizedEntity
     label: Recognized Entity
     defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-recognized-entity
@@ -55,34 +57,28 @@ class:
     comment: A list of external entities that are usually in a different format such as an x509 Certificate Authority List or an ETSI Trust Services List.
 
 property:
-
-  - id: legalName
+  - id: sch:legalName
     label: Legal name
     comment: Legal name of the entity
-    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-legalname
-    range: localizableString
     scope: RecognizedEntityCredential
 
-  - id: image
+  - id: sch:image
     label: Visual representation of the entity
-    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-image
     range: URL
     scope: RecognizedEntityCredential
 
-  - id: url
+  - id: sch:url
     label: Web site of the entity
-    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-url
     range: URL
     scope: RecognizedEntityCredential
 
-  - id: sameAs
+  - id: sch:sameAs
     label: Same as
     comment: One or more URLs that refer to the same entity in other contexts or systems
-    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-sameas
     range: URL
     scope: RecognizedEntityCredential
 
-  - id: schema:description
+  - id: sch:description
     label: description
     comment: Human-readable description providing details about the entity
     scope: RecognizedEntityCredential
@@ -102,7 +98,7 @@ property:
     scope: [RecognizedEntityCredential, RecognizedAction]
     range: xsd:dateTime
 
-  - id: schema:name
+  - id: sch:name
     label: name
     comment: name of an entity
     scope: RecognizedEntityCredential
