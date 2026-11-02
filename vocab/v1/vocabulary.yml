@@ -86,16 +86,6 @@ property:
     range: [ExternalEntityList, RecognizedEntityCredential]
     range_union: true
 
-  - id: cred:validFrom
-    label: Valid from
-    comment: The beginning of the validity for claims.
-    context: none
-
-  - id: cred:validUntil
-    label: Valid until
-    comment: The end of the validity for claims.
-    context: none
-
   - id: credentialSubject
     label: Credential subject for recognized entities
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
@@ -103,6 +93,20 @@ property:
     upper_value: cred:credentialSubject
     domain: RecognizedEntityCredential
     range: RecognizedEntity
+    context: none
+
+  - id: cred:validFrom
+    label: Valid from
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    domain: RecognizedEntityCredential
+    range: xsd:dateTime
+    context: none
+
+  - id: cred:validUntil
+    label: Valid until
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    domain: RecognizedEntityCredential
+    range: xsd:dateTime
     context: none
 
   - id: schema:name
