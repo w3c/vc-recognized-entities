@@ -4,6 +4,9 @@ on:
   pull_request: {}
   push:
     branches: [main]
+    paths-ignore: ['vocab/**']
+  workflow_dispatch:
+
 jobs:
   main:
     name: Build, Validate and Deploy

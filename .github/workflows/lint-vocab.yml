@@ -1,0 +1,20 @@
+name: Lint Vocabulary Files
+on:
+  pull_request:
+    paths: ['vocab/v1/**']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: actions/checkout/@v4
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+      - name: Lint VC vocabularies
+        run: |
+          npm install yml2vocab
+          npm update yml2vocab
+          ./node_modules/.bin/yml2vocab -c -v vocab/v1/vocabulary.yml -t vocab/v1/template.html
