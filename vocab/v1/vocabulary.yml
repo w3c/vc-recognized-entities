@@ -45,6 +45,10 @@ class:
     comment: A conforming verifiable credential, as defined in [[[?vc-data-model-2.0]]], that encapsulates <a href="#RecognizedEntity">Recognized Entities</a> entities.
     upper_value: cred:VerifiableCredential
 
+  - id: RecognizedIssuer
+    label: Recognized Issuer
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+
   - id: ExternalEntityList
     label: External Entity List
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#externalentitylist
@@ -82,7 +86,7 @@ property:
     label: Recognized in
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity
     comment: Refer to the <a href="#RecognizedAction">Recognized Action</a>.
-    domain: RecognizedEntity
+    domain: [RecognizedEntity, RecognizedIssuer]
     range: [ExternalEntityList, RecognizedEntityCredential]
     range_union: true
 
@@ -93,24 +97,30 @@ property:
     upper_value: cred:credentialSubject
     domain: RecognizedEntityCredential
     range: RecognizedEntity
-    context: none
+
+  - id: issuer
+    label: Issuer of a Recognized Entity Credential
+    defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
+    upper_value: cred:issuer
+    domain: RecognizedEntityCredential
+    range: RecognizedIssuer
 
   - id: cred:validFrom
     label: Valid from
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
-    domain: RecognizedEntityCredential
+    scope: [RecognizedEntityCredential, RecognizedAction]
     range: xsd:dateTime
 
   - id: cred:validUntil
     label: Valid until
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential
-    domain: RecognizedEntityCredential
+    scope: [RecognizedEntityCredential, RecognizedAction]
     range: xsd:dateTime
 
   - id: schema:name
     label: name
     comment: name of an entity
-    context: none
+    scope: RecognizedEntityCredential
 
   - id: legalName
     label: Legal name
@@ -118,28 +128,33 @@ property:
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
     range: [xsd:string, rdf:langString]
     range_union: true
+    scope: RecognizedEntityCredential
 
   - id: image
     label: Visual representation of the entity
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
     range: URL
+    scope: RecognizedEntityCredential
 
   - id: url
     label: Web site of the entity
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
     range: URL
+    scope: RecognizedEntityCredential
 
   - id: sameAs
     label: same as
     comment: One or more URLs that refer to the same entity in other contexts or systems
     defined_by: https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties
     range: URL
+    scope: RecognizedEntityCredential
 
   - id: schema:description
     label: description
     comment: Human-readable description providing details about the entity
-    context: none
+    scope: RecognizedEntityCredential
 
   - id: sec:digestMultibase
     label: Digest Multibase
     comment: One or more cryptographic digests used to verify the integrity of resources associated with the entity.
+    scope: RecognizedEntityCredential
