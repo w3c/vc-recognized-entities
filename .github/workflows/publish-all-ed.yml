@@ -33,7 +33,7 @@ jobs:
       - name: Generate vocabularies
         run: |
           npm install yml2vocab
-          ./node_modules/.bin/yml2vocab -v vocab/v1/vocabulary.yml -t vocab/v1/template.html
+          ./node_modules/.bin/yml2vocab -c -v vocab/v1/vocabulary.yml -t vocab/v1/template.html
           rm -rf node_modules
       - name: Setup Github Pages
         uses: actions/configure-pages@v5
