@@ -1,7 +1,9 @@
-name: Publish All Editor's Drafts
+name: Publish Vocabulary
 on:
   push:
     branches: [main]
+    paths: ['vocab/**']
+
   # Allows workflow to be triggered manually from the Actions tab
   workflow_dispatch:
 
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   main:
-    name: Publish All Editor's Drafts
+    name: Publish All Vocabulary files
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -29,7 +31,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
       - name: Generate vocabularies
         run: |
           npm install yml2vocab
