@@ -519,7 +519,7 @@ scheme owner, in full conformance with its operating procedures.
         </p>
         <p>
 An example of such a scheme is GS1, the organization behind many of the world's
-barcodes. A detailed description of its use case is presented in the <a 
+barcodes. A detailed description of its use case is presented in the <a
 href="https://www.w3.org/TR/vc-use-cases/#chain-of-gs1-credentials-to-identify-a-trade-item">Verifiable
 Credentials Use Cases</a> document [[vc-use-cases]].
         </p>
@@ -1229,9 +1229,10 @@ checks the structure of a key credential issued by Healthy Tots. The
 `JavaScript` validator checks that the GTIN in that key credential begins with
 the GS1 Company Prefix licensed to Healthy Tots, and that the GS1 Company
 Prefix begins with the GS1 Prefix licensed to the Member Organization. The
-code reads both prefixes from the recognition chain, so GS1 publishes one
-script for every licensee, and fetching that script tells GS1 nothing about
-which licensee is being verified.
+code reads both prefixes from the recognition chain. This approach has
+at least two benefits: 1) GS1 publishes one script that can be applied to
+every licensee, and 2) fetching that script is privacy-preserving as GS1
+does not learn which licensee is being verified.
         </p>
 
         <pre class="example nohighlight" title="A recognized action that declares a JavaScript output validator">
@@ -1950,13 +1951,13 @@ back to a result in which only <var>recognized</var> is `true`.
 
         <p>
 This section describes how a [=verifier=] runs the code identified by a
-[=JavaScript output validator=] against a recognition chain. The code is
-written by a third party and arrives by way of a [=recognized entity
-credential=], so the [=verifier=] treats it as untrusted and runs it in a
-sandbox that cannot reach the network, the [=verifier=]'s own state, or
-anything else outside the sandbox. A [=verifier=] MAY use an algorithm other
-than the one below if its security and privacy outcomes, and its result, are
-the same.
+[=JavaScript output validator=] against a recognition chain. The code is written
+by a third party and is downloaded via a [=recognized entity credential=]. Since
+the [=verifier=] does not know the third party, it treats the downloaded code as
+untrusted and runs it in a sandbox that cannot reach the network, read the
+[=verifier=]'s own state, or learn anything else outside the sandbox. A
+[=verifier=] MAY use an algorithm other than the one below if its security and
+privacy outcomes, and its result, are the same.
         </p>
 
         <p>
@@ -1991,8 +1992,8 @@ The [=validator code=] MUST be an ECMAScript module, as defined in
         </p>
 
         <p>
-A sandbox that runs [=validator code=] MUST meet all of the following
-requirements.
+A sandbox that runs [=validator code=] SHOULD meet the following
+security requirements.
         </p>
 
         <ul>
