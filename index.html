@@ -801,9 +801,10 @@ The value of the `outputValidation`
 property MUST be one or more data
 schemas that provide [=verifiers=] with enough information to determine whether
 the provided data conforms to the provided schema(s). Each validator MUST
-specify its `type` (for example, `JsonSchema`) and an `id`
+specify its `type` (for example, `JsonSchema` or `JavaScript`) and an `id`
 property that MUST be a [=URL=]
-identifying the schema file. The specific type definition determines the precise
+identifying the schema or code file. The `JavaScript` type is defined in
+Section [[[#javascript-output-validation]]]. The specific type definition determines the precise
 contents of each data schema. If multiple schemas are present, validity is
 determined according to the processing rules outlined by each associated `type`
 property.
@@ -839,6 +840,98 @@ as described in Section [[[#recognition-validation]]].
             </tr>
           </tbody>
         </table>
+    </section>
+
+    <section>
+        <h3>JavaScript Output Validation</h3>
+
+        <p class="issue atrisk" title="JavaScript output validation is at risk">
+The `JavaScript` output validation type is at risk and might be removed from
+this specification before it becomes a W3C Recommendation if there are not
+at least two independent implementations of it.
+        </p>
+
+        <p>
+A <dfn class="export">JavaScript output validator</dfn> is a value of the
+`outputValidation` property whose `type` is `JavaScript`. It identifies
+JavaScript code that a [=verifier=] runs to determine whether a [=verifiable
+credential=] produced by a [=recognized entity=] meets the constraints of the
+recognizing authority. A `JsonSchema` validator is evaluated against a single
+[=verifiable credential=]. The code identified by a [=JavaScript output
+validator=] receives the entire recognition chain, so it can compare values
+across [=verifiable credentials=] in that chain, such as confirming that an
+identifier in one [=verifiable credential=] begins with a prefix that a
+[=recognized entity credential=] higher in the chain licensed to its
+[=issuer=].
+        </p>
+
+        <table class="simple">
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>type</td>
+              <td>
+The `type` property MUST be `JavaScript`.
+              </td>
+            </tr>
+            <tr>
+              <td>id</td>
+              <td>
+The `id` property is REQUIRED. Its value MUST be a [=URL=] that identifies the
+JavaScript code. The value MAY be a `data:` URL, as described in [[?RFC2397]],
+that embeds the code. Embedding the code means that no third party learns
+when a [=verifier=] evaluates the recognition chain.
+              </td>
+            </tr>
+            <tr>
+              <td>digestMultibase</td>
+              <td>
+The `digestMultibase` property is REQUIRED. Its value is a cryptographic digest
+of the JavaScript code identified by `id`, as defined in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+The digest binds the [=JavaScript output validator=] to one exact version of
+the code. Any change to the code, including a change to whitespace or
+comments, produces a different digest.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+The example below shows a [=recognized action=] from a GS1 Member
+Organization that declares two output validators. The `JsonSchema` validator
+checks the structure of a key credential issued by Healthy Tots. The
+`JavaScript` validator checks that the GTIN in that key credential begins with
+the GS1 Company Prefix licensed to Healthy Tots, and that the GS1 Company
+Prefix begins with the GS1 Prefix licensed to the Member Organization. The
+code reads both prefixes from the recognition chain, so GS1 publishes one
+script for every licensee, and fetching that script tells GS1 nothing about
+which licensee is being verified.
+        </p>
+
+        <pre class="example nohighlight" title="A recognized action that declares a JavaScript output validator">
+"recognizedTo": {
+  "type": "RecognizedAction",
+  "action": "issue",
+  "recognizedBy": "did:web:id.gs1utopia.example",
+  "outputValidation": [{
+    "id": "https://id.gs1utopia.example/schemas/key-credential.json",
+    "type": "JsonSchema",
+    "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
+  }, <span class="highlight">{
+    "id": "https://id.gs1.org/validators/gs1-prefix-chain.js",
+    "type": "JavaScript",
+    "digestMultibase": "uEiDqN3Xo7mVq4cJ2r-5bKfXh9TzW0sLpYdE8gAuRnHc1Mw"
+  }</span>]
+}
+        </pre>
+
     </section>
 
     <section>
