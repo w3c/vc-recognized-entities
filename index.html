@@ -862,7 +862,8 @@ validator=] receives the entire recognition chain, so it can compare values
 across [=verifiable credentials=] in that chain, such as confirming that an
 identifier in one [=verifiable credential=] begins with a prefix that a
 [=recognized entity credential=] higher in the chain licensed to its
-[=issuer=].
+[=issuer=]. A [=verifier=] runs that code as described in Section
+[[[#javascript-output-validation-processing]]].
         </p>
 
         <table class="simple">
@@ -1901,8 +1902,14 @@ not the other, the enclosing credential's corresponding property applies to
 the unexpressed value.
               </li>
               <li>
-It declares no `outputValidation`, or <var>credential</var> conforms to every
-schema referenced by its `outputValidation`.
+It declares no `outputValidation`, or <var>credential</var> satisfies every
+value of its `outputValidation`. A value whose `type` is `JsonSchema` is
+satisfied when <var>credential</var> conforms to the schema it references. A
+value whose `type` is `JavaScript` is satisfied when the algorithm in Section
+[[[#javascript-output-validation-processing]]], run on <var>chain</var>, that
+value, <var>action</var>, and <var>evaluationDateTime</var>, returns a result
+whose <var>valid</var> value is `true`. A value whose `type` the [=verifier=]
+does not support is not satisfied.
               </li>
             </ol>
           </li>
@@ -1941,6 +1948,209 @@ back to a result in which only <var>recognized</var> is `true`.
       </section>
 
       <section>
+        <h3>JavaScript Output Validation Processing</h3>
+
+        <p>
+This section describes how a [=verifier=] runs the code identified by a
+[=JavaScript output validator=] against a recognition chain. The code is
+written by a third party and arrives by way of a [=recognized entity
+credential=], so the [=verifier=] treats it as untrusted and runs it in a
+sandbox that cannot reach the network, the [=verifier=]'s own state, or
+anything else outside the sandbox. A [=verifier=] MAY use an algorithm other
+than the one below if its security and privacy outcomes, and its result, are
+the same.
+        </p>
+
+        <p>
+The following terminology is used to describe the sandbox:
+        </p>
+
+        <dl>
+          <dt><dfn>validation host</dfn></dt>
+          <dd>
+The [=verifier=] software that retrieves the [=validator code=], creates the
+sandbox, sends the inputs into the sandbox, and receives the result.
+          </dd>
+
+          <dt><dfn>validator code</dfn></dt>
+          <dd>
+The JavaScript code identified by the `id` property of a [=JavaScript output
+validator=].
+          </dd>
+
+          <dt><dfn>wrapper code</dfn></dt>
+          <dd>
+Code that the [=validation host=] places in the sandbox alongside the
+[=validator code=]. It loads the [=validator code=], receives the inputs from
+the [=validation host=], invokes the [=validator code=], and returns its result
+to the [=validation host=].
+          </dd>
+        </dl>
+
+        <p>
+The [=validator code=] MUST be an ECMAScript module, as defined in
+[[ECMASCRIPT]], whose default export is a function.
+        </p>
+
+        <p>
+A sandbox that runs [=validator code=] MUST meet all of the following
+requirements.
+        </p>
+
+        <ul>
+          <li>
+It prevents the [=validator code=] from making network requests of any kind,
+including importing other modules from a [=URL=] that is not a `data:` URL.
+          </li>
+          <li>
+It prevents the [=validator code=] from reading or modifying any state of the
+[=validation host=], including its memory, storage, cookies, documents, and key
+material. The [=validator code=] receives copies of its inputs, not references
+to the [=validation host=]'s objects.
+          </li>
+          <li>
+It provides no storage that persists after the sandbox is destroyed, and it is
+never reused. Each invocation of [=validator code=] starts in a new sandbox,
+so that one evaluation cannot influence another, and so that [=validator
+code=] cannot track which recognition chains a [=verifier=] evaluates.
+          </li>
+          <li>
+It lets the [=validation host=] terminate the [=validator code=] at any time,
+without the cooperation of the [=validator code=], so that the
+[=validation host=] can enforce limits on running time and memory.
+          </li>
+        </ul>
+
+        <p class="note" title="Running code in the same process is not a sandbox">
+A JavaScript environment that shares a heap or an event loop with the
+[=validation host=], such as the `vm` module of Node.js, does not meet the
+requirements above. Environments that can meet them include a separate
+operating system process, an isolate provided by a library such as
+`isolated-vm`, and a JavaScript engine compiled to WebAssembly.
+        </p>
+
+        <figure>
+          <pre class="diagram mermaid" style="max-width:80%">
+sequenceDiagram
+    participant H as Validation Host (Verifier)
+    participant W as Sandbox (Wrapper Code)
+    participant C as Validator Code
+    H->>H: Retrieve validator code and check digestMultibase
+    H->>W: Create a new sandbox containing the wrapper code
+    H->>W: Send chain and options as JSON
+    W->>C: Load module and call its default export
+    C-->>W: Result
+    W-->>H: Result as JSON
+    H->>H: Destroy the sandbox and check the result
+          </pre>
+          <figcaption>
+Communication between the validation host and the sandbox
+          </figcaption>
+        </figure>
+
+        <p>
+To run a [=JavaScript output validator=] (<var>validator</var>) against a
+recognition chain (<var>chain</var>) for a specific action
+(<var>action</var>) at an evaluation time (<var>evaluationDateTime</var>), a
+[=verifier=] runs the following algorithm. <var>chain</var> is ordered as in
+Section [[[#recognition-validation]]]: the first [=verifiable credential=] is
+the one being validated, the second is the [=recognized entity credential=]
+that declares <var>validator</var>, and the last is issued by an anchor that
+the [=verifier=] recognizes. The algorithm returns a result containing a
+boolean <var>valid</var>, a list of <var>errors</var>, and a list of
+<var>warnings</var>. Each error and warning is a
+<a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> object.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Let <var>result</var> be a structure with <var>valid</var> set to `false`,
+and <var>errors</var> and <var>warnings</var> each set to an empty list.
+          </li>
+          <li>
+If the [=verifier=] cannot provide a sandbox that meets the requirements in
+this section, append an `OUTPUT_VALIDATION_ERROR` to <var>result.errors</var>
+and return <var>result</var>.
+          </li>
+          <li>
+Let <var>codeUrl</var> be the value of the `id` property of
+<var>validator</var>. If <var>codeUrl</var> is a `data:` URL, let
+<var>code</var> be the bytes it encodes. Otherwise, let <var>code</var> be a
+copy of the [=validator code=] that the [=verifier=] has cached, or, if it has
+none, the bytes retrieved from <var>codeUrl</var>. Apply the [=retrieval
+policy=] to that retrieval. If <var>code</var> cannot be obtained, or the
+[=retrieval policy=] blocks the retrieval, append a `RETRIEVAL_ERROR`
+identifying <var>codeUrl</var> to <var>result.errors</var> and return
+<var>result</var>.
+          </li>
+          <li>
+Compute the digest of <var>code</var> and compare it with the value of the
+`digestMultibase` property of <var>validator</var>, as described in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+If they do not match, append a `CRYPTOGRAPHIC_SECURITY_ERROR` identifying
+<var>codeUrl</var> to <var>result.errors</var> and return <var>result</var>.
+No part of <var>code</var> is parsed or run before this check succeeds.
+          </li>
+          <li>
+Let <var>options</var> be the options for the [=validator code=].
+          </li>
+          <li>
+Let <var>maxDuration</var> and <var>maxMemory</var> be the limits on running
+time and memory that the [=verifier=] is configured to allow [=validator
+code=]. Create a new sandbox, place the [=wrapper code=] and <var>code</var> in
+it, and start measuring elapsed time and memory use. If either limit is
+exceeded at any point before the sandbox is destroyed, destroy the sandbox,
+append a `LIMIT_EXCEEDED_ERROR` identifying the limit that was exceeded to
+<var>result.errors</var>, and return <var>result</var>.
+          </li>
+          <li>
+Serialize <var>chain</var> and <var>options</var> to JSON [[RFC8259]] and send
+them into the sandbox. The [=wrapper code=] parses them, loads <var>code</var>
+as an ECMAScript module, and calls the module's default export with the parsed
+<var>chain</var> as its first argument and the parsed <var>options</var> as its
+second. If the function returns a promise, the [=wrapper code=] waits for it to
+settle.
+          </li>
+          <li>
+If <var>code</var> fails to parse as an ECMAScript module, its default export
+is not a function, or the function throws an exception or returns a promise
+that rejects, destroy the sandbox, append an `OUTPUT_VALIDATION_ERROR` to
+<var>result.errors</var>, and return <var>result</var>.
+          </li>
+          <li>
+The [=wrapper code=] serializes the value the function returned to JSON and
+sends it to the [=validation host=]. Destroy the sandbox. Let
+<var>output</var> be the result of parsing that JSON.
+          </li>
+          <li>
+If <var>output</var> is not a [=map=], or its `valid` value is not a
+[=boolean=], append an `OUTPUT_VALIDATION_ERROR` to
+<var>result.errors</var> and return <var>result</var>.
+          </li>
+          <li>
+Set <var>result.valid</var> to the `valid` value of <var>output</var>. Append
+the items of the `errors` value of <var>output</var>, if any, to
+<var>result.errors</var>, and the items of its `warnings` value, if any, to
+<var>result.warnings</var>.
+          </li>
+          <li>
+Return <var>result</var>.
+          </li>
+        </ol>
+
+        <p class="note" title="Validator code runs only for an anchored chain">
+Section [[[#recognition-validation]]] evaluates `outputValidation` only after
+it has confirmed that <var>chain</var> ends at an anchor the [=verifier=]
+recognizes and that every adjacent pair in <var>chain</var> is related. A
+[=verifier=] therefore runs [=validator code=] only when the code was declared
+by an [=issuer=] whose recognition traces back to that anchor, never for a
+chain from an unrecognized source.
+        </p>
+
+      </section>
+
+      <section>
         <h3>Errors</h3>
 
         <p>
@@ -1953,7 +2163,7 @@ this section.
         </p>
 
         <p class="issue">
-The first two types below are not yet defined in the [[[VC-DATA-MODEL]]]
+The first three types below are not yet defined in the [[[VC-DATA-MODEL]]]
 specification. This specification proposes that they be added to it, so that
 other specifications can use them as well.
         </p>
@@ -1979,12 +2189,21 @@ limit that was exceeded SHOULD be identified in the `ProblemDetails` object.
 When a time limit runs out during a retrieval, the [=URL=] being retrieved
 SHOULD be provided as well.
           </dd>
+          <dt id="OUTPUT_VALIDATION_ERROR">
+https://www.w3.org/TR/vc-data-model#OUTPUT_VALIDATION_ERROR
+          </dt>
+          <dd>
+An output validator could not be evaluated. This covers a [=verifier=] that
+cannot provide a sandbox for [=validator code=], [=validator code=] that fails
+to load, throws an exception, or rejects, and a result that is not in the
+expected form.
+          </dd>
           <dt>
 https://www.w3.org/TR/vc-data-model#CRYPTOGRAPHIC_SECURITY_ERROR
           </dt>
           <dd>
-A proof failed to verify. This type is already defined in the
-[[[VC-DATA-MODEL]]] specification.
+A proof, or the digest of a resource, failed to verify. This type is already
+defined in the [[[VC-DATA-MODEL]]] specification.
           </dd>
         </dl>
       </section>
