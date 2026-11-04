@@ -801,9 +801,9 @@ The value of the `outputValidation`
 property MUST be one or more data
 schemas that provide [=verifiers=] with enough information to determine whether
 the provided data conforms to the provided schema(s). Each validator MUST
-specify its `type` (for example, `JsonSchema` or `JavaScriptValidator`) and an
+specify its `type` (for example, `JsonSchema` or `JavaScript`) and an
 `id` property that MUST be a [=URL=]
-identifying the schema or code file. The `JavaScriptValidator` type is defined in
+identifying the schema or code file. The `JavaScript` type is defined in
 Section [[[#javascript-output-validation]]]. The specific type definition determines the precise
 contents of each data schema. If multiple schemas are present, validity is
 determined according to the processing rules outlined by each associated `type`
@@ -1166,14 +1166,14 @@ using the generic `ExternalEntityList` type.
         <h3>JavaScript Output Validation</h3>
 
         <p class="issue atrisk" title="JavaScript output validation is at risk">
-The `JavaScriptValidator` output validation type is at risk and might be
+The `JavaScript` output validation type is at risk and might be
 removed from this specification before it becomes a W3C Recommendation if there
 are not at least two independent implementations of it.
         </p>
 
         <p>
 A <dfn class="export">JavaScript output validator</dfn> is a value of the
-`outputValidation` property whose `type` is `JavaScriptValidator`. It identifies
+`outputValidation` property whose `type` is `JavaScript`. It identifies
 JavaScript code that a [=verifier=] runs to determine whether a [=verifiable
 credential=] produced by a [=recognized entity=] meets the constraints of the
 recognizing authority. A `JsonSchema` validator is evaluated against a single
@@ -1197,7 +1197,7 @@ identifier in one [=verifiable credential=] begins with a prefix that a
             <tr>
               <td>type</td>
               <td>
-The `type` property MUST be `JavaScriptValidator`.
+The `type` property MUST be `JavaScript`.
               </td>
             </tr>
             <tr>
@@ -1226,7 +1226,7 @@ produces a different hash.
 The example below shows a [=recognized action=] from a GS1 Member
 Organization that declares two output validators. The `JsonSchema` validator
 checks the structure of a key credential issued by Healthy Tots. The
-`JavaScriptValidator` checks that the GTIN in that key credential begins with
+`JavaScript` validator checks that the GTIN in that key credential begins with
 the GS1 Company Prefix licensed to Healthy Tots, and that the GS1 Company
 Prefix begins with the GS1 Prefix licensed to the Member Organization. The
 code reads both prefixes from the recognition chain, so GS1 publishes one
@@ -1245,7 +1245,7 @@ which licensee is being verified.
     "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
   }, <span class="highlight">{
     "id": "https://id.gs1.org/validators/gs1-prefix-chain.js",
-    "type": "JavaScriptValidator",
+    "type": "JavaScript",
     "digestMultibase": "uEiDqN3Xo7mVq4cJ2r-5bKfXh9TzW0sLpYdE8gAuRnHc1Mw"
   }</span>]
 }
@@ -1903,7 +1903,7 @@ the unexpressed value.
 It declares no `outputValidation`, or <var>credential</var> satisfies every
 value of its `outputValidation`. A value whose `type` is `JsonSchema` is
 satisfied when <var>credential</var> conforms to the schema it references. A
-value whose `type` is `JavaScriptValidator` is satisfied when the algorithm in
+value whose `type` is `JavaScript` is satisfied when the algorithm in
 Section [[[#javascript-output-validation-processing]]], run on <var>chain</var>, that
 value, <var>action</var>, and <var>evaluationDateTime</var>, returns a result
 whose <var>valid</var> value is `true`. A value whose `type` the [=verifier=]
