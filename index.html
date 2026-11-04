@@ -1209,20 +1209,18 @@ that embeds the code. Embedding the code means that no third party learns
 when a [=verifier=] evaluates the recognition chain.
               </td>
             </tr>
-            <tr>
-              <td>digestMultibase</td>
-              <td>
-The `digestMultibase` property is REQUIRED. Its value is a cryptographic digest
-of the JavaScript code identified by `id`, as defined in
-<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
-Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
-The digest binds the [=JavaScript output validator=] to one exact version of
-the code. Any change to the code, including a change to whitespace or
-comments, produces a different digest.
-              </td>
-            </tr>
           </tbody>
         </table>
+
+        <p>
+A [=JavaScript output validator=] SHOULD provide a cryptographic hash of the
+JavaScript code identified by `id`, using one of the mechanisms described in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+A hash binds the [=JavaScript output validator=] to one exact version of the
+code. Any change to the code, including a change to whitespace or comments,
+produces a different hash.
+        </p>
 
         <p>
 The example below shows a [=recognized action=] from a GS1 Member
@@ -2035,7 +2033,7 @@ sequenceDiagram
     participant H as Validation Host (Verifier)
     participant W as Sandbox (Wrapper Code)
     participant C as Validator Code
-    H->>H: Retrieve validator code and check digestMultibase
+    H->>H: Retrieve validator code and check its cryptographic hash
     H->>W: Create a new sandbox containing the wrapper code
     H->>W: Send chain and options as JSON
     W->>C: Load module and call its default export
@@ -2084,8 +2082,9 @@ identifying <var>codeUrl</var> to <var>result.errors</var> and return
 <var>result</var>.
           </li>
           <li>
-Compute the digest of <var>code</var> and compare it with the value of the
-`digestMultibase` property of <var>validator</var>, as described in
+If <var>validator</var> provides a cryptographic hash of the [=validator
+code=], ensure that the cryptographic hash of <var>code</var> matches the one
+provided by the [=issuer=], as described in
 <a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
 Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
 If they do not match, append a `CRYPTOGRAPHIC_SECURITY_ERROR` identifying
