@@ -2093,7 +2093,9 @@ If they do not match, append a `CRYPTOGRAPHIC_SECURITY_ERROR` identifying
 No part of <var>code</var> is parsed or run before this check succeeds.
           </li>
           <li>
-Let <var>options</var> be the options for the [=validator code=].
+Let <var>options</var> be a [=map=] whose `action` value is <var>action</var>
+and whose `evaluationDateTime` value is <var>evaluationDateTime</var>, as
+described in Section [[[#javascript-output-validation-function]]].
           </li>
           <li>
 Let <var>maxDuration</var> and <var>maxMemory</var> be the limits on running
@@ -2107,10 +2109,10 @@ append a `LIMIT_EXCEEDED_ERROR` identifying the limit that was exceeded to
           <li>
 Serialize <var>chain</var> and <var>options</var> to JSON [[RFC8259]] and send
 them into the sandbox. The [=wrapper code=] parses them, loads <var>code</var>
-as an ECMAScript module, and calls the module's default export with the parsed
-<var>chain</var> as its first argument and the parsed <var>options</var> as its
-second. If the function returns a promise, the [=wrapper code=] waits for it to
-settle.
+as an ECMAScript module, and calls the module's default export, the
+[=validation function=], with the parsed <var>chain</var> as its first argument
+and the parsed <var>options</var> as its second. If the function returns a
+promise, the [=wrapper code=] waits for it to settle.
           </li>
           <li>
 If <var>code</var> fails to parse as an ECMAScript module, its default export
@@ -2124,15 +2126,20 @@ sends it to the [=validation host=]. Destroy the sandbox. Let
 <var>output</var> be the result of parsing that JSON.
           </li>
           <li>
-If <var>output</var> is not a [=map=], or its `valid` value is not a
-[=boolean=], append an `OUTPUT_VALIDATION_ERROR` to
-<var>result.errors</var> and return <var>result</var>.
+If <var>output</var> does not have the form of a [=validation result=], as
+described in Section [[[#javascript-output-validation-function]]], append an
+`OUTPUT_VALIDATION_ERROR` to <var>result.errors</var> and return
+<var>result</var>.
           </li>
           <li>
 Set <var>result.valid</var> to the `valid` value of <var>output</var>. Append
 the items of the `errors` value of <var>output</var>, if any, to
 <var>result.errors</var>, and the items of its `warnings` value, if any, to
 <var>result.warnings</var>.
+          </li>
+          <li>
+If <var>result.errors</var> is not empty, set <var>result.valid</var> to
+`false`.
           </li>
           <li>
 Return <var>result</var>.
@@ -2147,6 +2154,239 @@ recognizes and that every adjacent pair in <var>chain</var> is related. A
 by an [=issuer=] whose recognition traces back to that anchor, never for a
 chain from an unrecognized source.
         </p>
+
+      </section>
+
+      <section>
+        <h3>JavaScript Output Validation Function</h3>
+
+        <p>
+The <dfn>validation function</dfn> is the default export of the [=validator
+code=]. The [=wrapper code=] calls it as follows:
+        </p>
+
+        <pre class="nohighlight">
+validate(chain, options) → result
+        </pre>
+
+        <p>
+The function MAY be asynchronous, in which case it returns a promise that
+resolves to <var>result</var>. Its arguments and its return value are
+described below.
+        </p>
+
+        <dl>
+          <dt><var>chain</var></dt>
+          <dd>
+An array containing every [=verifiable credential=] in the recognition chain,
+each expressed as the JSON object the [=verifier=] received, in the order
+defined in Section [[[#recognition-validation]]]. `chain[0]` is the
+[=verifiable credential=] being validated, `chain[1]` is the [=recognized
+entity credential=] that declares the [=JavaScript output validator=], and the
+last item is the [=recognized entity credential=] issued by the anchor that the
+[=verifier=] recognizes. The [=verifier=] has verified the proof on every item
+before the function is called, so the function does not verify proofs.
+          </dd>
+
+          <dt><var>options</var></dt>
+          <dd>
+A [=map=] containing the following properties.
+            <table class="simple">
+              <thead>
+                <tr>
+                  <th style="white-space: nowrap">Property</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>action</td>
+                  <td>
+The [=string=] value of the `action` property of the [=recognized action=] being
+evaluated, such as `issue`.
+                  </td>
+                </tr>
+                <tr>
+                  <td>evaluationDateTime</td>
+                  <td>
+The point in time at which recognition is evaluated, as described in Section
+[[[#recognition-validation]]], expressed as an
+<a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
+value in UTC, for example `2026-11-04T00:00:00Z`.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+Other specifications MAY define additional properties. The [=validation
+function=] MUST ignore properties it does not recognize.
+          </dd>
+
+          <dt><var>result</var></dt>
+          <dd>
+A <dfn>validation result</dfn>, which is a [=map=] containing the following
+properties.
+            <table class="simple">
+              <thead>
+                <tr>
+                  <th style="white-space: nowrap">Property</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>valid</td>
+                  <td>
+REQUIRED. A [=boolean=] that is `true` if `chain[0]` meets the constraints
+that the [=validator code=] checks, and `false` otherwise.
+                  </td>
+                </tr>
+                <tr>
+                  <td>errors</td>
+                  <td>
+OPTIONAL. An array of
+<a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> objects, each
+describing a constraint that `chain[0]` does not meet. If `valid` is `true`,
+this array MUST be empty or absent.
+                  </td>
+                </tr>
+                <tr>
+                  <td>warnings</td>
+                  <td>
+OPTIONAL. An array of
+<a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> objects, each
+describing a condition that a [=verifier=] might want to know about but that
+does not cause validation to fail.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </dd>
+        </dl>
+
+        <p>
+Each item in `errors` and `warnings` MUST conform to
+<a data-cite="VC-DATA-MODEL#problem-details">Section 7.1.4: Problem
+Details</a> of the [[[VC-DATA-MODEL]]] specification. An item that does not
+conform causes the algorithm in Section
+[[[#javascript-output-validation-processing]]] to fail.
+        </p>
+
+        <p>
+The [=validation function=] MUST NOT depend on any input other than
+<var>chain</var> and <var>options</var>. In particular, it uses
+`options.evaluationDateTime` rather than the current time, and does not use
+random numbers, so that every [=verifier=] that evaluates the same chain at the
+same evaluation time obtains the same result.
+        </p>
+
+        <p class="note" title="Problem details come from untrusted code">
+The ProblemDetails objects in a [=validation result=] are written by the
+author of the [=validator code=]. A [=verifier=] that shows their contents to a
+person displays them as plain text, and does not interpret them as markup or
+as instructions.
+        </p>
+
+        <p>
+The example below shows the [=validator code=] referenced by the
+[=JavaScript output validator=] in Section [[[#javascript-output-validation]]].
+For a chain consisting of a key credential issued by Healthy Tots, the
+[=recognized entity credential=] issued by GS1 Utopia, and the [=recognized
+entity credential=] issued by the GS1 Global Office, it reads the GS1 Company
+Prefix `9506000` licensed to Healthy Tots and the GS1 Prefix `950` licensed
+to GS1 Utopia. It then confirms that the GTIN `09506000134352` begins with
+`9506000` after its leading indicator digit, and that `9506000` begins with
+`950`. If the chain ends at an anchor other than the GS1 Global Office, the
+function reports a warning, because the GS1 Prefix in the chain was then not
+checked against the GS1 Global Office's own allocation.
+        </p>
+
+        <pre class="example" title="Validator code that checks GS1 prefixes across a recognition chain">
+/**
+ * Checks that the GTIN in a key credential begins with the GS1 Company
+ * Prefix licensed to its issuer, and that each prefix licensed in the
+ * recognition chain begins with the prefix licensed one level above it.
+ *
+ * @param {Array&lt;object&gt;} chain - The recognition chain; `chain[0]` is
+ *   the key credential.
+ * @param {object} options - The validation options.
+ * @param {string} options.action - The action being evaluated.
+ * @param {string} options.evaluationDateTime - The evaluation time.
+ *
+ * @returns {{valid: boolean, errors: Array&lt;object&gt;,
+ *   warnings: Array&lt;object&gt;}} The validation result.
+ */
+export default function validate(chain, options) {
+  const errors = [];
+  const warnings = [];
+  const getId = value =&gt; typeof value === 'string' ? value : value?.id;
+
+  // `prefixes[i]` is the prefix licensed to the issuer of `chain[i]`, read
+  // from the recognized entity credential one level above it
+  const prefixes = [];
+  for(let i = 1; i &lt; chain.length; ++i) {
+    const issuerId = getId(chain[i - 1].issuer);
+    const entity = [].concat(chain[i].credentialSubject)
+      .find(subject =&gt; subject.id === issuerId);
+    if(typeof entity?.licenceValue !== 'string') {
+      errors.push({
+        type: 'https://id.gs1.org/validators#MISSING_LICENCE',
+        title: 'Missing licence value',
+        detail: `No licensed prefix found for ${issuerId}.`
+      });
+      return {valid: false, errors, warnings};
+    }
+    prefixes.push(entity.licenceValue);
+  }
+
+  // a GTIN-14 in a GS1 Digital Link URI: https://id.gs1.org/01/{gtin}
+  const gtin = new URL(chain[0].credentialSubject.id).pathname.split('/')[2];
+  if(!gtin?.slice(1).startsWith(prefixes[0])) {
+    errors.push({
+      type: 'https://id.gs1.org/validators#PREFIX_MISMATCH',
+      title: 'Prefix mismatch',
+      detail: `GTIN ${gtin} does not begin with prefix ${prefixes[0]}.`
+    });
+  }
+  for(let i = 1; i &lt; prefixes.length; ++i) {
+    if(!prefixes[i - 1].startsWith(prefixes[i])) {
+      errors.push({
+        type: 'https://id.gs1.org/validators#PREFIX_MISMATCH',
+        title: 'Prefix mismatch',
+        detail: `Prefix ${prefixes[i - 1]} does not begin with prefix ${prefixes[i]}.`
+      });
+    }
+  }
+
+  const anchorId = getId(chain.at(-1).issuer);
+  if(anchorId !== 'did:web:id.gs1.org') {
+    warnings.push({
+      type: 'https://id.gs1.org/validators#NOT_GS1_ANCHORED',
+      title: 'Chain not anchored at GS1 Global Office',
+      detail: `Chain ends at ${anchorId}, not at the GS1 Global Office.`
+    });
+  }
+
+  return {valid: errors.length === 0, errors, warnings};
+}
+        </pre>
+
+        <p>
+If Healthy Tots had issued a key credential for the GTIN `09507000134352`,
+and the chain ended at the GS1 Global Office, the [=validation function=]
+would return the following [=validation result=].
+        </p>
+
+        <pre class="example" title="A validation result that reports an error">
+{
+  "valid": false,
+  "errors": [{
+    "type": "https://id.gs1.org/validators#PREFIX_MISMATCH",
+    "title": "Prefix mismatch",
+    "detail": "GTIN 09507000134352 does not begin with prefix 9506000."
+  }],
+  "warnings": []
+}
+        </pre>
 
       </section>
 
