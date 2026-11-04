@@ -118,6 +118,12 @@ property:
     range: [ExternalEntityList, RecognizedEntityCredential]
     range_union: true
 
+  - id: registration
+    label: Registration
+    defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-Registration
+    domain: RecognizedEntity
+    range: URL
+
   - id: action
     label: Action
     defined_by: https://www.w3.org/TR/vc-recognized-entities/#dfn-action
@@ -148,6 +154,3 @@ property:
     label: Credential subject for recognized entities
     comment: When used in a recognized entity credential, the value must be restricted to recognized entities.
     scope: RecognizedEntityCredential
-
-
-
