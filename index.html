@@ -2068,7 +2068,7 @@ and <var>errors</var> and <var>warnings</var> each set to an empty list.
           </li>
           <li>
 If the [=verifier=] cannot provide a sandbox that meets the requirements in
-this section, append an `OUTPUT_VALIDATION_ERROR` to <var>result.errors</var>
+this section, append an <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var>
 and return <var>result</var>.
           </li>
           <li>
@@ -2078,7 +2078,7 @@ Let <var>codeUrl</var> be the value of the `id` property of
 copy of the [=validator code=] that the [=verifier=] has cached, or, if it has
 none, the bytes retrieved from <var>codeUrl</var>. Apply the [=retrieval
 policy=] to that retrieval. If <var>code</var> cannot be obtained, or the
-[=retrieval policy=] blocks the retrieval, append a `RETRIEVAL_ERROR`
+[=retrieval policy=] blocks the retrieval, append a <a href="#RETRIEVAL_ERROR">`RETRIEVAL_ERROR`</a>
 identifying <var>codeUrl</var> to <var>result.errors</var> and return
 <var>result</var>.
           </li>
@@ -2088,7 +2088,7 @@ code=], ensure that the cryptographic hash of <var>code</var> matches the one
 provided by the [=issuer=], as described in
 <a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
 Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
-If they do not match, append a `CRYPTOGRAPHIC_SECURITY_ERROR` identifying
+If they do not match, append a <a data-cite="VC-DATA-MODEL#CRYPTOGRAPHIC_SECURITY_ERROR">`CRYPTOGRAPHIC_SECURITY_ERROR`</a> identifying
 <var>codeUrl</var> to <var>result.errors</var> and return <var>result</var>.
 No part of <var>code</var> is parsed or run before this check succeeds.
           </li>
@@ -2103,7 +2103,7 @@ time and memory that the [=verifier=] is configured to allow [=validator
 code=]. Create a new sandbox, place the [=wrapper code=] and <var>code</var> in
 it, and start measuring elapsed time and memory use. If either limit is
 exceeded at any point before the sandbox is destroyed, destroy the sandbox,
-append a `LIMIT_EXCEEDED_ERROR` identifying the limit that was exceeded to
+append a <a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying the limit that was exceeded to
 <var>result.errors</var>, and return <var>result</var>.
           </li>
           <li>
@@ -2117,7 +2117,7 @@ promise, the [=wrapper code=] waits for it to settle.
           <li>
 If <var>code</var> fails to parse as an ECMAScript module, its default export
 is not a function, or the function throws an exception or returns a promise
-that rejects, destroy the sandbox, append an `OUTPUT_VALIDATION_ERROR` to
+that rejects, destroy the sandbox, append an <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
 <var>result.errors</var>, and return <var>result</var>.
           </li>
           <li>
@@ -2128,7 +2128,7 @@ sends it to the [=validation host=]. Destroy the sandbox. Let
           <li>
 If <var>output</var> does not have the form of a [=validation result=], as
 described in Section [[[#javascript-output-validation-function]]], append an
-`OUTPUT_VALIDATION_ERROR` to <var>result.errors</var> and return
+<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var> and return
 <var>result</var>.
           </li>
           <li>
