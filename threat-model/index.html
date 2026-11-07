@@ -230,9 +230,10 @@ dependent verifiable credentials it produces.
             <td>
 A person or organization that receives a dependent verifiable credential from an
 issuer and presents it — optionally, together with the recognized entity
-credential — to a verifier. The holder stores credentials in a software
-application, such as a digital wallet, and controls what is disclosed to
-verifiers.
+credential — to a verifier. The holder is not necessarily the credential
+subject; an importer, for example, presents an invoice that an exporter issued.
+The holder stores credentials in a software application, such as a digital
+wallet, and controls what is disclosed to verifiers.
             </td>
           </tr>
           <tr>
@@ -426,11 +427,14 @@ credentials — within the ecosystem governed by the list publisher.
 O2 Dependent Verifiable Credential</dfn>
             </td>
             <td>
-A cryptographically-signed data object issued by a recognized issuer to a
-holder. The credential asserts claims about the holder and is signed with
-the issuer's private key. Its trustworthiness depends on the issuer
-holding a valid recognized entity credential (O1), making it a
-"dependent" verifiable credential.
+A cryptographically-signed data object issued by a recognized issuer and
+delivered to a holder. The credential asserts claims about its credential
+subject, which can be an entity other than the holder, such as a product
+described by a certificate of conformity, or a commercial invoice that an
+exporter issues and an importer presents. The credential is signed with the
+issuer's private key; the holder stores it and presents it to verifiers. Its
+trustworthiness depends on the issuer holding a valid recognized entity
+credential (O1), making it a "dependent" verifiable credential.
             </td>
           </tr>
           <tr>
