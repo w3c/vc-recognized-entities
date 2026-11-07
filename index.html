@@ -2098,7 +2098,7 @@ processing defined for the value of its `mediaType` property:
             <ol class="algorithm">
               <li>
 If the `type` of <var>validator</var> is not `CredentialValidator`, append an
-<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> identifying
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> identifying
 the `type` to <var>result.errors</var>, set <var>result.valid</var> to
 `false`, and continue with the next <var>validator</var>.
               </li>
@@ -2119,7 +2119,7 @@ to `false`.
               </li>
               <li>
 Otherwise, the [=verifier=] does not support the `mediaType`. Append an
-<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> identifying
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> identifying
 the `mediaType` to <var>result.errors</var>, and set <var>result.valid</var>
 to `false`.
               </li>
@@ -2258,7 +2258,7 @@ and <var>errors</var> and <var>warnings</var> each set to an empty list.
             </li>
             <li>
 If the [=verifier=] cannot provide a sandbox that meets the requirements in
-this section, append an <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var>
+this section, append an <a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> to <var>result.errors</var>
 and return <var>result</var>.
             </li>
             <li>
@@ -2302,7 +2302,7 @@ promise, the [=wrapper code=] waits for it to settle.
             <li>
 If <var>code</var> fails to parse as an ECMAScript module, or its default
 export is not a function, destroy the sandbox, append an
-<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> to
 <var>result.errors</var>, and return <var>result</var>.
             </li>
             <li>
@@ -2312,7 +2312,7 @@ such as an
 <a href="#UNRECOGNIZED_OPTION_ERROR">`UNRECOGNIZED_OPTION_ERROR`</a>, append a
 ProblemDetails object with that `type` and with the exception's message as its
 `detail` to <var>result.errors</var>. Otherwise, append an
-<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> to
 <var>result.errors</var>. Return <var>result</var>.
             </li>
             <li>
@@ -2323,7 +2323,7 @@ sends it to the [=validation host=]. Destroy the sandbox. Let
             <li>
 If <var>output</var> does not have the form of a [=validation result=], as
 described in Section [[[#javascript-credential-validation-function]]], append an
-<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var> and return
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> to <var>result.errors</var> and return
 <var>result</var>.
             </li>
             <li>
@@ -2609,8 +2609,8 @@ limit that was exceeded SHOULD be identified in the `ProblemDetails` object.
 When a time limit runs out during a retrieval, the [=URL=] being retrieved
 SHOULD be provided as well.
           </dd>
-          <dt id="OUTPUT_VALIDATION_ERROR">
-https://www.w3.org/TR/vc-data-model#OUTPUT_VALIDATION_ERROR
+          <dt id="CREDENTIAL_VALIDATION_ERROR">
+https://www.w3.org/TR/vc-data-model#CREDENTIAL_VALIDATION_ERROR
           </dt>
           <dd>
 A [=credential validator=] could not be evaluated. This covers a [=credential
