@@ -19,8 +19,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Elevation of Privilege
 response:
-  - id: R14
-    name: Precise and Complete Schema Validation Rules
+  - name: Precise and Complete Schema Validation Rules
     type: Reduce
     description: >-
       [=E1|List publishers=] define <code>outputValidation</code> schema rules

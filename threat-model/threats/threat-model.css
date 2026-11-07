@@ -134,17 +134,10 @@ p.threatCategory {
   margin:0;
 }
 
-section.threatDetail {
-  visibility: hidden;
-  height:1px;
-}
-
-/* Each threat's fragment identifier resolves to the heading in the hidden
-   section above the threat's table. ReSpec moves that identifier onto the
-   heading it generates, so the scroll margin sits on the heading rather than
-   on the section: without it, following a link into the threat model scrolls
-   the visible title off the top of the viewport. */
-section.threatDetail h5 {
+/* Each threat's and response's fragment identifier resolves to its heading
+   inside the table. Without a scroll margin, following a link into the
+   threat model scrolls the title off the top of the viewport. */
+table.threat h5 {
   scroll-margin-top: 2em;
 }
 

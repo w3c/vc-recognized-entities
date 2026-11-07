@@ -75,11 +75,17 @@ limitations under the License.
 
     const texts = await Promise.all(
       files.map(name => fetchText(baseDir + name)));
+    // Responses are numbered R1, R2, ... the same way, by their position
+    // when the threats are walked in order.
+    let responseNumber = 0;
     texts.forEach((text, index) => {
       const threat = jsyaml.load(text);
       threat.file = files[index];
       threat.id = `T${index + 1}`;
       threat.number = index + 1;
+      for (const response of threat.response || []) {
+        response.id = `R${++responseNumber}`;
+      }
       register(threat);
     });
   }
@@ -258,11 +264,7 @@ limitations under the License.
       if (!threat)
         return `<p>Threat ${entry} not found.</p>`;
 
-      let id = makeId(threat);
       return `
-      <section class="threatDetail">
-        <h5 id="${id}">${threat.id}. ${threat.name}</h5>
-      </section>
         <table class="threat">
           ${renderName(threat, tocElement)}
           ${renderDescription(threat)}
@@ -283,7 +285,7 @@ limitations under the License.
           <tr>
             <td class="threat-name">
               <section>
-                <h5 id="${makeId(threat)}-inner">${threat.id}. ${threat.name}
+                <h5 id="${makeId(threat)}">${threat.id}. ${threat.name}
                   ${renderTags(threat)}
                 </h5>
                 ${renderTocLink(tocElement)}
@@ -359,9 +361,16 @@ limitations under the License.
         if (!responses || !responses.length)
           return "No responses.";
 
+        // the anchor is derived from the response's name, as a threat's is,
+        // so links to a response stay valid across renumbering; the section
+        // wrapper makes ReSpec add a permalink icon beside the heading
         let responseHtml = responses.map(response => `
           <tr>
-        <td class="response-name">${response.id}. ${response.name}${response.type ? ` (${response.type})` : ""}</td>
+        <td class="response-name">
+          <section>
+            <h5 id="${makeId(response)}">${response.id}. ${response.name}</h5>
+          </section>
+        </td>
           </tr>
           <tr>
         <td class="response-desc">
@@ -375,7 +384,8 @@ limitations under the License.
       };
 
       // renderResponseDetails(response)
-      // Renders the specification sections that support a response, the
+      // Renders a response's strategy, linked to its definition in the
+      // Introduction, the specification sections that support it, the
       // parties responsible for applying it, and the risk that remains.
       // supportedBy lists links to the supporting sections.
       function renderResponseDetails(response) {
@@ -384,6 +394,8 @@ limitations under the License.
           "None in the specification; deployment and governance practice.";
         return `
           <dl class="response-details">
+            ${response.type ? `<dt>Strategy</dt>
+            <dd>[=${response.type}=]</dd>` : ""}
             <dt>Supported by</dt>
             <dd>${supportedBy}</dd>
             <dt>Responsible</dt>

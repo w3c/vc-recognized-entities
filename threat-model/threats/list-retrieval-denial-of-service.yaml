@@ -30,8 +30,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Denial of Service
 response:
-  - id: R3
-    name: Credential Stapling, Caching, Timeouts, and Size Limits
+  - name: Credential Stapling, Caching, Timeouts, and Size Limits
     type: Reduce
     description: >-
       [=E3|Holders=] present [=O1|recognized entity credentials=] directly to

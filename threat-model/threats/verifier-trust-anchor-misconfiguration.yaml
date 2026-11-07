@@ -19,8 +19,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Elevation of Privilege
 response:
-  - id: R17
-    name: Trust Anchor Verification and Configuration Audits
+  - name: Trust Anchor Verification and Configuration Audits
     type: Reduce
     description: >-
       [=E4|Verifier=] implementations display the resolved identity of the

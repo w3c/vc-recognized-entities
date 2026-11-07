@@ -23,8 +23,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Denial of Service
 response:
-  - id: R15
-    name: Schema Complexity Limits and Safe Regex Validation
+  - name: Schema Complexity Limits and Safe Regex Validation
     type: Reduce
     description: >-
       [=E4|Verifier=] implementations enforce time and memory limits on all
