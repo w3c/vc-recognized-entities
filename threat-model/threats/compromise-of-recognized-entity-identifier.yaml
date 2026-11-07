@@ -20,8 +20,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Spoofing
 response:
-  - id: R16
-    name: Key Rotation, Revocation Notification, and Hardware Security
+  - name: Key Rotation, Revocation Notification, and Hardware Security
     type: Reduce
     description: >-
       [=E2|Issuers=] protect signing keys with hardware security modules or

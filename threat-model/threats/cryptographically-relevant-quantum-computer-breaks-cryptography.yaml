@@ -21,8 +21,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Tampering
 response:
-  - id: R18
-    name: Post-Quantum Cryptography Migration Planning
+  - name: Post-Quantum Cryptography Migration Planning
     type: Reduce
     description: >-
       [=E1|List publishers=] and [=E2|issuers=] monitor the development of

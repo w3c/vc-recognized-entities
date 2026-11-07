@@ -29,8 +29,7 @@ tags: [privacy]
 taxonomyName: STRIDE
 taxonomyClass: Information Disclosure
 response:
-  - id: R4
-    name: Credential Stapling and Bulk List Retrieval
+  - name: Credential Stapling and Bulk List Retrieval
     type: Reduce
     description: >-
       Deployments choose a delivery mechanism according to how much it

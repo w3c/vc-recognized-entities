@@ -24,8 +24,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Tampering
 response:
-  - id: R11
-    name: Content Integrity Protection, DNSSEC, and TLS Verification
+  - name: Content Integrity Protection, DNSSEC, and TLS Verification
     type: Reduce
     description: >-
       [=E1|List publishers=] protect externally-referenced resources in

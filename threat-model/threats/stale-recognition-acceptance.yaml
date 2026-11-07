@@ -27,8 +27,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Tampering
 response:
-  - id: R10
-    name: Risk-Proportionate Validity Periods, Revocation, and Cache Freshness Controls
+  - name: Risk-Proportionate Validity Periods, Revocation, and Cache Freshness Controls
     type: Reduce
     description: >-
       This response separates four concerns. <strong>Credential
