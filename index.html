@@ -121,7 +121,7 @@
         // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
         // Team Contact.
         // wgPatentURI:  "",
-        maxTocLevel: 4,
+        maxTocLevel: 3,
         /*
         alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
         */
@@ -795,19 +795,14 @@ A [=URL=], or object containing properties from Section
               </td>
             </tr>
             <tr>
-              <td><dfn class="export">outputValidation</dfn></td>
+              <td><dfn class="export">credentialValidator</dfn></td>
               <td>
-The value of the `outputValidation`
-property MUST be one or more data
-schemas that provide [=verifiers=] with enough information to determine whether
-the provided data conforms to the provided schema(s). Each validator MUST
-specify its `type` (for example, `JsonSchema` or `JavaScript`) and an
-`id` property that MUST be a [=URL=]
-identifying the schema or code file. The `JavaScript` type is defined in
-Section [[[#javascript-output-validation]]]. The specific type definition determines the precise
-contents of each data schema. If multiple schemas are present, validity is
-determined according to the processing rules outlined by each associated `type`
-property.
+The value of the `credentialValidator` property MUST be one or more [=credential
+validators=], as defined in Section [[[#credential-validators]]], that provide
+[=verifiers=] with enough information to determine whether a [=verifiable
+credential=] produced by the [=recognized entity=] meets the constraints of the
+recognizing authority. If more than one [=credential validator=] is present,
+the [=verifiable credential=] MUST satisfy every one of them.
               </td>
             </tr>
             <tr>
@@ -1082,9 +1077,10 @@ for a particular type of [=verifiable credential=].
       "type": "RecognizedAction",
       "action": "issue",
       "recognizedBy": "did:web:learning-commission.example",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://learning-commission.example/credentials/bachelors.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo",
       }
     }
@@ -1100,9 +1096,10 @@ for a particular type of [=verifiable credential=].
       "type": "RecognizedAction",
       "action": "issue",
       "recognizedBy": "did:web:learning-commission.example",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://learning-commission.example/credentials/associates.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963",
       }
     }
@@ -1163,27 +1160,16 @@ using the generic `ExternalEntityList` type.
     </section>
 
     <section>
-        <h3>JavaScript Output Validation</h3>
-
-        <p class="issue atrisk" title="JavaScript output validation is at risk">
-The `JavaScript` output validation type is at risk and might be
-removed from this specification before it becomes a W3C Recommendation if there
-are not at least two independent implementations of it.
-        </p>
+        <h3>Credential Validators</h3>
 
         <p>
-A <dfn class="export">JavaScript output validator</dfn> is a value of the
-`outputValidation` property whose `type` is `JavaScript`. It identifies
-JavaScript code that a [=verifier=] runs to determine whether a [=verifiable
-credential=] produced by a [=recognized entity=] meets the constraints of the
-recognizing authority. A `JsonSchema` validator is evaluated against a single
-[=verifiable credential=]. The code identified by a [=JavaScript output
-validator=] receives the entire recognition chain, so it can compare values
-across [=verifiable credentials=] in that chain, such as confirming that an
-identifier in one [=verifiable credential=] begins with a prefix that a
-[=recognized entity credential=] higher in the chain licensed to its
-[=issuer=]. A [=verifier=] runs that code as described in Section
-[[[#javascript-validator-processing]]].
+A <dfn class="export">credential validator</dfn> is a value of the
+`credentialValidator` property of a [=recognized action=]. It links to a file
+that a [=verifier=] uses to determine whether a [=verifiable credential=]
+produced by a [=recognized entity=] meets the constraints of the recognizing
+authority. The media type of that file determines what kind of [=credential
+validator=] it is, and therefore how a [=verifier=] evaluates it, as described
+in Section [[[#credential-validation]]].
         </p>
 
         <table class="simple">
@@ -1195,62 +1181,124 @@ identifier in one [=verifiable credential=] begins with a prefix that a
           </thead>
           <tbody>
             <tr>
-              <td>type</td>
+              <td>id</td>
               <td>
-The `type` property MUST be `JavaScript`.
+The `id` property is REQUIRED. Its value MUST be a [=URL=] that links to the
+file used to validate the [=verifiable credential=]. The value MAY be a
+`data:` URL, as described in [[?RFC2397]], that embeds the file.
               </td>
             </tr>
             <tr>
-              <td>id</td>
+              <td>type</td>
               <td>
-The `id` property is REQUIRED. Its value MUST be a [=URL=] that identifies the
-JavaScript code. The value MAY be a `data:` URL, as described in [[?RFC2397]],
-that embeds the code. Embedding the code means that no third party learns
-when a [=verifier=] evaluates the recognition chain.
+The `type` property MUST be `CredentialValidator`.
+              </td>
+            </tr>
+            <tr>
+              <td>mediaType</td>
+              <td>
+The `mediaType` property is REQUIRED. Its value is the media type of the file
+identified by `id`, as defined in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification,
+and identifies the kind of [=credential validator=]. This specification
+defines the `application/schema+json` and `text/javascript` media types for
+[=credential validators=], in the sections below.
               </td>
             </tr>
           </tbody>
         </table>
 
         <p>
-A [=JavaScript output validator=] SHOULD provide a cryptographic hash of the
-JavaScript code identified by `id`, using one of the mechanisms described in
+A [=credential validator=] SHOULD provide a cryptographic hash of the file
+identified by `id`, using one of the mechanisms described in
 <a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
 Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
-A hash binds the [=JavaScript output validator=] to one exact version of the
-code. Any change to the code, including a change to whitespace or comments,
-produces a different hash.
+A hash binds the [=credential validator=] to one exact version of the file.
+Any change to the file, including a change to whitespace or comments, produces
+a different hash.
         </p>
 
-        <p>
+        <section id="json-schema-credential-validators">
+          <h4>JSON Schema</h4>
+
+          <p>
+A <dfn class="export">JSON Schema credential validator</dfn> is a [=credential
+validator=] whose `mediaType` is `application/schema+json`. Its `id` links to
+a JSON Schema [[JSON-SCHEMA]]. A [=verifier=] evaluates it by validating the
+[=verifiable credential=] against that schema. A [=JSON Schema credential
+validator=] examines only the [=verifiable credential=] being validated.
+          </p>
+
+          <pre class="example nohighlight" title="A recognized action that declares a JSON Schema credential validator">
+"recognizedTo": {
+  "type": "RecognizedAction",
+  "action": "issue",
+  "recognizedBy": "did:web:learning-commission.example",
+  "credentialValidator": <span class="highlight">{
+    "id": "https://learning-commission.example/credentials/bachelors.json",
+    "type": "CredentialValidator",
+    "mediaType": "application/schema+json",
+    "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
+  }</span>
+}
+          </pre>
+        </section>
+
+        <section id="javascript-credential-validators">
+          <h4>JavaScript</h4>
+
+          <p class="issue atrisk" title="JavaScript credential validators are at risk">
+[=JavaScript credential validators=] are at risk and might be removed from this
+specification before it becomes a W3C Recommendation if there are not at least
+two independent implementations of them.
+          </p>
+
+          <p>
+A <dfn class="export">JavaScript credential validator</dfn> is a [=credential
+validator=] whose `mediaType` is `text/javascript`. Its `id` links to
+JavaScript code that a [=verifier=] runs to determine whether a [=verifiable
+credential=] meets the constraints of the recognizing authority. The code
+receives the [=verifiable credential=] being validated and, in its options, the
+recognition chain, so it can compare values across [=verifiable credentials=]
+in that chain. For example, it can confirm that an identifier in one
+[=verifiable credential=] begins with a prefix that a [=recognized entity
+credential=] higher in the chain licensed to its [=issuer=]. A [=verifier=]
+runs that code as described in Section [[[#javascript-validator-processing]]].
+          </p>
+
+          <p>
 The example below shows a [=recognized action=] from a GS1 Member
-Organization that declares two output validators. The `JsonSchema` validator
-checks the structure of a key credential issued by Healthy Tots. The
-`JavaScript` validator checks that the GTIN in that key credential begins with
-the GS1 Company Prefix licensed to Healthy Tots, and that the GS1 Company
-Prefix begins with the GS1 Prefix licensed to the Member Organization. The
-code reads both prefixes from the recognition chain. This approach has
-at least two benefits: 1) GS1 publishes one script that can be applied to
-every licensee, and 2) fetching that script is privacy-preserving as GS1
-does not learn which licensee is being verified.
-        </p>
+Organization that declares two [=credential validators=]. The [=JSON Schema
+credential validator=] checks the structure of a key credential issued by
+Healthy Tots. The [=JavaScript credential validator=] checks that the GTIN in
+that key credential begins with the GS1 Company Prefix licensed to Healthy
+Tots, and that the GS1 Company Prefix begins with the GS1 Prefix licensed to
+the Member Organization. The code reads both prefixes from the recognition
+chain. This approach has at least two benefits: 1) GS1 publishes one script
+that can be applied to every licensee, and 2) fetching that script is
+privacy-preserving as GS1 does not learn which licensee is being verified.
+          </p>
 
-        <pre class="example nohighlight" title="A recognized action that declares a JavaScript output validator">
+          <pre class="example nohighlight" title="A recognized action that declares a JavaScript credential validator">
 "recognizedTo": {
   "type": "RecognizedAction",
   "action": "issue",
   "recognizedBy": "did:web:id.gs1utopia.example",
-  "outputValidation": [{
+  "credentialValidator": [{
     "id": "https://id.gs1utopia.example/schemas/key-credential.json",
-    "type": "JsonSchema",
+    "type": "CredentialValidator",
+    "mediaType": "application/schema+json",
     "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
   }, <span class="highlight">{
     "id": "https://id.gs1.org/validators/gs1-prefix-chain.js",
-    "type": "JavaScript",
+    "type": "CredentialValidator",
+    "mediaType": "text/javascript",
     "digestMultibase": "uEiDqN3Xo7mVq4cJ2r-5bKfXh9TzW0sLpYdE8gAuRnHc1Mw"
   }</span>]
 }
-        </pre>
+          </pre>
+        </section>
 
     </section>
     </section>
@@ -1721,7 +1769,7 @@ otherwise, the [=verifier=] establishes recognition through
 credential's `issuer` object. Once recognition is established, the [=verifier=]
 additionally determines whether the university is recognized to perform the
 intended `issue` action and whether the diploma conforms to the schema named by
-that [=recognized action=]'s `outputValidation`.
+that [=recognized action=]'s `credentialValidator`.
         </p>
 
         <pre class="example" title="A verifiable presentation published at the whois service endpoint">
@@ -1757,9 +1805,10 @@ that [=recognized action=]'s `outputValidation`.
         "type": "RecognizedAction",
         "action": "issue",
         "recognizedBy": "did:web:education.state.example",
-        "outputValidation": {
+        "credentialValidator": {
           "id": "https://education.state.example/credentials/cs-bachelors.json",
-          "type": "JsonSchema",
+          "type": "CredentialValidator",
+          "mediaType": "application/schema+json",
           "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
         }
       }
@@ -1817,7 +1866,7 @@ indicating whether the [=issuer=] of the first [=verifiable credential=] in
 <var>chain</var> is ultimately recognized by a member of
 <var>recognizedIssuers</var>, and <var>actionRecognized</var>, indicating
 whether that [=issuer=] is recognized to perform <var>action</var> and, where a
-[=recognized action=] declares an `outputValidation`, whether the [=verifiable
+[=recognized action=] declares a `credentialValidator`, whether the [=verifiable
 credential=] conforms to it.
         </p>
 
@@ -1901,10 +1950,14 @@ not the other, the enclosing credential's corresponding property applies to
 the unexpressed value.
               </li>
               <li>
-It declares no `outputValidation`, or performing [=output validation=], as
-described in Section [[[#output-validation]]], for that [=recognized action=]
-on <var>chain</var>, <var>action</var>, and <var>evaluationDateTime</var>
-returns a result whose <var>valid</var> value is `true`.
+It declares no `credentialValidator`, or performing [=credential validation=],
+as described in Section [[[#credential-validation]]], on <var>credential</var>
+with the [=credential validators=] declared by its `credentialValidator`
+property, and with options whose `chain` value is every item of
+<var>chain</var> after the first, whose
+`action` value is <var>action</var>, and whose `evaluationDateTime` value is
+<var>evaluationDateTime</var>, returns a result whose <var>valid</var> value
+is `true`.
               </li>
             </ol>
           </li>
@@ -1943,12 +1996,12 @@ back to a result in which only <var>recognized</var> is `true`.
       </section>
 
       <section>
-        <h3>Output Validation</h3>
+        <h3>Credential Validation</h3>
 
         <p>
-<dfn class="export">Output validation</dfn> is the process by which a
+<dfn class="export">Credential validation</dfn> is the process by which a
 [=verifier=] determines whether a [=verifiable credential=] meets the
-constraints declared by the `outputValidation` property of a [=recognized
+constraints declared by the `credentialValidator` property of a [=recognized
 action=]. Section [[[#recognition-validation]]] runs it as its final check,
 after it has walked the chain, confirmed that each adjacent pair of
 [=verifiable credentials=] in the chain is related, and confirmed that the
@@ -1958,25 +2011,76 @@ in Section [[[#algorithms]]].
         </p>
 
         <p>
-Output validation does not change how a chain is discovered, walked, or
-verified, and the kind of output validator in use does not change it either.
-Each output validator is evaluated against the already verified chain using the
-processing defined for its `type`. This specification defines that processing
-for the `JavaScript` type in Section [[[#javascript-validator-processing]]].
-A [=verifier=] that does not support the `type` of an output validator cannot
-evaluate it, so output validation fails.
+Credential validation does not change how a chain is discovered, walked, or
+verified, and the kind of [=credential validator=] in use does not change it
+either. Each [=credential validator=] is evaluated against the already verified
+chain using the processing defined for its `mediaType`. Credential validation
+always fails when a [=verifier=] does not support the `mediaType` of a
+[=credential validator=].
         </p>
 
         <p>
-To perform [=output validation=] for a [=recognized action=]
-(<var>recognizedAction</var>) on a chain (<var>chain</var>) that has passed the
-checks in Section [[[#recognition-validation]]], for a specific action
-(<var>action</var>) at an evaluation time (<var>evaluationDateTime</var>), a
-[=verifier=] runs the following algorithm. <var>chain</var> is ordered as in
-Section [[[#recognition-validation]]], so the [=verifiable credential=] being
-validated is the first item in <var>chain</var>. The algorithm returns a
-result containing a boolean <var>valid</var>, a list of <var>errors</var>, and
-a list of <var>warnings</var>.
+The inputs to every [=credential validator=] are the [=verifiable credential=]
+being validated and a [=map=] of options. The options carry all of the other
+information used in the evaluation. They contain the following properties.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>chain</td>
+              <td>
+Present if the [=verifiable credential=] is validated as part of a recognition
+chain. An array containing the rest of that chain, which is every [=verifiable
+credential=] in it except the one being validated, each expressed as the JSON
+object the [=verifier=] received, in the order defined in Section
+[[[#recognition-validation]]]. The [=verifiable credential=] being validated is
+passed separately, so the array starts at the second item of the chain. Its
+first item, `chain[0]`, is the [=recognized entity credential=] that declares
+the [=credential validator=], and its last item is the [=recognized entity
+credential=] issued by the anchor that the [=verifier=] recognizes. The
+[=verifier=] has verified the proof on every item.
+              </td>
+            </tr>
+            <tr>
+              <td>action</td>
+              <td>
+The [=string=] value of the `action` property of the [=recognized action=]
+being evaluated, such as `issue`.
+              </td>
+            </tr>
+            <tr>
+              <td>evaluationDateTime</td>
+              <td>
+The point in time at which recognition is evaluated, as described in Section
+[[[#recognition-validation]]], expressed as an
+<a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
+value in UTC, for example `2026-11-04T00:00:00Z`.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+Other specifications MAY define additional options. A [=credential validator=]
+MUST throw an
+<a href="#UNRECOGNIZED_OPTION_ERROR">`UNRECOGNIZED_OPTION_ERROR`</a> if it does
+not recognize an option.
+        </p>
+
+        <p>
+To perform [=credential validation=] on a [=verifiable credential=]
+(<var>credential</var>) with a list of [=credential validators=]
+(<var>validators</var>) and a [=map=] of options (<var>options</var>), a
+[=verifier=] runs the following algorithm. The algorithm returns a result
+containing a boolean <var>valid</var>, a list of <var>errors</var>, and a list
+of <var>warnings</var>.
         </p>
 
         <ol class="algorithm">
@@ -1985,35 +2089,39 @@ Let <var>result</var> be a structure with <var>valid</var> set to `true`,
 and <var>errors</var> and <var>warnings</var> each set to an empty list.
           </li>
           <li>
-Let <var>credential</var> be the first item in <var>chain</var>. Let
-<var>validators</var> be the value of the `outputValidation` property of
-<var>recognizedAction</var>. If that value is a single object, treat it as a
-list containing that object.
+If <var>validators</var> is a single object, treat it as a list containing that
+object.
           </li>
           <li>
 For each <var>validator</var> in <var>validators</var>, evaluate it using the
-processing defined for the value of its `type` property:
+processing defined for the value of its `mediaType` property:
             <ol class="algorithm">
               <li>
-If the `type` is `JsonSchema`, set <var>result.valid</var> to `false` if
-<var>credential</var> does not conform to the schema identified by the `id`
-property of <var>validator</var>.
+If the `type` of <var>validator</var> is not `CredentialValidator`, append an
+<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> identifying
+the `type` to <var>result.errors</var>, set <var>result.valid</var> to
+`false`, and continue with the next <var>validator</var>.
               </li>
               <li>
-If the `type` is `JavaScript`, let <var>validatorResult</var> be the result of
-running the algorithm in Section [[[#javascript-validator-processing]]] on
-<var>validator</var>, <var>chain</var>, <var>action</var>, and
-<var>evaluationDateTime</var>. Append the items of
+If the `mediaType` is `application/schema+json`, set <var>result.valid</var>
+to `false` if <var>credential</var> does not conform to the JSON Schema
+[[JSON-SCHEMA]] identified by the `id` property of <var>validator</var>.
+              </li>
+              <li>
+If the `mediaType` is `text/javascript`, let <var>validatorResult</var> be the
+result of running the algorithm in Section
+[[[#javascript-validator-processing]]] on <var>validator</var>,
+<var>credential</var>, and <var>options</var>. Append the items of
 <var>validatorResult.errors</var> to <var>result.errors</var> and the items of
 <var>validatorResult.warnings</var> to <var>result.warnings</var>. If
 <var>validatorResult.valid</var> is not `true`, set <var>result.valid</var>
 to `false`.
               </li>
               <li>
-Otherwise, the [=verifier=] does not support the `type`. Append an
+Otherwise, the [=verifier=] does not support the `mediaType`. Append an
 <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> identifying
-the `type` to <var>result.errors</var>, and set <var>result.valid</var> to
-`false`.
+the `mediaType` to <var>result.errors</var>, and set <var>result.valid</var>
+to `false`.
               </li>
             </ol>
           </li>
@@ -2022,25 +2130,24 @@ Return <var>result</var>.
           </li>
         </ol>
 
-        <p class="note" title="Output validators are evaluated only for an anchored chain">
-Section [[[#recognition-validation]]] performs [=output validation=] only after
-it has confirmed that the chain ends at an anchor that the [=verifier=]
+        <p class="note" title="Credential validators are evaluated only for an anchored chain">
+Section [[[#recognition-validation]]] performs [=credential validation=] only
+after it has confirmed that the chain ends at an anchor that the [=verifier=]
 recognizes and that every adjacent pair in the chain is related. A [=verifier=]
-therefore retrieves and evaluates an output validator, including running any
-code it identifies, only when an [=issuer=] whose recognition traces back to
-that anchor declared it. It never does so for a chain from an unrecognized
-source.
+therefore retrieves and evaluates a [=credential validator=], including running
+any code it identifies, only when it was declared by an [=issuer=] whose
+recognition traces back to a recognition root known to the [=verifier=].
         </p>
 
         <section>
           <h4>JavaScript Validator Processing</h4>
 
           <p>
-This section defines how [=output validation=] evaluates a [=JavaScript output
-validator=] against an already verified chain. The code is written
-by a third party and is downloaded via a [=recognized entity credential=]. Since
-the [=verifier=] does not know the third party, it treats the downloaded code as
-untrusted and runs it in a sandbox that cannot reach the network, read the
+This section defines how [=credential validation=] evaluates a [=JavaScript credential
+validator=] against an already verified chain. The code is written by a third
+party and is downloaded via a [=recognized entity credential=]. Since the
+[=verifier=] does not always know the third party, it treats the downloaded code
+as untrusted and runs it in a sandbox that cannot reach the network, read the
 [=verifier=]'s own state, or learn anything else outside the sandbox. A
 [=verifier=] MAY use an algorithm other than the one below if its security and
 privacy outcomes, and its result, are the same.
@@ -2059,7 +2166,7 @@ sandbox, sends the inputs into the sandbox, and receives the result.
 
             <dt><dfn>validator code</dfn></dt>
             <dd>
-The JavaScript code identified by the `id` property of a [=JavaScript output
+The JavaScript code identified by the `id` property of a [=JavaScript credential
 validator=].
             </dd>
 
@@ -2122,7 +2229,7 @@ sequenceDiagram
     participant C as Validator Code
     H->>H: Retrieve validator code and check its cryptographic hash
     H->>W: Create a new sandbox containing the wrapper code
-    H->>W: Send chain and options as JSON
+    H->>W: Send credential and options as JSON
     W->>C: Load module and call its default export
     C-->>W: Result
     W-->>H: Result as JSON
@@ -2134,14 +2241,11 @@ Communication between the validation host and the sandbox
           </figure>
 
           <p>
-To run a [=JavaScript output validator=] (<var>validator</var>) against a
-recognition chain (<var>chain</var>) for a specific action
-(<var>action</var>) at an evaluation time (<var>evaluationDateTime</var>), a
-[=verifier=] runs the following algorithm. <var>chain</var> is ordered as in
-Section [[[#recognition-validation]]]: the first [=verifiable credential=] is
-the one being validated, the second is the [=recognized entity credential=]
-that declares <var>validator</var>, and the last is issued by an anchor that
-the [=verifier=] recognizes. The algorithm returns a result containing a
+To run a [=JavaScript credential validator=] (<var>validator</var>) on a
+[=verifiable credential=] (<var>credential</var>) with a [=map=] of options
+(<var>options</var>), as described in Section [[[#credential-validation]]], a
+[=verifier=] runs the following algorithm. The algorithm returns a result
+containing a
 boolean <var>valid</var>, a list of <var>errors</var>, and a list of
 <var>warnings</var>. Each error and warning is a
 <a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> object.
@@ -2179,11 +2283,6 @@ If they do not match, append a <a data-cite="VC-DATA-MODEL#CRYPTOGRAPHIC_SECURIT
 No part of <var>code</var> is parsed or run before this check succeeds.
             </li>
             <li>
-Let <var>options</var> be a [=map=] whose `action` value is <var>action</var>
-and whose `evaluationDateTime` value is <var>evaluationDateTime</var>, as
-described in Section [[[#javascript-output-validation-function]]].
-            </li>
-            <li>
 Let <var>maxDuration</var> and <var>maxMemory</var> be the limits on running
 time and memory that the [=verifier=] is configured to allow [=validator
 code=]. Create a new sandbox, place the [=wrapper code=] and <var>code</var> in
@@ -2193,18 +2292,28 @@ append a <a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying 
 <var>result.errors</var>, and return <var>result</var>.
             </li>
             <li>
-Serialize <var>chain</var> and <var>options</var> to JSON [[RFC8259]] and send
-them into the sandbox. The [=wrapper code=] parses them, loads <var>code</var>
-as an ECMAScript module, and calls the module's default export, the
-[=validation function=], with the parsed <var>chain</var> as its first argument
-and the parsed <var>options</var> as its second. If the function returns a
+Serialize <var>credential</var> and <var>options</var> to JSON [[RFC8259]] and
+send them into the sandbox. The [=wrapper code=] parses them, loads
+<var>code</var> as an ECMAScript module, and calls the module's default export,
+the [=validation function=], with the parsed <var>credential</var> as its first
+argument and the parsed <var>options</var> as its second. If the function returns a
 promise, the [=wrapper code=] waits for it to settle.
             </li>
             <li>
-If <var>code</var> fails to parse as an ECMAScript module, its default export
-is not a function, or the function throws an exception or returns a promise
-that rejects, destroy the sandbox, append an <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
+If <var>code</var> fails to parse as an ECMAScript module, or its default
+export is not a function, destroy the sandbox, append an
+<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
 <var>result.errors</var>, and return <var>result</var>.
+            </li>
+            <li>
+If the function throws an exception or returns a promise that rejects, destroy
+the sandbox. If the exception has a `type` property whose value is a [=URL=],
+such as an
+<a href="#UNRECOGNIZED_OPTION_ERROR">`UNRECOGNIZED_OPTION_ERROR`</a>, append a
+ProblemDetails object with that `type` and with the exception's message as its
+`detail` to <var>result.errors</var>. Otherwise, append an
+<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
+<var>result.errors</var>. Return <var>result</var>.
             </li>
             <li>
 The [=wrapper code=] serializes the value the function returned to JSON and
@@ -2213,7 +2322,7 @@ sends it to the [=validation host=]. Destroy the sandbox. Let
             </li>
             <li>
 If <var>output</var> does not have the form of a [=validation result=], as
-described in Section [[[#javascript-output-validation-function]]], append an
+described in Section [[[#javascript-credential-validation-function]]], append an
 <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var> and return
 <var>result</var>.
             </li>
@@ -2233,7 +2342,7 @@ Return <var>result</var>.
           </ol>
 
           <section>
-            <h5>JavaScript Output Validation Function</h5>
+            <h5>JavaScript Credential Validation Function</h5>
 
             <p>
 The <dfn>validation function</dfn> is the default export of the [=validator
@@ -2241,7 +2350,7 @@ code=]. The [=wrapper code=] calls it as follows:
             </p>
 
             <pre class="nohighlight">
-validate(chain, options) → result
+validate(credential, options) → result
         </pre>
 
             <p>
@@ -2251,49 +2360,17 @@ described below.
             </p>
 
             <dl>
-              <dt><var>chain</var></dt>
+              <dt><var>credential</var></dt>
               <dd>
-An array containing every [=verifiable credential=] in the recognition chain,
-each expressed as the JSON object the [=verifier=] received, in the order
-defined in Section [[[#recognition-validation]]]. `chain[0]` is the
-[=verifiable credential=] being validated, `chain[1]` is the [=recognized
-entity credential=] that declares the [=JavaScript output validator=], and the
-last item is the [=recognized entity credential=] issued by the anchor that the
-[=verifier=] recognizes. The [=verifier=] has verified the proof on every item
-before the function is called, so the function does not verify proofs.
+The [=verifiable credential=] being validated, expressed as the JSON object the
+[=verifier=] received. The [=verifier=] has verified its proof before the
+function is called, so the function does not verify proofs.
               </dd>
 
               <dt><var>options</var></dt>
               <dd>
-A [=map=] containing the following properties.
-                <table class="simple">
-                  <thead>
-                    <tr>
-                      <th style="white-space: nowrap">Property</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>action</td>
-                      <td>
-The [=string=] value of the `action` property of the [=recognized action=] being
-evaluated, such as `issue`.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>evaluationDateTime</td>
-                      <td>
-The point in time at which recognition is evaluated, as described in Section
-[[[#recognition-validation]]], expressed as an
-<a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
-value in UTC, for example `2026-11-04T00:00:00Z`.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-Other specifications MAY define additional properties. The [=validation
-function=] MUST ignore properties it does not recognize.
+The [=map=] of options defined in Section [[[#credential-validation]]], such as
+`chain`, `action`, and `evaluationDateTime`, expressed as JSON.
               </dd>
 
               <dt><var>result</var></dt>
@@ -2311,8 +2388,8 @@ properties.
                     <tr>
                       <td>valid</td>
                       <td>
-REQUIRED. A [=boolean=] that is `true` if `chain[0]` meets the constraints
-that the [=validator code=] checks, and `false` otherwise.
+REQUIRED. A [=boolean=] that is `true` if <var>credential</var> meets the
+constraints that the [=validator code=] checks, and `false` otherwise.
                       </td>
                     </tr>
                     <tr>
@@ -2320,7 +2397,8 @@ that the [=validator code=] checks, and `false` otherwise.
                       <td>
 OPTIONAL. An array of
 <a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> objects, each
-describing a constraint that `chain[0]` does not meet. If `valid` is `true`,
+describing a constraint that <var>credential</var> does not meet. If `valid`
+is `true`,
 this array MUST be empty or absent.
                       </td>
                     </tr>
@@ -2348,10 +2426,10 @@ conform causes the algorithm in Section
 
             <p>
 The [=validation function=] MUST NOT depend on any input other than
-<var>chain</var> and <var>options</var>. In particular, it uses
+<var>credential</var> and <var>options</var>. In particular, it uses
 `options.evaluationDateTime` rather than the current time, and does not use
-random numbers, so that every [=verifier=] that evaluates the same chain at the
-same evaluation time obtains the same result.
+random numbers, so that every [=verifier=] that evaluates the same
+<var>credential</var> and <var>options</var> obtains the same result.
             </p>
 
             <p class="note" title="Problem details come from untrusted code">
@@ -2363,7 +2441,7 @@ as instructions.
 
             <p>
 The example below shows the [=validator code=] referenced by the
-[=JavaScript output validator=] in Section [[[#javascript-output-validation]]].
+[=JavaScript credential validator=] in Section [[[#javascript-credential-validators]]].
 For a chain consisting of a key credential issued by Healthy Tots, the
 [=recognized entity credential=] issued by GS1 Utopia, and the [=recognized
 entity credential=] issued by the GS1 Global Office, it reads the GS1 Company
@@ -2381,25 +2459,48 @@ checked against the GS1 Global Office's own allocation.
  * Prefix licensed to its issuer, and that each prefix licensed in the
  * recognition chain begins with the prefix licensed one level above it.
  *
- * @param {Array&lt;object&gt;} chain - The recognition chain; `chain[0]` is
- *   the key credential.
+ * @param {object} credential - The key credential being validated.
  * @param {object} options - The validation options.
+ * @param {Array&lt;object&gt;} options.chain - The rest of the recognition
+ *   chain; `chain[0]` recognizes the issuer of `credential`.
  * @param {string} options.action - The action being evaluated.
  * @param {string} options.evaluationDateTime - The evaluation time.
  *
  * @returns {{valid: boolean, errors: Array&lt;object&gt;,
  *   warnings: Array&lt;object&gt;}} The validation result.
  */
-export default function validate(chain, options) {
+export default function validate(credential, options) {
   const errors = [];
   const warnings = [];
   const getId = value =&gt; typeof value === 'string' ? value : value?.id;
 
-  // `prefixes[i]` is the prefix licensed to the issuer of `chain[i]`, read
-  // from the recognized entity credential one level above it
+  // throw on any option this validator does not recognize
+  const knownOptions = new Set(['chain', 'action', 'evaluationDateTime']);
+  for(const name of Object.keys(options)) {
+    if(!knownOptions.has(name)) {
+      const error = new Error(`Unrecognized option "${name}".`);
+      error.type =
+        'https://www.w3.org/TR/vc-data-model#UNRECOGNIZED_OPTION_ERROR';
+      throw error;
+    }
+  }
+
+  // the prefixes are read from the recognition chain, so it is required
+  const {chain} = options;
+  if(!Array.isArray(chain)) {
+    errors.push({
+      type: 'https://id.gs1.org/validators#MISSING_CHAIN',
+      title: 'Missing recognition chain',
+      detail: 'This validator requires the recognition chain.'
+    });
+    return {valid: false, errors, warnings};
+  }
+
+  // `prefixes[i]` is the prefix that `chain[i]` licenses to the issuer of the
+  // credential one level below it, which is `credential` when `i` is 0
   const prefixes = [];
-  for(let i = 1; i &lt; chain.length; ++i) {
-    const issuerId = getId(chain[i - 1].issuer);
+  for(let i = 0; i &lt; chain.length; ++i) {
+    const issuerId = getId((i === 0 ? credential : chain[i - 1]).issuer);
     const entity = [].concat(chain[i].credentialSubject)
       .find(subject =&gt; subject.id === issuerId);
     if(typeof entity?.licenceValue !== 'string') {
@@ -2414,7 +2515,7 @@ export default function validate(chain, options) {
   }
 
   // a GTIN-14 in a GS1 Digital Link URI: https://id.gs1.org/01/{gtin}
-  const gtin = new URL(chain[0].credentialSubject.id).pathname.split('/')[2];
+  const gtin = new URL(credential.credentialSubject.id).pathname.split('/')[2];
   if(!gtin?.slice(1).startsWith(prefixes[0])) {
     errors.push({
       type: 'https://id.gs1.org/validators#PREFIX_MISMATCH',
@@ -2482,7 +2583,7 @@ this section.
         </p>
 
         <p class="issue">
-The first three types below are not yet defined in the [[[VC-DATA-MODEL]]]
+The first four types below are not yet defined in the [[[VC-DATA-MODEL]]]
 specification. This specification proposes that they be added to it, so that
 other specifications can use them as well.
         </p>
@@ -2512,11 +2613,19 @@ SHOULD be provided as well.
 https://www.w3.org/TR/vc-data-model#OUTPUT_VALIDATION_ERROR
           </dt>
           <dd>
-An output validator could not be evaluated. This covers an output validator
-whose `type` the [=verifier=] does not support, a [=verifier=] that
+A [=credential validator=] could not be evaluated. This covers a [=credential
+validator=] whose `type` or `mediaType` the [=verifier=] does not support, a
+[=verifier=] that
 cannot provide a sandbox for [=validator code=], [=validator code=] that fails
-to load, throws an exception, or rejects, and a result that is not in the
-expected form.
+to load, or that throws an exception or rejects without identifying a more
+specific error type, and a result that is not in the expected form.
+          </dd>
+          <dt id="UNRECOGNIZED_OPTION_ERROR">
+https://www.w3.org/TR/vc-data-model#UNRECOGNIZED_OPTION_ERROR
+          </dt>
+          <dd>
+A [=credential validator=] was given an option that it does not recognize. The
+name of the option SHOULD be provided in the `ProblemDetails` object.
           </dd>
           <dt>
 https://www.w3.org/TR/vc-data-model#CRYPTOGRAPHIC_SECURITY_ERROR
@@ -2721,7 +2830,7 @@ GS1's production systems use their own credential types and schemas.
       <p>
 In the first example below, the GS1 Global Office publishes a [=recognized
 entity credential=] recognizing a Member Organization, GS1 Utopia, as the
-licensee of GS1 Prefix `950`. The `outputValidation` property constrains GS1
+licensee of GS1 Prefix `950`. The `credentialValidator` property constrains GS1
 Utopia to issuing credentials that conform to a GS1 Company Prefix Licence
 credential schema specific to GS1 Prefix `950`.
       </p>
@@ -2757,9 +2866,10 @@ credential schema specific to GS1 Prefix `950`.
       "type": "RecognizedAction",
       "action": "issue",
       "recognizedBy": "did:web:id.gs1.org",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://id.gs1.org/schemas/prefix-license/950.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
       }
     }
@@ -2820,9 +2930,10 @@ recognize GS1 Utopia to continue up the hierarchy.
       "type": "RecognizedAction",
       "action": "issue",
       "recognizedBy": "did:web:id.gs1utopia.example",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://id.gs1utopia.example/schemas/key-credential/9506000.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiWQoRvpfWW1htfsknNAHgPyslVv6VztZpfwirFoBZl963"
       }
     }
@@ -2893,7 +3004,7 @@ reference on the key credential's `issuer` object, verifies the proof on the
 GS1 Utopia credential, and confirms that Healthy Tots appears there as a
 [=recognized entity=]. It also confirms, via the `recognizedTo` property, that
 Healthy Tots is recognized to `issue` and that the key credential conforms to
-the schema referenced by `outputValidation` — the schema-level counterpart of
+the schema referenced by `credentialValidator` — the schema-level counterpart of
 GS1's rule that an identification key be properly based on the licensed GS1
 Company Prefix. If the [=verifier=] does not recognize GS1 Utopia either, it
 repeats the process one level up, following the `recognizedIn` reference on
@@ -3025,7 +3136,7 @@ Protocol [[?UNTP-DIA]].
 In the first example below, GRID publishes a `RecognizedEntityCredential`
 recognizing the Utopian Business Register as an authoritative national
 registrar. GRID's `issuer` DID is the trust anchor that verifiers configure
-explicitly. The `outputValidation` property constrains the Utopian Business
+explicitly. The `credentialValidator` property constrains the Utopian Business
 Register to issuing credentials that conform to the UNTP-defined schema for
 registrar-issued entity recognition credentials.
       </p>
@@ -3062,9 +3173,10 @@ registrar-issued entity recognition credentials.
       "type": "RecognizedAction",
       "action": "issue",
       "recognizedBy": "did:web:grid.un.org",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://grid.un.org/schemas/erc-utopia.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
       }
     }
@@ -3268,7 +3380,7 @@ there. That presentation, signed by ACME's DID, contains the
 ACME appears as a [=recognized entity=] recognized to `issue` credentials
 conforming to the UNTP commercial invoice schema. The [=verifier=] confirms
 that the invoice's `issuer.id` matches the `credentialSubject.id` in that
-credential and validates the `outputValidation` schema constraint against the
+credential and validates the `credentialValidator` schema constraint against the
 invoice.
       </p>
 
@@ -3427,7 +3539,7 @@ The identifiers of the [=issuers=] it accepts as trust anchors, along with the
 verify proofs from those [=issuers=] without resolving their identifiers.
           </li>
           <li>
-Any schemas referenced by the `outputValidation` property of a [=recognized
+Any files referenced by the `credentialValidator` property of a [=recognized
 action=] it intends to enforce, since those cannot be fetched while offline.
           </li>
           <li>
@@ -3549,9 +3661,10 @@ such certificates.
         "type": "RecognizedAction",
         "action": "issue",
         "recognizedBy": "did:web:food-safety.utopia.example",
-        "outputValidation": {
+        "credentialValidator": {
           "id": "https://food-safety.utopia.example/schemas/certificate.json",
-          "type": "JsonSchema",
+          "type": "CredentialValidator",
+          "mediaType": "application/schema+json",
           "digestMultibase": "uEiBZl963sknNAHgPyslVv6VztZpfWQoRvW1htfx-UwirFo"
         }
       }
@@ -3591,7 +3704,7 @@ confirms that the `issuer` of the certificate,
 `did:web:processor.utopia.example`, appears as the `id` of a [=recognized
 entity=] in the `credentialSubject` of the [=recognized entity credential=],
 that the facility is recognized to `issue` credentials conforming to the schema
-named by that [=recognized action=]'s `outputValidation`, and that the chain
+named by that [=recognized action=]'s `credentialValidator`, and that the chain
 terminates at `did:web:food-safety.utopia.example`, an [=issuer=] that the
 [=verifier=] has configured as an anchor.
         </p>
