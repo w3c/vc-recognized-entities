@@ -33,3 +33,9 @@ response:
       incident response procedures. [=E4|Verifiers=] subscribe to revocation
       feeds or check revocation status in near-real-time for high-value
       validation scenarios.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>'
+    responsible: [issuers, list publishers, ecosystem governance, verifiers]
+    remainingRisk: >-
+      Credentials signed between a key compromise and its revocation are
+      accepted.

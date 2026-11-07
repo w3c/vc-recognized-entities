@@ -31,3 +31,10 @@ response:
       and [=P7|Update List=] processes. [=E4|Verifiers=] treat credentials
       that fail schema validation as invalid and do not relax validation rules
       to accept credentials that would otherwise be rejected.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction">Section 3.3: RecognizedAction</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [list publishers, ecosystem governance, verifiers]
+    remainingRisk: >-
+      A verifier accepts anything a schema permits, so a loose schema
+      recognizes more than intended.

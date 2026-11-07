@@ -34,3 +34,8 @@ response:
       [=E1|List publishers=] advise recognized entities that their inclusion
       in a publicly-accessible list is effectively a public disclosure of
       their participation in the ecosystem.
+    supportedBy: []
+    responsible: [list publishers, ecosystem governance]
+    remainingRisk: >-
+      Every identifier in a published list is public, so a listed natural
+      person remains identifiable by it.

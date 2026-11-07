@@ -54,3 +54,11 @@ response:
       point-in-time queries, rather than requiring full list re-fetches.
       [=E4|Verifiers=] perform live revocation checks for high-value
       validation.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction">Section 3.3: RecognizedAction</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#stale-credentials">Stale Credentials, in Section D.3</a>'
+    responsible: [list publishers, verifiers, ecosystem governance]
+    remainingRisk: >-
+      Recognition withdrawn during a validity period or cache window is
+      accepted until the verifier checks status.

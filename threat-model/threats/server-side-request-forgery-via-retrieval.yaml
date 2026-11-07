@@ -42,3 +42,9 @@ response:
       as a second line of defense. The residual risk is that a [=E4|verifier=]
       whose own network is flat, or whose policy permits a host that later
       becomes sensitive, is still exposed.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>'
+    responsible: [verifiers]
+    remainingRisk: >-
+      A verifier on a flat network, or whose policy permits a host that later
+      becomes sensitive, remains exposed.

@@ -43,3 +43,10 @@ response:
       Ecosystem governance, not the specification, decides whether to reject
       such credentials. Without that policy, a [=E4|verifier=] that fetches
       an unprotected resource stays exposed.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#general-properties">Section 3.1: General Properties</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction">Section 3.3: RecognizedAction</a>'
+    responsible: [list publishers, verifiers, ecosystem governance]
+    remainingRisk: >-
+      A resource referenced without a digest can be substituted unless
+      ecosystem governance requires verifiers to reject it.
