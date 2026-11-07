@@ -1183,7 +1183,7 @@ across [=verifiable credentials=] in that chain, such as confirming that an
 identifier in one [=verifiable credential=] begins with a prefix that a
 [=recognized entity credential=] higher in the chain licensed to its
 [=issuer=]. A [=verifier=] runs that code as described in Section
-[[[#javascript-output-validation-processing]]].
+[[[#javascript-validator-processing]]].
         </p>
 
         <table class="simple">
@@ -1901,14 +1901,10 @@ not the other, the enclosing credential's corresponding property applies to
 the unexpressed value.
               </li>
               <li>
-It declares no `outputValidation`, or <var>credential</var> satisfies every
-value of its `outputValidation`. A value whose `type` is `JsonSchema` is
-satisfied when <var>credential</var> conforms to the schema it references. A
-value whose `type` is `JavaScript` is satisfied when the algorithm in
-Section [[[#javascript-output-validation-processing]]], run on <var>chain</var>, that
-value, <var>action</var>, and <var>evaluationDateTime</var>, returns a result
-whose <var>valid</var> value is `true`. A value whose `type` the [=verifier=]
-does not support is not satisfied.
+It declares no `outputValidation`, or performing [=output validation=], as
+described in Section [[[#output-validation]]], for that [=recognized action=]
+on <var>chain</var>, <var>action</var>, and <var>evaluationDateTime</var>
+returns a result whose <var>valid</var> value is `true`.
               </li>
             </ol>
           </li>
@@ -1947,89 +1943,179 @@ back to a result in which only <var>recognized</var> is `true`.
       </section>
 
       <section>
-        <h3>JavaScript Output Validation Processing</h3>
+        <h3>Output Validation</h3>
 
         <p>
-This section describes how a [=verifier=] runs the code identified by a
-[=JavaScript output validator=] against a recognition chain. The code is written
+<dfn class="export">Output validation</dfn> is the process by which a
+[=verifier=] determines whether a [=verifiable credential=] meets the
+constraints declared by the `outputValidation` property of a [=recognized
+action=]. Section [[[#recognition-validation]]] runs it as its final check,
+after it has walked the chain, confirmed that each adjacent pair of
+[=verifiable credentials=] in the chain is related, and confirmed that the
+chain ends at an anchor that the [=verifier=] recognizes. The proof on every
+[=verifiable credential=] in the chain has already been verified, as described
+in Section [[[#algorithms]]].
+        </p>
+
+        <p>
+Output validation does not change how a chain is discovered, walked, or
+verified, and the kind of output validator in use does not change it either.
+Each output validator is evaluated against the already verified chain using the
+processing defined for its `type`. This specification defines that processing
+for the `JavaScript` type in Section [[[#javascript-validator-processing]]].
+A [=verifier=] that does not support the `type` of an output validator cannot
+evaluate it, so output validation fails.
+        </p>
+
+        <p>
+To perform [=output validation=] for a [=recognized action=]
+(<var>recognizedAction</var>) on a chain (<var>chain</var>) that has passed the
+checks in Section [[[#recognition-validation]]], for a specific action
+(<var>action</var>) at an evaluation time (<var>evaluationDateTime</var>), a
+[=verifier=] runs the following algorithm. <var>chain</var> is ordered as in
+Section [[[#recognition-validation]]], so the [=verifiable credential=] being
+validated is the first item in <var>chain</var>. The algorithm returns a
+result containing a boolean <var>valid</var>, a list of <var>errors</var>, and
+a list of <var>warnings</var>.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Let <var>result</var> be a structure with <var>valid</var> set to `true`,
+and <var>errors</var> and <var>warnings</var> each set to an empty list.
+          </li>
+          <li>
+Let <var>credential</var> be the first item in <var>chain</var>. Let
+<var>validators</var> be the value of the `outputValidation` property of
+<var>recognizedAction</var>. If that value is a single object, treat it as a
+list containing that object.
+          </li>
+          <li>
+For each <var>validator</var> in <var>validators</var>, evaluate it using the
+processing defined for the value of its `type` property:
+            <ol class="algorithm">
+              <li>
+If the `type` is `JsonSchema`, set <var>result.valid</var> to `false` if
+<var>credential</var> does not conform to the schema identified by the `id`
+property of <var>validator</var>.
+              </li>
+              <li>
+If the `type` is `JavaScript`, let <var>validatorResult</var> be the result of
+running the algorithm in Section [[[#javascript-validator-processing]]] on
+<var>validator</var>, <var>chain</var>, <var>action</var>, and
+<var>evaluationDateTime</var>. Append the items of
+<var>validatorResult.errors</var> to <var>result.errors</var> and the items of
+<var>validatorResult.warnings</var> to <var>result.warnings</var>. If
+<var>validatorResult.valid</var> is not `true`, set <var>result.valid</var>
+to `false`.
+              </li>
+              <li>
+Otherwise, the [=verifier=] does not support the `type`. Append an
+<a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> identifying
+the `type` to <var>result.errors</var>, and set <var>result.valid</var> to
+`false`.
+              </li>
+            </ol>
+          </li>
+          <li>
+Return <var>result</var>.
+          </li>
+        </ol>
+
+        <p class="note" title="Output validators are evaluated only for an anchored chain">
+Section [[[#recognition-validation]]] performs [=output validation=] only after
+it has confirmed that the chain ends at an anchor that the [=verifier=]
+recognizes and that every adjacent pair in the chain is related. A [=verifier=]
+therefore retrieves and evaluates an output validator, including running any
+code it identifies, only when an [=issuer=] whose recognition traces back to
+that anchor declared it. It never does so for a chain from an unrecognized
+source.
+        </p>
+
+        <section>
+          <h4>JavaScript Validator Processing</h4>
+
+          <p>
+This section defines how [=output validation=] evaluates a [=JavaScript output
+validator=] against an already verified chain. The code is written
 by a third party and is downloaded via a [=recognized entity credential=]. Since
 the [=verifier=] does not know the third party, it treats the downloaded code as
 untrusted and runs it in a sandbox that cannot reach the network, read the
 [=verifier=]'s own state, or learn anything else outside the sandbox. A
 [=verifier=] MAY use an algorithm other than the one below if its security and
 privacy outcomes, and its result, are the same.
-        </p>
+          </p>
 
-        <p>
+          <p>
 The following terminology is used to describe the sandbox:
-        </p>
+          </p>
 
-        <dl>
-          <dt><dfn>validation host</dfn></dt>
-          <dd>
+          <dl>
+            <dt><dfn>validation host</dfn></dt>
+            <dd>
 The [=verifier=] software that retrieves the [=validator code=], creates the
 sandbox, sends the inputs into the sandbox, and receives the result.
-          </dd>
+            </dd>
 
-          <dt><dfn>validator code</dfn></dt>
-          <dd>
+            <dt><dfn>validator code</dfn></dt>
+            <dd>
 The JavaScript code identified by the `id` property of a [=JavaScript output
 validator=].
-          </dd>
+            </dd>
 
-          <dt><dfn>wrapper code</dfn></dt>
-          <dd>
+            <dt><dfn>wrapper code</dfn></dt>
+            <dd>
 Code that the [=validation host=] places in the sandbox alongside the
 [=validator code=]. It loads the [=validator code=], receives the inputs from
 the [=validation host=], invokes the [=validator code=], and returns its result
 to the [=validation host=].
-          </dd>
-        </dl>
+            </dd>
+          </dl>
 
-        <p>
+          <p>
 The [=validator code=] MUST be an ECMAScript module, as defined in
 [[ECMASCRIPT]], whose default export is a function.
-        </p>
+          </p>
 
-        <p>
+          <p>
 A sandbox that runs [=validator code=] SHOULD meet the following
 security requirements.
-        </p>
+          </p>
 
-        <ul>
-          <li>
+          <ul>
+            <li>
 It prevents the [=validator code=] from making network requests of any kind,
 including importing other modules from a [=URL=] that is not a `data:` URL.
-          </li>
-          <li>
+            </li>
+            <li>
 It prevents the [=validator code=] from reading or modifying any state of the
 [=validation host=], including its memory, storage, cookies, documents, and key
 material. The [=validator code=] receives copies of its inputs, not references
 to the [=validation host=]'s objects.
-          </li>
-          <li>
+            </li>
+            <li>
 It provides no storage that persists after the sandbox is destroyed, and it is
 never reused. Each invocation of [=validator code=] starts in a new sandbox,
 so that one evaluation cannot influence another, and so that [=validator
 code=] cannot track which recognition chains a [=verifier=] evaluates.
-          </li>
-          <li>
+            </li>
+            <li>
 It lets the [=validation host=] terminate the [=validator code=] at any time,
 without the cooperation of the [=validator code=], so that the
 [=validation host=] can enforce limits on running time and memory.
-          </li>
-        </ul>
+            </li>
+          </ul>
 
-        <p class="note" title="Running code in the same process is not a sandbox">
+          <p class="note" title="Running code in the same process is not a sandbox">
 A JavaScript environment that shares a heap or an event loop with the
 [=validation host=], such as the `vm` module of Node.js, does not meet the
 requirements above. Environments that can meet them include a separate
 operating system process, an isolate provided by a library such as
 `isolated-vm`, and a JavaScript engine compiled to WebAssembly.
-        </p>
+          </p>
 
-        <figure>
-          <pre class="diagram mermaid" style="max-width:80%">
+          <figure>
+            <pre class="diagram mermaid" style="max-width:80%">
 sequenceDiagram
     participant H as Validation Host (Verifier)
     participant W as Sandbox (Wrapper Code)
@@ -2042,12 +2128,12 @@ sequenceDiagram
     W-->>H: Result as JSON
     H->>H: Destroy the sandbox and check the result
           </pre>
-          <figcaption>
+            <figcaption>
 Communication between the validation host and the sandbox
-          </figcaption>
-        </figure>
+            </figcaption>
+          </figure>
 
-        <p>
+          <p>
 To run a [=JavaScript output validator=] (<var>validator</var>) against a
 recognition chain (<var>chain</var>) for a specific action
 (<var>action</var>) at an evaluation time (<var>evaluationDateTime</var>), a
@@ -2059,19 +2145,19 @@ the [=verifier=] recognizes. The algorithm returns a result containing a
 boolean <var>valid</var>, a list of <var>errors</var>, and a list of
 <var>warnings</var>. Each error and warning is a
 <a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> object.
-        </p>
+          </p>
 
-        <ol class="algorithm">
-          <li>
+          <ol class="algorithm">
+            <li>
 Let <var>result</var> be a structure with <var>valid</var> set to `false`,
 and <var>errors</var> and <var>warnings</var> each set to an empty list.
-          </li>
-          <li>
+            </li>
+            <li>
 If the [=verifier=] cannot provide a sandbox that meets the requirements in
 this section, append an <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var>
 and return <var>result</var>.
-          </li>
-          <li>
+            </li>
+            <li>
 Let <var>codeUrl</var> be the value of the `id` property of
 <var>validator</var>. If <var>codeUrl</var> is a `data:` URL, let
 <var>code</var> be the bytes it encodes. Otherwise, let <var>code</var> be a
@@ -2081,8 +2167,8 @@ policy=] to that retrieval. If <var>code</var> cannot be obtained, or the
 [=retrieval policy=] blocks the retrieval, append a <a href="#RETRIEVAL_ERROR">`RETRIEVAL_ERROR`</a>
 identifying <var>codeUrl</var> to <var>result.errors</var> and return
 <var>result</var>.
-          </li>
-          <li>
+            </li>
+            <li>
 If <var>validator</var> provides a cryptographic hash of the [=validator
 code=], ensure that the cryptographic hash of <var>code</var> matches the one
 provided by the [=issuer=], as described in
@@ -2091,13 +2177,13 @@ Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
 If they do not match, append a <a data-cite="VC-DATA-MODEL#CRYPTOGRAPHIC_SECURITY_ERROR">`CRYPTOGRAPHIC_SECURITY_ERROR`</a> identifying
 <var>codeUrl</var> to <var>result.errors</var> and return <var>result</var>.
 No part of <var>code</var> is parsed or run before this check succeeds.
-          </li>
-          <li>
+            </li>
+            <li>
 Let <var>options</var> be a [=map=] whose `action` value is <var>action</var>
 and whose `evaluationDateTime` value is <var>evaluationDateTime</var>, as
 described in Section [[[#javascript-output-validation-function]]].
-          </li>
-          <li>
+            </li>
+            <li>
 Let <var>maxDuration</var> and <var>maxMemory</var> be the limits on running
 time and memory that the [=verifier=] is configured to allow [=validator
 code=]. Create a new sandbox, place the [=wrapper code=] and <var>code</var> in
@@ -2105,77 +2191,68 @@ it, and start measuring elapsed time and memory use. If either limit is
 exceeded at any point before the sandbox is destroyed, destroy the sandbox,
 append a <a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying the limit that was exceeded to
 <var>result.errors</var>, and return <var>result</var>.
-          </li>
-          <li>
+            </li>
+            <li>
 Serialize <var>chain</var> and <var>options</var> to JSON [[RFC8259]] and send
 them into the sandbox. The [=wrapper code=] parses them, loads <var>code</var>
 as an ECMAScript module, and calls the module's default export, the
 [=validation function=], with the parsed <var>chain</var> as its first argument
 and the parsed <var>options</var> as its second. If the function returns a
 promise, the [=wrapper code=] waits for it to settle.
-          </li>
-          <li>
+            </li>
+            <li>
 If <var>code</var> fails to parse as an ECMAScript module, its default export
 is not a function, or the function throws an exception or returns a promise
 that rejects, destroy the sandbox, append an <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to
 <var>result.errors</var>, and return <var>result</var>.
-          </li>
-          <li>
+            </li>
+            <li>
 The [=wrapper code=] serializes the value the function returned to JSON and
 sends it to the [=validation host=]. Destroy the sandbox. Let
 <var>output</var> be the result of parsing that JSON.
-          </li>
-          <li>
+            </li>
+            <li>
 If <var>output</var> does not have the form of a [=validation result=], as
 described in Section [[[#javascript-output-validation-function]]], append an
 <a href="#OUTPUT_VALIDATION_ERROR">`OUTPUT_VALIDATION_ERROR`</a> to <var>result.errors</var> and return
 <var>result</var>.
-          </li>
-          <li>
+            </li>
+            <li>
 Set <var>result.valid</var> to the `valid` value of <var>output</var>. Append
 the items of the `errors` value of <var>output</var>, if any, to
 <var>result.errors</var>, and the items of its `warnings` value, if any, to
 <var>result.warnings</var>.
-          </li>
-          <li>
+            </li>
+            <li>
 If <var>result.errors</var> is not empty, set <var>result.valid</var> to
 `false`.
-          </li>
-          <li>
+            </li>
+            <li>
 Return <var>result</var>.
-          </li>
-        </ol>
+            </li>
+          </ol>
 
-        <p class="note" title="Validator code runs only for an anchored chain">
-Section [[[#recognition-validation]]] evaluates `outputValidation` only after
-it has confirmed that <var>chain</var> ends at an anchor the [=verifier=]
-recognizes and that every adjacent pair in <var>chain</var> is related. A
-[=verifier=] therefore runs [=validator code=] only when the code was declared
-by an [=issuer=] whose recognition traces back to that anchor, never for a
-chain from an unrecognized source.
-        </p>
+          <section>
+            <h5>JavaScript Output Validation Function</h5>
 
-        <section>
-          <h4>JavaScript Output Validation Function</h4>
-
-          <p>
+            <p>
 The <dfn>validation function</dfn> is the default export of the [=validator
 code=]. The [=wrapper code=] calls it as follows:
-          </p>
+            </p>
 
-          <pre class="nohighlight">
+            <pre class="nohighlight">
 validate(chain, options) → result
         </pre>
 
-          <p>
+            <p>
 The function MAY be asynchronous, in which case it returns a promise that
 resolves to <var>result</var>. Its arguments and its return value are
 described below.
-          </p>
+            </p>
 
-          <dl>
-            <dt><var>chain</var></dt>
-            <dd>
+            <dl>
+              <dt><var>chain</var></dt>
+              <dd>
 An array containing every [=verifiable credential=] in the recognition chain,
 each expressed as the JSON object the [=verifier=] received, in the order
 defined in Section [[[#recognition-validation]]]. `chain[0]` is the
@@ -2184,107 +2261,107 @@ entity credential=] that declares the [=JavaScript output validator=], and the
 last item is the [=recognized entity credential=] issued by the anchor that the
 [=verifier=] recognizes. The [=verifier=] has verified the proof on every item
 before the function is called, so the function does not verify proofs.
-            </dd>
+              </dd>
 
-            <dt><var>options</var></dt>
-            <dd>
+              <dt><var>options</var></dt>
+              <dd>
 A [=map=] containing the following properties.
-              <table class="simple">
-                <thead>
-                  <tr>
-                    <th style="white-space: nowrap">Property</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>action</td>
-                    <td>
+                <table class="simple">
+                  <thead>
+                    <tr>
+                      <th style="white-space: nowrap">Property</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>action</td>
+                      <td>
 The [=string=] value of the `action` property of the [=recognized action=] being
 evaluated, such as `issue`.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>evaluationDateTime</td>
-                    <td>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>evaluationDateTime</td>
+                      <td>
 The point in time at which recognition is evaluated, as described in Section
 [[[#recognition-validation]]], expressed as an
 <a data-cite="XMLSCHEMA11-2#dateTime">XML Schema <code>dateTime</code></a>
 value in UTC, for example `2026-11-04T00:00:00Z`.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 Other specifications MAY define additional properties. The [=validation
 function=] MUST ignore properties it does not recognize.
-            </dd>
+              </dd>
 
-            <dt><var>result</var></dt>
-            <dd>
+              <dt><var>result</var></dt>
+              <dd>
 A <dfn>validation result</dfn>, which is a [=map=] containing the following
 properties.
-              <table class="simple">
-                <thead>
-                  <tr>
-                    <th style="white-space: nowrap">Property</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>valid</td>
-                    <td>
+                <table class="simple">
+                  <thead>
+                    <tr>
+                      <th style="white-space: nowrap">Property</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>valid</td>
+                      <td>
 REQUIRED. A [=boolean=] that is `true` if `chain[0]` meets the constraints
 that the [=validator code=] checks, and `false` otherwise.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>errors</td>
-                    <td>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>errors</td>
+                      <td>
 OPTIONAL. An array of
 <a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> objects, each
 describing a constraint that `chain[0]` does not meet. If `valid` is `true`,
 this array MUST be empty or absent.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>warnings</td>
-                    <td>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>warnings</td>
+                      <td>
 OPTIONAL. An array of
 <a data-cite="VC-DATA-MODEL#problem-details">ProblemDetails</a> objects, each
 describing a condition that a [=verifier=] might want to know about but that
 does not cause validation to fail.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </dd>
-          </dl>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </dd>
+            </dl>
 
-          <p>
+            <p>
 Each item in `errors` and `warnings` MUST conform to
 <a data-cite="VC-DATA-MODEL#problem-details">Section 7.1.4: Problem
 Details</a> of the [[[VC-DATA-MODEL]]] specification. An item that does not
 conform causes the algorithm in Section
-[[[#javascript-output-validation-processing]]] to fail.
-          </p>
+[[[#javascript-validator-processing]]] to fail.
+            </p>
 
-          <p>
+            <p>
 The [=validation function=] MUST NOT depend on any input other than
 <var>chain</var> and <var>options</var>. In particular, it uses
 `options.evaluationDateTime` rather than the current time, and does not use
 random numbers, so that every [=verifier=] that evaluates the same chain at the
 same evaluation time obtains the same result.
-          </p>
+            </p>
 
-          <p class="note" title="Problem details come from untrusted code">
+            <p class="note" title="Problem details come from untrusted code">
 The ProblemDetails objects in a [=validation result=] are written by the
 author of the [=validator code=]. A [=verifier=] that shows their contents to a
 person displays them as plain text, and does not interpret them as markup or
 as instructions.
-          </p>
+            </p>
 
-          <p>
+            <p>
 The example below shows the [=validator code=] referenced by the
 [=JavaScript output validator=] in Section [[[#javascript-output-validation]]].
 For a chain consisting of a key credential issued by Healthy Tots, the
@@ -2296,9 +2373,9 @@ to GS1 Utopia. It then confirms that the GTIN `09506000134352` begins with
 `950`. If the chain ends at an anchor other than the GS1 Global Office, the
 function reports a warning, because the GS1 Prefix in the chain was then not
 checked against the GS1 Global Office's own allocation.
-          </p>
+            </p>
 
-          <pre class="example" title="Validator code that checks GS1 prefixes across a recognition chain">
+            <pre class="example" title="Validator code that checks GS1 prefixes across a recognition chain">
 /**
  * Checks that the GTIN in a key credential begins with the GS1 Company
  * Prefix licensed to its issuer, and that each prefix licensed in the
@@ -2368,13 +2445,13 @@ export default function validate(chain, options) {
 }
         </pre>
 
-          <p>
+            <p>
 If Healthy Tots had issued a key credential for the GTIN `09507000134352`,
 and the chain ended at the GS1 Global Office, the [=validation function=]
 would return the following [=validation result=].
-          </p>
+            </p>
 
-          <pre class="example" title="A validation result that reports an error">
+            <pre class="example" title="A validation result that reports an error">
 {
   "valid": false,
   "errors": [{
@@ -2385,6 +2462,8 @@ would return the following [=validation result=].
   "warnings": []
 }
         </pre>
+
+          </section>
 
         </section>
 
@@ -2433,7 +2512,8 @@ SHOULD be provided as well.
 https://www.w3.org/TR/vc-data-model#OUTPUT_VALIDATION_ERROR
           </dt>
           <dd>
-An output validator could not be evaluated. This covers a [=verifier=] that
+An output validator could not be evaluated. This covers an output validator
+whose `type` the [=verifier=] does not support, a [=verifier=] that
 cannot provide a sandbox for [=validator code=], [=validator code=] that fails
 to load, throws an exception, or rejects, and a result that is not in the
 expected form.
