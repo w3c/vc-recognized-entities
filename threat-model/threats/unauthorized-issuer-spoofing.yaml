@@ -21,8 +21,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Spoofing
 response:
-  - id: R1
-    name: Cryptographic Verification of the Recognized Entity Credential Chain
+  - name: Cryptographic Verification of the Recognized Entity Credential Chain
     type: Reduce
     description: >-
       [=E4|Verifiers=] cryptographically verify that every [=O1|recognized

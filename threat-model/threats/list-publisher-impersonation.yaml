@@ -20,8 +20,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Spoofing
 response:
-  - id: R9
-    name: Out-of-Band Validation of List Publisher Identifiers
+  - name: Out-of-Band Validation of List Publisher Identifiers
     type: Reduce
     description: >-
       [=E4|Verifiers=] validate the issuer identifier of any [=O1|recognized

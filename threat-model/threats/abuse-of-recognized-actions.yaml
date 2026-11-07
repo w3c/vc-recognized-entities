@@ -20,8 +20,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Elevation of Privilege
 response:
-  - id: R13
-    name: Controlled Action Vocabulary and Strict Interpretation
+  - name: Controlled Action Vocabulary and Strict Interpretation
     type: Reduce
     description: >-
       Ecosystem governance frameworks define and publish a controlled

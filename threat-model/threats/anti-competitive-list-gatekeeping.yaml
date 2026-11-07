@@ -19,8 +19,7 @@ tags: [market competition]
 taxonomyName: STRIDE
 taxonomyClass: Denial of Service
 response:
-  - id: R5
-    name: List Pluralism via Multi-Trust-Anchor Configuration
+  - name: List Pluralism via Multi-Trust-Anchor Configuration
     type: Reduce
     description: >-
       The specification permits and encourages multiple overlapping and

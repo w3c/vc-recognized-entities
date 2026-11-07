@@ -20,8 +20,7 @@ tags: [privacy]
 taxonomyName: STRIDE
 taxonomyClass: Information Disclosure
 response:
-  - id: R6
-    name: Minimize Personal Information in Recognized Entity Credentials
+  - name: Minimize Personal Information in Recognized Entity Credentials
     type: Reduce
     description: >-
       [=E1|List publishers=] minimize the personal information included in
