@@ -36,11 +36,18 @@ response:
       Verifier=]. [=E4|Verifiers=] treat unknown, overly broad, or undefined
       action values as grounds for rejection during [=P6|Validate
       Credential(s)=] rather than falling back to permissive defaults. A
-      [=E1|list publisher=] might not recognize an entity to recognize others. In
-      that case, the [=E1|list publisher=] attaches a rule, called a
+      [=E1|list publisher=] might not recognize an entity to recognize others.
+      In that case, the [=E1|list publisher=] attaches a rule, called a
       credential validator, to that entity. The rule rejects [=O1|recognized
       entity credentials=], or limits what they can say. [=Recognition
       validation=] runs the rule on every credential that entity issues in
       the chain. The entity might be recognized for other actions too. Every
       one of those actions has to pass its rules, so another action cannot
       get around this one.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction">Section 3.3: RecognizedAction</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [ecosystem governance, list publishers, verifiers]
+    remainingRisk: >-
+      The specification defines no action vocabulary, so an action value means
+      only what its ecosystem defines.

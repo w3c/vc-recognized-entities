@@ -366,12 +366,32 @@ limitations under the License.
           <tr>
         <td class="response-desc">
           ${response.description}
+          ${renderResponseDetails(response)}
         </td>
           </tr>
           `).join("")
 
         return responseHtml;
       };
+
+      // renderResponseDetails(response)
+      // Renders the specification sections that support a response, the
+      // parties responsible for applying it, and the risk that remains.
+      // supportedBy lists links to the supporting sections.
+      function renderResponseDetails(response) {
+        const supportedBy = (response.supportedBy || []).length ?
+          response.supportedBy.join(", ") :
+          "None in the specification; deployment and governance practice.";
+        return `
+          <dl class="response-details">
+            <dt>Supported by</dt>
+            <dd>${supportedBy}</dd>
+            <dt>Responsible</dt>
+            <dd>${(response.responsible || []).join(", ")}</dd>
+            <dt>Remaining risk</dt>
+            <dd>${response.remainingRisk || ""}</dd>
+          </dl>`;
+      }
     };
   }
 

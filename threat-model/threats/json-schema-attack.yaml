@@ -36,3 +36,7 @@ response:
       <code>outputValidation</code> schemas. Governance frameworks require
       schema review as part of the [=P1|Create List=] process to catch
       pathological patterns before publication.
+    supportedBy: []
+    responsible: [verifiers, list publishers, ecosystem governance]
+    remainingRisk: >-
+      A verifier without resource limits on schema validation remains exposed.

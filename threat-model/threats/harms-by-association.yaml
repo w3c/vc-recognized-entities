@@ -35,3 +35,7 @@ response:
       frameworks explicitly advise ecosystem participants that membership in a
       recognized entity list might become publicly known and that sensitive
       ecosystems might be better served by alternative trust mechanisms.
+    supportedBy: []
+    responsible: [list publishers, ecosystem governance]
+    remainingRisk: >-
+      Any single recipient can disclose a list; this risk is accepted.

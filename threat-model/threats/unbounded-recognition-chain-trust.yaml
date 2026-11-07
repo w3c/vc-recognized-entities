@@ -30,16 +30,28 @@ response:
     name: Chain Depth Limits and Per-Link Validation
     type: Reduce
     description: >-
-      [=E4|Verifiers=] enforce a maximum depth limit when traversing
-      recognition chains via <code>recognizedIn</code>. Each link in the chain
-      is independently validated for cryptographic integrity and issuer trust
-      during [=P6|Validate Credential(s)=] — transitive trust from a
-      higher-level registry does not substitute for independent validation of
-      each link. Ecosystem governance frameworks specify maximum permitted
-      chain depths and enumerate the specific registry types that might appear
-      at each level. [=E4|Verifiers=] reject chains that exceed the configured
-      depth or that include registry types not explicitly permitted by their
-      governance configuration. A recognizer can attach rules, called
+      [=E4|Verifiers=] enforce a maximum depth limit, <code>maxDepth</code>,
+      when traversing recognition chains via <code>recognizedIn</code>; the
+      specification applies it in [=credential-based discovery=] and again in
+      [=recognition validation=]. Each link in the chain is independently
+      validated for cryptographic integrity and issuer trust during
+      [=P6|Validate Credential(s)=] — transitive trust from a higher-level
+      registry does not substitute for independent validation of each link.
+      The ecosystem's governance authority, typically the operator of its
+      trust anchor, specifies the maximum permitted chain depth and the
+      registry types that can appear at each level in its governance
+      framework, which is outside the specification. [=E4|Verifiers=] apply
+      those rules as configuration and reject chains that exceed the
+      configured depth or that include registry types the configuration does
+      not permit.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#credential-based-discovery">Section 4.1: Credential-based Discovery</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [verifiers, ecosystem governance]
+    remainingRisk: >-
+      The specification bounds chain depth only; which registries can appear
+      at each level depends on ecosystem governance and verifier configuration.
+      A recognizer can attach rules, called
       credential validators, to each entity it recognizes. During
       [=recognition validation=], [=E4|verifiers=] run those rules on every
       credential in the chain. They first confirm that the chain reaches a
@@ -47,7 +59,7 @@ response:
       chain. An entity in the middle of the chain might be recognized for
       more than one action. Every one of those actions has to pass its rules.
       This lets a [=E1|list publisher=] limit who the entities it recognizes
-      can go on to recognize. Two gaps remain. A
-      recognizer that attaches no rules sets no limits. And a [=E4|verifier=]
+      can go on to recognize. There are two risks that remain: 1) A
+      recognizer that attaches no rules sets no limits, and 2) a [=E4|verifier=]
       that recognizes an entity in the middle of the chain stops checking there.
       It does not run the rules set above that entity.

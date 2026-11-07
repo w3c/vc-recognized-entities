@@ -33,3 +33,7 @@ response:
       test and production registries clearly. Operators perform periodic
       audits of [=C4|verifier system=] trust anchor configuration as part of
       routine security reviews.
+    supportedBy: []
+    responsible: [verifier operators, ecosystem governance]
+    remainingRisk: >-
+      An operator who confirms the wrong trust anchor is not protected.
