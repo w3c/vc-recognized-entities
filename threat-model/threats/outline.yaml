@@ -43,10 +43,10 @@ categories:
       - harms-by-association.yaml
       - compromise-of-recognized-entity-identifier.yaml
       - verifier-trust-anchor-misconfiguration.yaml
+      - anti-competitive-list-gatekeeping.yaml
   - name: Dependency Threats
     id: threat-model-dependency-threats
     threats:
-      - anti-competitive-list-gatekeeping.yaml
       - cryptographically-relevant-quantum-computer-breaks-cryptography.yaml
 
 elements:
