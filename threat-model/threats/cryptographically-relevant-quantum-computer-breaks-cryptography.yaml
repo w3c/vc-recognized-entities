@@ -39,3 +39,8 @@ response:
       forgery resulting from key compromise enabled by a <abbr
       title="Cryptographically Relevant Quantum Computer">CRQC</abbr>, see the
       [[[VC-FORGERY-DEFENSE]]] specification.
+    supportedBy: []
+    responsible: [list publishers, issuers, ecosystem governance, verifiers]
+    remainingRisk: >-
+      Credentials signed with classical cryptography can be forged once a CRQC
+      exists.

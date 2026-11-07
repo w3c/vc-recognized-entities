@@ -37,8 +37,14 @@ response:
       trust anchors. The specification requires conforming processors to
       produce errors when these checks fail, preventing unverified entities
       from appearing to be recognized. Checking signatures is not enough to
-      catch a chain that misleads without forgery. A recognizer can attach
+      catch a chain that attempts to be misleading. A recognizer can attach
       rules, called credential validators, to each entity it recognizes.
       [=Recognition validation=] runs those rules on every credential in the
       chain, not just the first one. It starts next to the recognition anchor and
       works down the chain.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [verifiers]
+    remainingRisk: >-
+      A compromised or misconfigured trust anchor passes these checks.

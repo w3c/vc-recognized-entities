@@ -56,3 +56,9 @@ response:
       requested but not who requested it. Implementers are advised to use
       privacy-preserving techniques such as anonymous credentials or blind
       fetch proxies for particularly sensitive ecosystems.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#holder-based-delivery">Section D.3: Holder-Based Delivery</a>'
+    responsible: [holders, verifiers]
+    remainingRisk: >-
+      A verifier that retrieves from a WhoisService endpoint reveals each
+      verification to the issuer being verified.
