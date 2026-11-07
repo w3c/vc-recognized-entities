@@ -33,3 +33,10 @@ response:
       Verifier=]. [=E4|Verifiers=] treat unknown, overly broad, or undefined
       action values as grounds for rejection during [=P6|Validate
       Credential(s)=] rather than falling back to permissive defaults.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedaction">Section 3.3: RecognizedAction</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [ecosystem governance, list publishers, verifiers]
+    remainingRisk: >-
+      The specification defines no action vocabulary, so an action value means
+      only what its ecosystem defines.

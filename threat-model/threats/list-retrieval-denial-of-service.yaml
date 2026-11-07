@@ -56,3 +56,11 @@ response:
       apart and retry. The residual risk is that a [=E2|issuer=] can deny
       verification of its own credentials by publishing a presentation too
       large to traverse in time.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#credential-based-discovery">Section 4.1: Credential-based Discovery</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#identifier-based-discovery">Section 4.2: Identifier-based Discovery</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#holder-based-delivery">Section D.3: Holder-Based Delivery</a>'
+    responsible: [verifiers, holders, list publishers]
+    remainingRisk: >-
+      An issuer can deny verification of its own credentials by publishing a
+      presentation too large to traverse within the time budget.

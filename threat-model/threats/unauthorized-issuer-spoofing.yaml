@@ -34,3 +34,9 @@ response:
       trust anchors. The specification requires conforming processors to
       produce errors when these checks fail, preventing unverified entities
       from appearing to be recognized.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>'
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [verifiers]
+    remainingRisk: >-
+      A compromised or misconfigured trust anchor passes these checks.

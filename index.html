@@ -128,7 +128,7 @@
         xref: ["URL", "I18N-GLOSSARY", "INFRA", "CID", "DID", "VC-DATA-MODEL"],
         lint: { "informative-dfn": false },
         threatModelOutline: "threat-model/threats/outline.yaml",
-        threatModelUrl: "threat-model/index.html",
+        threatModelUrl: "https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/",
         threatModelReference: "VC-RECOGNIZED-ENTITIES-THREAT-MODEL",
         preProcess: [
           window.respecMermaid.createFigures,
@@ -1965,6 +1965,10 @@ specification to each specific feature provided by this specification.
         </section>
 
         <section class="threat"
+          data-threat="server-side-request-forgery-via-retrieval.yaml">
+        </section>
+
+        <section class="threat"
           data-threat="compromise-of-recognized-entity-identifier.yaml">
         </section>
 
@@ -2726,7 +2730,7 @@ resource does not reveal which [=issuer=] it is checking. Retrieval from a
 [[[#identifier-based-discovery]]], discloses the most, because the endpoint
 belongs to the [=issuer=] being verified and that [=issuer=] therefore learns of
 every verification of its own [=verifiable credentials=]. Threat
-<a href="threat-model/index.html#t4-privacy-leakage-via-list-fetch">T4: Privacy
+<a href="https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/#privacy-leakage-via-list-fetch">Privacy
 Leakage via List Fetch</a> describes this exposure and the measures that reduce
 it.
         </p>
@@ -2991,7 +2995,7 @@ Deployments reduce that risk by configuring a maximum acceptable age for stapled
 with validity periods appropriate to the expected offline interval, and by
 refreshing cached trust anchor and status information whenever connectivity is
 available. Related guidance is provided by threat
-<a href="threat-model/index.html#t10-stale-recognition-acceptance">T10: Stale
+<a href="https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/#stale-recognition-acceptance">Stale
 Recognition Acceptance</a>.
           </p>
 
@@ -3002,8 +3006,8 @@ reaches the [=verifier=], not the checks that the [=verifier=] performs on it. A
 [=holder=] cannot alter a [=recognized entity credential=] without invalidating
 its proof, although a [=holder=] does choose which [=verifiable credentials=] to
 present; see threat
-<a href="threat-model/index.html#t8-unvetted-recognized-entity-credential-propagation">T8:
-Unvetted Recognized Entity Credential Propagation</a>.
+<a href="https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/#unvetted-recognized-entity-credential-propagation">Unvetted
+Recognized Entity Credential Propagation</a>.
           </p>
         </section>
 

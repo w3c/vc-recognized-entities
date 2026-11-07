@@ -33,3 +33,9 @@ response:
       publishers=] to publish [=O1|recognized entity credentials=] for the
       same market vertical, reducing systemic dependency on any single
       authority.
+    supportedBy:
+      - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
+    responsible: [verifiers, ecosystem designers]
+    remainingRisk: >-
+      Where only one list publisher serves a market, verifiers have no
+      alternative to it.

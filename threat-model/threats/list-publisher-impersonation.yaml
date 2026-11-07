@@ -33,3 +33,8 @@ response:
       Governance frameworks publish canonical, authoritative identifiers for
       [=E1|list publishers=] through an independently-secured channel so that
       [=E4|verifiers=] have a reliable reference to check against.
+    supportedBy: []
+    responsible: [verifier operators, ecosystem governance]
+    remainingRisk: >-
+      An operator who adds a trust anchor without out-of-band confirmation can
+      trust an impersonator.
