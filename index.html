@@ -639,17 +639,18 @@ this property is defined in
 of the [[[VC-DATA-MODEL]]] specification.
               </td>
             </tr>
-            <tr>
-              <td>digestMultibase</td>
-              <td>
-One or more cryptographic digests used to verify the integrity of resources
-associated with the entity. The values for this property are defined in
-<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3: Integrity of Related Resources</a>
-of the [[[VC-DATA-MODEL]]] specification.
-              </td>
-            </tr>
           </tbody>
         </table>
+
+        <p>
+Any object in a `RecognizedEntityCredential` that has an `id` property can also
+be associated with a cryptographic hash of the resource that the `id`
+identifies, enabling a [=verifier=] to detect whether that resource has changed
+since the [=recognized entity credential=] was issued. The properties used to
+express such a hash are defined in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+        </p>
 
     </section>
 
