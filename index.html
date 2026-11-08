@@ -1446,10 +1446,10 @@ Section [[[#recognition-validation]]] rejects it.
         </p>
 
         <p class="note" title="Discovery does not check intermediate constraints">
-This algorithm follows `recognizedIn` references and does not read
-`recognizedTo`. Section [[[#recognition-validation]]] evaluates, at every link
-of the returned <var>chain</var>, the constraints that each recognizer
-declared for the entity it recognizes.
+This algorithm follows `recognizedIn` references. It does not read
+`recognizedTo`. A recognizer can attach [=credential validators=] to each
+entity it recognizes. Section [[[#recognition-validation]]] runs those
+validators on every credential in the returned <var>chain</var>.
         </p>
 
         <p class="note" title="This algorithm can run within a caller's time budget">
@@ -1678,11 +1678,10 @@ larger <var>maxDuration</var>.
         </p>
 
         <p class="note" title="Discovery does not check intermediate constraints">
-This algorithm assembles candidate chains and does not read `recognizedTo`.
-Section [[[#recognition-validation]]] evaluates, at every link of each
-returned chain, the constraints that each recognizer declared for the entity
-it recognizes. A candidate chain that fails those checks is not used, even
-though discovery returned it.
+This algorithm builds candidate chains. It does not read `recognizedTo`. A
+recognizer can attach [=credential validators=] to each entity it recognizes.
+Section [[[#recognition-validation]]] runs those validators on every
+credential in each returned chain. A chain that fails is not used.
         </p>
 
         <ol class="algorithm">

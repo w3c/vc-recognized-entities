@@ -14,10 +14,10 @@ description: >-
   a credential authorizing <code>issue</code> for one credential type being
   interpreted as authorizing issuance of any credential type. Overly
   permissive interpretation could enable credential forgery, regulatory
-  non-compliance, or fraud. An action value also does not say whether it
-  extends to recognizing other entities: an entity recognized to
-  <code>issue</code> can issue [=O1|recognized entity credentials=] as
-  readily as any other credential.
+  non-compliance, or fraud. An action value also does not say whether the
+  entity can recognize others. An entity recognized to <code>issue</code> can
+  issue [=O1|recognized entity credentials=] just as it issues any other
+  credential.
 elements: [O1, E1, E2, E4, P3, P6]
 tags: [security]
 taxonomyName: STRIDE
@@ -36,7 +36,9 @@ response:
       Verifier=]. [=E4|Verifiers=] treat unknown, overly broad, or undefined
       action values as grounds for rejection during [=P6|Validate
       Credential(s)=] rather than falling back to permissive defaults. A
-      [=E1|list publisher=] that does not intend an entity to recognize others
-      declares a credential validator that rejects [=O1|recognized entity
-      credentials=], or one that limits what they can contain; [=recognition
-      validation=] evaluates it at every link of the chain.
+      [=E1|list publisher=] might not want an entity to recognize others. In
+      that case, the [=E1|list publisher=] attaches a rule, called a
+      credential validator, to that entity. The rule rejects [=O1|recognized
+      entity credentials=], or limits what they can say. [=Recognition
+      validation=] runs the rule on every credential that entity issues in
+      the chain.

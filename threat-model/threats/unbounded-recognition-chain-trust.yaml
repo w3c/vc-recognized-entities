@@ -16,11 +16,11 @@ description: >-
   upward through the entire chain to [=E4|verifiers=] that have configured
   only a top-level trust anchor. Depth limits bound one chain. They do not
   bound how many chains a [=E4|verifier=] traverses, which
-  [[[#list-retrieval-denial-of-service]]] covers. Depth limits and per-link
-  proof checks confirm that each link is genuine; they do not confirm that an
-  intermediate stayed within the constraints its own recognizer declared. An
-  intermediate recognized for a limited scope can recognize another entity
-  beyond that scope.
+  [[[#list-retrieval-denial-of-service]]] covers. Depth limits and signature
+  checks show that each link is real. They do not show that each entity in
+  the middle of the chain stayed within the limits set for it. An entity
+  recognized for a narrow purpose can still recognize others for a broader
+  one.
 elements: [O1, E1, E4, F5, P6]
 tags: [security]
 taxonomyName: STRIDE
@@ -39,10 +39,11 @@ response:
       chain depths and enumerate the specific registry types that might appear
       at each level. [=E4|Verifiers=] reject chains that exceed the configured
       depth or that include registry types not explicitly permitted by their
-      governance configuration. During [=recognition validation=],
-      [=E4|verifiers=] evaluate, at every link of the chain, the credential
-      validators that each recognizer declared for the entity it recognizes,
-      so a [=E1|list publisher=] can limit what the entities it recognizes go
-      on to recognize. A recognizer that declares no credential validator
-      places no such limit, and a [=E4|verifier=] that recognizes an
-      intermediate directly does not evaluate the constraints above it.
+      governance configuration. A recognizer can attach rules, called
+      credential validators, to each entity it recognizes. During
+      [=recognition validation=], [=E4|verifiers=] run those rules on every
+      credential in the chain. This lets a [=E1|list publisher=] limit who
+      the entities it recognizes can go on to recognize. Two gaps remain. A
+      recognizer that attaches no rules sets no limits. And a [=E4|verifier=]
+      that trusts an entity in the middle of the chain stops checking there.
+      It does not run the rules set above that entity.

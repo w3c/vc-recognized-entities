@@ -15,10 +15,9 @@ description: >-
   accept credentials from actors who were never actually recognized. This is
   particularly dangerous in high-stakes scenarios such as cross-border trade
   finance or product conformity assessment, where a fraudulent issuer could
-  cause significant economic harm. A chain can also mislead without any
-  forgery: every proof verifies and every link is genuine, but an
-  intermediate recognizes an entity outside the constraints its own
-  recognizer declared.
+  cause significant economic harm. A chain can also mislead even when nothing
+  is forged. Every signature checks out. But an entity in the middle of the
+  chain recognizes someone that its own recognizer never meant it to.
 elements: [F4, F5, O2, O1]
 tags: [security]
 taxonomyName: STRIDE
@@ -36,6 +35,8 @@ response:
       was issued by an entity within the [=E4|verifier=]’s configured set of
       trust anchors. The specification requires conforming processors to
       produce errors when these checks fail, preventing unverified entities
-      from appearing to be recognized. Proof checks alone do not cover the
-      case without forgery; [=recognition validation=] also evaluates, at
-      every link, the credential validators each recognizer declared.
+      from appearing to be recognized. Checking signatures is not enough to
+      catch a chain that misleads without forgery. A recognizer can attach
+      rules, called credential validators, to each entity it recognizes.
+      [=Recognition validation=] runs those rules on every credential in the
+      chain, not just the first one.
