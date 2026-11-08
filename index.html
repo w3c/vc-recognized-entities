@@ -1933,53 +1933,27 @@ chain does not terminate at an anchor that the [=verifier=] recognizes, so
 return <var>result</var>. Otherwise, set <var>result.recognized</var> to `true`.
           </li>
           <li>
-Let <var>credential</var> be the first [=verifiable credential=] in
-<var>chain</var>, let <var>list</var> be the second, and let <var>entity</var>
-be the [=recognized entity=] in the `credentialSubject` of <var>list</var> whose
-`id` is the identifier of the [=issuer=] of <var>credential</var>. Set
-<var>result.actionRecognized</var> to `true` if any [=recognized action=]
-declared by the `recognizedTo` property of <var>entity</var> meets all of the
-following conditions.
+Check each intermediate [=recognized entity credential=] in <var>chain</var>,
+starting next to the anchor and moving toward the first [=verifiable
+credential=]. That is, for each [=verifiable credential=] from the
+next-to-last one in <var>chain</var> back to the second one, in that order,
+let <var>intermediate</var> be that [=verifiable credential=], let
+<var>list</var> be the [=verifiable credential=] that follows it in
+<var>chain</var>, and let <var>entity</var> be the [=recognized entity=] in
+the `credentialSubject` of <var>list</var> whose `id` is the identifier of the
+[=issuer=] of <var>intermediate</var>. If <var>entity</var> has no
+`recognizedTo` property, its recognizer placed no constraint on it, so
+continue with the next [=verifiable credential=]. Otherwise, if no
+[=recognized action=] declared by the `recognizedTo` property of
+<var>entity</var> meets both of the following conditions, return
+<var>result</var>.
             <ol class="algorithm">
-              <li>
-Its `action` value is equal to <var>action</var>.
-              </li>
               <li>
 Its validity period includes <var>evaluationDateTime</var>. If it expresses
 neither a `validFrom` nor a `validUntil` property, the validity period of the
 enclosing [=recognized entity credential=] applies. If it expresses one but
 not the other, the enclosing credential's corresponding property applies to
 the unexpressed value.
-              </li>
-              <li>
-It declares no `credentialValidator`, or performing [=credential validation=],
-as described in Section [[[#credential-validation]]], on <var>credential</var>
-with the [=credential validators=] declared by its `credentialValidator`
-property, and with options whose `chain` value is every item of
-<var>chain</var> after the first, whose
-`action` value is <var>action</var>, and whose `evaluationDateTime` value is
-<var>evaluationDateTime</var>, returns a result whose <var>valid</var> value
-is `true`.
-              </li>
-            </ol>
-          </li>
-          <li>
-If <var>result.actionRecognized</var> is `false`, return <var>result</var>.
-Otherwise, check each remaining link of <var>chain</var>, from its second
-[=verifiable credential=] to its next-to-last one. For each such [=verifiable
-credential=], <var>intermediate</var>, let <var>list</var> be the [=verifiable
-credential=] that follows it in <var>chain</var>, and let <var>entity</var> be
-the [=recognized entity=] in the `credentialSubject` of <var>list</var> whose
-`id` is the identifier of the [=issuer=] of <var>intermediate</var>. If
-<var>entity</var> has no `recognizedTo` property, its recognizer placed no
-constraint on it, so continue with the next link. Otherwise, if no
-[=recognized action=] declared by the `recognizedTo` property of
-<var>entity</var> meets both of the following conditions, set
-<var>result.actionRecognized</var> to `false` and return <var>result</var>.
-            <ol class="algorithm">
-              <li>
-Its validity period includes <var>evaluationDateTime</var>, determined as in
-the previous step.
               </li>
               <li>
 It declares no `credentialValidator`, or performing [=credential validation=],
@@ -1994,20 +1968,50 @@ is `true`.
             </ol>
           </li>
           <li>
+Let <var>credential</var> be the first [=verifiable credential=] in
+<var>chain</var>, let <var>list</var> be the second, and let <var>entity</var>
+be the [=recognized entity=] in the `credentialSubject` of <var>list</var> whose
+`id` is the identifier of the [=issuer=] of <var>credential</var>. Set
+<var>result.actionRecognized</var> to `true` if any [=recognized action=]
+declared by the `recognizedTo` property of <var>entity</var> meets all of the
+following conditions.
+            <ol class="algorithm">
+              <li>
+Its `action` value is equal to <var>action</var>.
+              </li>
+              <li>
+Its validity period includes <var>evaluationDateTime</var>, determined as in
+the previous step.
+              </li>
+              <li>
+It declares no `credentialValidator`, or performing [=credential validation=],
+as described in Section [[[#credential-validation]]], on <var>credential</var>
+with the [=credential validators=] declared by its `credentialValidator`
+property, and with options whose `chain` value is every item of
+<var>chain</var> after the first, whose
+`action` value is <var>action</var>, and whose `evaluationDateTime` value is
+<var>evaluationDateTime</var>, returns a result whose <var>valid</var> value
+is `true`.
+              </li>
+            </ol>
+          </li>
+          <li>
 Return <var>result</var>.
           </li>
         </ol>
 
-        <p class="note" title="Constraints apply at every link">
-The previous step applies to each intermediate the constraints that its own
-recognizer declared, so a recognizing authority can limit what the entities it
-recognizes go on to recognize, such as the GS1 Prefixes in Section
-[[[#gs1-federated-identifier-example]]]. That step does not compare `action`
-values. What a [=recognized action=] means for the [=recognized entity
-credentials=] an intermediate issues is defined by its ecosystem and expressed
-through [=credential validators=]; a [=recognized action=] that declares no
-`credentialValidator` places no constraint on them. Constraints declared above
-the anchor that the [=verifier=] recognizes are not evaluated, because the
+        <p class="note" title="Validation runs from the anchor down the chain">
+All proofs are verified, and the chain is confirmed to end at an anchor, before
+any [=credential validator=] runs. The validators then run in order, starting
+next to the anchor and ending at the first [=verifiable credential=]. A
+validator declared by an entity runs only after that entity has passed the
+checks set by its own recognizer. A recognizing authority can use this to limit
+who the entities it recognizes can go on to recognize. The GS1 Prefixes in
+Section [[[#gs1-federated-identifier-example]]] are an example. The checks on
+intermediate credentials do not compare `action` values. Each ecosystem uses
+[=credential validators=] to say what an intermediate can recognize. A
+[=recognized action=] with no `credentialValidator` sets no limit. Limits set
+above the anchor that the [=verifier=] recognizes are not checked, because the
 chain ends at that anchor.
         </p>
 
@@ -2047,14 +2051,14 @@ back to a result in which only <var>recognized</var> is `true`.
 <dfn class="export">Credential validation</dfn> is the process by which a
 [=verifier=] determines whether a [=verifiable credential=] meets the
 constraints declared by the `credentialValidator` property of a [=recognized
-action=]. Section [[[#recognition-validation]]] runs it on the first
-[=verifiable credential=] in the chain and on each intermediate [=recognized
-entity credential=], after it has walked the chain, confirmed that each
-adjacent pair of
-[=verifiable credentials=] in the chain is related, and confirmed that the
-chain ends at an anchor that the [=verifier=] recognizes. The proof on every
-[=verifiable credential=] in the chain has already been verified, as described
-in Section [[[#algorithms]]].
+action=]. Section [[[#recognition-validation]]] runs it on each intermediate
+[=recognized entity credential=], starting next to the anchor, and then on the
+first [=verifiable credential=] in the chain. It does so only after it has
+walked the chain, confirmed that each adjacent pair of [=verifiable
+credentials=] in the chain is related, and confirmed that the chain ends at an
+anchor that the [=verifier=] recognizes. The proof on every [=verifiable
+credential=] in the chain has already been verified, as described in Section
+[[[#algorithms]]].
         </p>
 
         <p>
@@ -2184,6 +2188,9 @@ recognizes and that every adjacent pair in the chain is related. A [=verifier=]
 therefore retrieves and evaluates a [=credential validator=], including running
 any code it identifies, only when it was declared by an [=issuer=] whose
 recognition traces back to a recognition root known to the [=verifier=].
+Validators run from the anchor down the chain, so a validator runs only after
+the entity that declared it has passed the validators set by its own
+recognizer.
         </p>
 
         <section>
@@ -3065,16 +3072,18 @@ that the [=verifier=] does not need to fetch any of them.
       </p>
 
       <p>
-[=Recognition validation=] then checks every link of the assembled chain, as
-described in Section [[[#recognition-validation]]]. At the first link, the key
-credential is checked against the [=credential validator=] that GS1 Utopia
-declared for Healthy Tots. At the second link, the GS1 Utopia credential that
+[=Recognition validation=] then checks every link of the assembled chain,
+starting at the anchor, as described in Section
+[[[#recognition-validation]]]. First, the GS1 Utopia credential that
 recognizes Healthy Tots is checked against the [=credential validator=] that
 the GS1 Global Office declared for GS1 Utopia, which accepts only GS1 Company
 Prefixes that begin with `950`. GS1 Utopia licensed `9506000` to Healthy Tots,
-so the chain is accepted. Had GS1 Utopia recognized a company as the licensee
-of `9616000`, the chain would be rejected, even though every proof verifies
-and every `recognizedIn` reference resolves. A [=verifier=] that recognizes
+so that check passes. Next, the key credential is checked against the
+[=credential validator=] that GS1 Utopia declared for Healthy Tots. Had GS1
+Utopia recognized a company as the licensee of `9616000`, the chain would be
+rejected at the first check, before any validator declared by GS1 Utopia runs,
+even though every proof verifies and every `recognizedIn` reference
+resolves. A [=verifier=] that recognizes
 GS1 Utopia directly ends the chain there and does not evaluate the GS1 Global
 Office's constraint.
       </p>
