@@ -103,7 +103,7 @@ removes the threat, for example by removing the feature it exploits.
 the impact of the threat.
       </li>
       <li>
-<strong><dfn class="lint-ignore">Transfer</dfn></strong> — the response
+<strong><dfn>Transfer</dfn></strong> — the response
 makes another party responsible for handling the threat.
       </li>
       <li>
@@ -112,6 +112,11 @@ threat. The threat can be the original one, or the risk that remains after
 other responses. The response description states the details.
       </li>
     </ul>
+    <p>
+Not every element in the data flow diagram is listed by a threat. This is by
+design: the model covers the threats the Working Group chose to analyze, and an
+element is listed by a threat only when that threat applies to it.
+    </p>
 
     <section id="threat-model-description">
       <h3>Description</h3>
@@ -163,7 +168,8 @@ entity credential (O1) is issued by a list publisher (E1) to an issuer (E2),
 how the holder (E3) [=F4|presents=] a dependent verifiable credential (O2)
 alongside the recognized entity credential to a verifier (E4), and how the
 verifier [=F5|retrieves the published list=] from publisher storage (S1) to
-confirm the issuer's recognized status.
+confirm the issuer's recognized status. The diagram is deliberately kept at
+this level of detail; the Dictionary describes the steps within each process.
       </p>
 
       <img src="diagrams/dfd.svg"
@@ -229,6 +235,8 @@ national business register, or industry consortium — that issues recognized
 entity credetnials that assert that one or more entities are recognized to
 perform specific actions. The list publisher is the authority for any recognized
 entity credentials it issues.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#ecosystem-overview">Verifiable Credentials Data Model v2.0 Section 1.2: Ecosystem Overview</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">Section 3.4: RecognizedEntityCredential</a>.
             </td>
           </tr>
           <tr>
@@ -243,6 +251,8 @@ credentials to holders. This entity controls an identifier document, such as a
 CID or a DID, whose identifier appears as the <code>credentialSubject.id</code>
 of the recognized entity credential and as the <code>issuer</code> of the
 dependent verifiable credentials it produces.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#issuer">Verifiable Credentials Data Model v2.0 Section 4.7: Issuer</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity">Section 3.2: RecognizedEntity</a>.
             </td>
           </tr>
           <tr>
@@ -255,6 +265,8 @@ issuer and presents it — optionally, together with the recognized entity
 credential — to a verifier. The holder stores credentials in a software
 application, such as a digital wallet, and controls what is disclosed to
 verifiers.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#ecosystem-overview">Verifiable Credentials Data Model v2.0 Section 1.2: Ecosystem Overview</a>.
             </td>
           </tr>
           <tr>
@@ -268,6 +280,8 @@ presentation from a holder and must determine whether the issuer of that
 credential is recognized within the relevant ecosystem. The verifier is
 configured with one or more URLs that identify the list publishers, and lists,
 that it considers authoritative.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#ecosystem-overview">Verifiable Credentials Data Model v2.0 Section 1.2: Ecosystem Overview</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>.
             </td>
           </tr>
           <tr>
@@ -279,6 +293,11 @@ The process by which a list publisher vets an issuer to determine whether
 they qualify for inclusion in a list, and, if so, creates and
 cryptographically signs a new <code>RecognizedEntityCredential</code>,
 applying the publisher's private key material to produce a verifiable proof.
+The output of this process is a signed [=O1|recognized entity credential=],
+delivered to the issuer through [=F2|Issue Recognized Entity Credential=] and
+passed to [=P2|Publish List=] for publication in [=S1|Publisher Storage=].
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">Section 3.4: RecognizedEntityCredential</a>; ecosystem governance (applicant vetting).
             </td>
           </tr>
           <tr>
@@ -288,7 +307,12 @@ applying the publisher's private key material to produce a verifiable proof.
             <td>
 The process by which a list publisher makes a signed
 <code>RecognizedEntityCredential</code> publicly available, typically
-via HTTPS, so that verifiers can retrieve it.
+via HTTPS, so that verifiers can retrieve it. In a private ecosystem, the
+publisher restricts who can retrieve it, and confidentiality then depends on
+every recipient; see <a href="#harms-by-association">Harms by
+Association</a>.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentity">Section 3.2: RecognizedEntity</a>; deployment (hosting).
             </td>
           </tr>
           <tr>
@@ -300,6 +324,8 @@ The process by which a verifier is configured with one or more recognized entity
 list publishers — the URLs or DIDs of list publishers whose recognized entity
 credentials the verifier will accept as authoritative, or recognized entity
 lists.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#credential-based-discovery">Section 4.1: Credential-based Discovery</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#identifier-based-discovery">Section 4.2: Identifier-based Discovery</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>; deployment (trust anchor configuration).
             </td>
           </tr>
           <tr>
@@ -312,6 +338,8 @@ verifiable credential to a holder. This process uses the issuer's private
 key material to produce a cryptographic proof over the credential. The process
 can optionally also result in the delivery of a recognized entity credential
 to the holder.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#verifiable-credentials">Verifiable Credentials Data Model v2.0 Section 4.2: Verifiable Credentials</a>; <a href="https://www.w3.org/TR/vc-data-model-2.0/#securing-mechanisms">Verifiable Credentials Data Model v2.0 Section 4.12: Securing Mechanisms</a>.
             </td>
           </tr>
           <tr>
@@ -323,6 +351,8 @@ P5 Credential Presentation</dfn>
 The process by which a holder assembles and transmits a
 credential presentation — containing the dependent verifiable credential
 and optionally a recognized entity credential — to a verifier.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#verifiable-presentations">Verifiable Credentials Data Model v2.0 Section 4.13: Verifiable Presentations</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#holder-based-delivery">Section D.3: Holder-Based Delivery</a>.
             </td>
           </tr>
           <tr>
@@ -331,11 +361,21 @@ and optionally a recognized entity credential — to a verifier.
 P6 Validate Credential(s)</dfn>
             </td>
             <td>
-The process by which a verifier checks the cryptographic proof
-of a presented dependent verifiable credential, resolves the issuer's
-recognized entity credential, and confirms that the issuer is recognized
-within a configured list. This process may involve fetching recognized
-entity credentials from external URLs or from holder-provided presentations.
+The process by which a verifier checks the cryptographic proof of a presented
+dependent verifiable credential, discovers the recognized entity credentials
+that might recognize its issuer, and validates the resulting recognition chain.
+Discovery takes one of three forms. Credential-based discovery follows
+<code>recognizedIn</code> references and retrieves each list through
+[=F5|Retrieve List=]. Identifier-based discovery resolves the issuer's
+identifier to an identifier document, selects the <code>WhoisService</code>
+declared there, and retrieves the presentation published at its service
+endpoint; the issuer controls both the document and the presentation. In
+holder-based delivery, the holder supplies the credentials through
+[=F4|Present Credential(s)=]. Recognition validation then checks each link of
+the chain, the trust anchor at its end, and the action and schema the issuer
+is recognized for.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#verification">Verifiable Credentials Data Model v2.0 Section 7.1: Verification</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#credential-based-discovery">Section 4.1: Credential-based Discovery</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#identifier-based-discovery">Section 4.2: Identifier-based Discovery</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>.
             </td>
           </tr>
           <tr>
@@ -346,6 +386,8 @@ entity credentials from external URLs or from holder-provided presentations.
 The process by which a list publisher modifies an existing
 <code>RecognizedEntityCredential</code> — for example to add, remove, or
 revoke recognized entities — and re-publishes the updated credential.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">Section 3.4: RecognizedEntityCredential</a>; deployment (hosting); ecosystem governance (revocation decisions).
             </td>
           </tr>
           <tr>
@@ -357,7 +399,11 @@ revoke recognized entities — and re-publishes the updated credential.
 The data flow by which an issuer provides identity and vetting information
 to the list publisher's [=P1|Create List=] process, so that the publisher
 can determine whether to include the issuer in a recognized entity
-credential.
+credential. The list publisher vets this evidence under its governance
+framework; see <a href="#admission-on-false-evidence">Admission on False
+Evidence</a>.
+<br>
+<strong>Defined by:</strong> ecosystem governance (application and evidence).
             </td>
           </tr>
           <tr>
@@ -370,6 +416,8 @@ The data flow by which a list publisher delivers a signed
 <code>RecognizedEntityCredential</code> to an issuer. This credential
 asserts that the issuer's DID is recognized to perform one or more
 specific actions within the relevant ecosystem.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">Section 3.4: RecognizedEntityCredential</a>.
             </td>
           </tr>
           <tr>
@@ -382,6 +430,8 @@ F3 Issue Credential(s)</dfn>
 The data flow by which an issuer delivers a signed dependent verifiable
 credential to a holder. The credential contains the issuer's DID as its
 <code>issuer</code> value.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#verifiable-credentials">Verifiable Credentials Data Model v2.0 Section 4.2: Verifiable Credentials</a>.
             </td>
           </tr>
           <tr>
@@ -394,6 +444,8 @@ The data flow by which a holder presents a dependent verifiable credential
 — and optionally a recognized entity credential — to a verifier. This
 flow crosses a security boundary between the [=C3|holder's system=] and the
 [=C4|verifier's system=].
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#verifiable-presentations">Verifiable Credentials Data Model v2.0 Section 4.13: Verifiable Presentations</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#holder-based-delivery">Section D.3: Holder-Based Delivery</a>.
             </td>
           </tr>
           <tr>
@@ -401,10 +453,17 @@ flow crosses a security boundary between the [=C3|holder's system=] and the
               <dfn data-lt="F5|Retrieve List">F5 Retrieve List</dfn>
             </td>
             <td>
-The data flow by which a verifier retrieves a recognized entity credential
-directly from the [=C1|list publisher's server=], either to confirm an
-issuer's current status or to obtain a more recent version of the
-credential than the one provided by the holder.
+The data flow by which [=P6|Validate Credential(s)=] requests, and receives in
+response, resources referenced by a recognized entity credential: the list
+named by a <code>recognizedIn</code> property, the schemas named by an
+<code>outputValidation</code> property, and other referenced resources. They
+come from [=S1|Publisher Storage=] or other endpoints the list publisher
+controls, and every retrieval is subject to the verifier's retrieval policy.
+The verifier uses this flow to confirm an issuer's current status or to obtain
+a more recent credential than the one provided by the holder. The single arrow
+in the diagram represents both the request and the response.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#credential-based-discovery">Section 4.1: Credential-based Discovery</a>; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#dfn-retrieval-policy">retrieval policy</a> in <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>.
             </td>
           </tr>
           <tr>
@@ -415,7 +474,9 @@ credential than the one provided by the holder.
 The persistent storage within the [=C1|publisher system=] where recognized
 entity credentials are kept and made available for retrieval. This store is
 managed by the list publisher and is typically accessible to the public
-via HTTPS.
+via HTTPS. In a private ecosystem, access to this store is restricted.
+<br>
+<strong>Defined by:</strong> deployment (hosting).
             </td>
           </tr>
           <tr>
@@ -428,6 +489,8 @@ The persistent storage within the [=C3|holder's system=] where dependent
 verifiable credentials and recognized entity credentials are kept. This
 storage is accessible only to the holder's software within the
 [=C3|holder system=] boundary.
+<br>
+<strong>Defined by:</strong> deployment (holder software, such as a digital wallet).
             </td>
           </tr>
           <tr>
@@ -440,6 +503,8 @@ A cryptographically-signed data object issued by a list publisher to an
 issuer. It asserts that the issuer's DID is recognized to perform one or
 more actions — such as issuing or verifying specific types of verifiable
 credentials — within the ecosystem governed by the list publisher.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognizedentitycredential">Section 3.4: RecognizedEntityCredential</a>.
             </td>
           </tr>
           <tr>
@@ -453,6 +518,8 @@ holder. The credential asserts claims about the holder and is signed with
 the issuer's private key. Its trustworthiness depends on the issuer
 holding a valid recognized entity credential (O1), making it a
 "dependent" verifiable credential.
+<br>
+<strong>Defined by:</strong> <a href="https://www.w3.org/TR/vc-data-model-2.0/#verifiable-credentials">Verifiable Credentials Data Model v2.0 Section 4.2: Verifiable Credentials</a>; <a href="https://www.w3.org/TR/vc-data-model-2.0/#credential-subject">Verifiable Credentials Data Model v2.0 Section 4.8: Credential Subject</a>.
             </td>
           </tr>
           <tr>
@@ -464,6 +531,8 @@ The system boundary — typically a web server or DID-linked resource host —
 managed by the list publisher. It runs the [=P1|Create List=],
 [=P2|Publish List=], and [=P7|Update List=] processes and maintains
 Publisher Storage (S1) from which recognized entity credentials are served.
+<br>
+<strong>Defined by:</strong> deployment.
             </td>
           </tr>
           <tr>
@@ -476,6 +545,8 @@ The system boundary — typically a server or service operated by the issuer —
 that manages the issuer's credentials, keys, and DID. It runs the
 [=P4|Credential Issuance=] process and holds the recognized entity
 credential issued to the issuer.
+<br>
+<strong>Defined by:</strong> deployment.
             </td>
           </tr>
           <tr>
@@ -487,6 +558,8 @@ The system boundary — typically a mobile or desktop application — that manag
 the holder's credentials, keys, and DID. All credential storage (S2) and
 [=P5|Credential Presentation=] logic runs within this system boundary, which is
 under the holder's control.
+<br>
+<strong>Defined by:</strong> deployment.
             </td>
           </tr>
           <tr>
@@ -498,6 +571,8 @@ The system boundary — typically an automated verification service or
 human-operated review system — that runs the [=P3|Configure Verifier=] and
 [=P6|Validate Credential(s)=] processes. It is configured with trust
 anchors identifying authoritative list publishers.
+<br>
+<strong>Defined by:</strong> deployment; <a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#algorithms">Section 4: Algorithms</a>.
             </td>
           </tr>
         </tbody>

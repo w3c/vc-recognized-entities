@@ -43,6 +43,7 @@ categories:
       - harms-by-association.yaml
       - compromise-of-recognized-entity-identifier.yaml
       - verifier-trust-anchor-misconfiguration.yaml
+      - admission-on-false-evidence.yaml
   - name: Dependency Threats
     id: threat-model-dependency-threats
     threats:
