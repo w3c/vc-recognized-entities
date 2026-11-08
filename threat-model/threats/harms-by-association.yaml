@@ -20,8 +20,7 @@ tags: [privacy]
 taxonomyName: STRIDE
 taxonomyClass: Information Disclosure
 response:
-  - id: R7
-    name: Scoping and Distribution Controls for Sensitive Ecosystems
+  - name: Scoping and Distribution Controls for Sensitive Ecosystems
     type: Accept
     description: >-
       The specification cannot prevent a [=E3|holder=] or [=E4|verifier=] from

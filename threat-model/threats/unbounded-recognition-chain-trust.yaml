@@ -22,8 +22,7 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Elevation of Privilege
 response:
-  - id: R12
-    name: Chain Depth Limits and Per-Link Validation
+  - name: Chain Depth Limits and Per-Link Validation
     type: Reduce
     description: >-
       [=E4|Verifiers=] enforce a maximum depth limit, <code>maxDepth</code>,
