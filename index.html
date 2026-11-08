@@ -2102,8 +2102,11 @@ credential=] issued by the anchor that the [=verifier=] recognizes. The
             <tr>
               <td>action</td>
               <td>
-The [=string=] value of the `action` property of the [=recognized action=]
-being evaluated, such as `issue`.
+The action, such as `issue`, that the [=verifier=] is checking for the first
+[=verifiable credential=] in the chain, as described in Section
+[[[#recognition-validation]]]. Every [=credential validator=] in the chain
+receives the same value, including those that validate an intermediate
+[=recognized entity credential=].
               </td>
             </tr>
             <tr>
