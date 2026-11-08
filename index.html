@@ -1445,6 +1445,13 @@ never reaches a member of <var>recognizedIssuers</var> is still returned, and
 Section [[[#recognition-validation]]] rejects it.
         </p>
 
+        <p class="note" title="Discovery does not check intermediate constraints">
+This algorithm follows `recognizedIn` references and does not read
+`recognizedTo`. Section [[[#recognition-validation]]] evaluates, at every link
+of the returned <var>chain</var>, the constraints that each recognizer
+declared for the entity it recognizes.
+        </p>
+
         <p class="note" title="This algorithm can run within a caller's time budget">
 <var>maxDepth</var> bounds this algorithm on its own. When
 [=identifier-based discovery=] invokes it, its retrievals also count against
@@ -1668,6 +1675,14 @@ traversal order, so the same [=verifiable presentation=] can succeed for one
 established nothing about the [=issuer=]. The error says the budget was
 exceeded, not that recognition failed, so a [=verifier=] can retry with a
 larger <var>maxDuration</var>.
+        </p>
+
+        <p class="note" title="Discovery does not check intermediate constraints">
+This algorithm assembles candidate chains and does not read `recognizedTo`.
+Section [[[#recognition-validation]]] evaluates, at every link of each
+returned chain, the constraints that each recognizer declared for the entity
+it recognizes. A candidate chain that fails those checks is not used, even
+though discovery returned it.
         </p>
 
         <ol class="algorithm">
