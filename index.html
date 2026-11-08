@@ -1943,27 +1943,26 @@ let <var>intermediate</var> be that [=verifiable credential=], let
 the `credentialSubject` of <var>list</var> whose `id` is the identifier of the
 [=issuer=] of <var>intermediate</var>. If <var>entity</var> has no
 `recognizedTo` property, its recognizer placed no constraint on it, so
-continue with the next [=verifiable credential=]. Otherwise, if no
-[=recognized action=] declared by the `recognizedTo` property of
-<var>entity</var> meets both of the following conditions, return
-<var>result</var>.
+continue with the next [=verifiable credential=]. Otherwise, do the following.
             <ol class="algorithm">
               <li>
-Its validity period includes <var>evaluationDateTime</var>. If it expresses
-neither a `validFrom` nor a `validUntil` property, the validity period of the
-enclosing [=recognized entity credential=] applies. If it expresses one but
-not the other, the enclosing credential's corresponding property applies to
-the unexpressed value.
+Let <var>actions</var> be the [=recognized actions=] declared by the
+`recognizedTo` property of <var>entity</var> whose validity period includes
+<var>evaluationDateTime</var>. If a [=recognized action=] expresses neither a
+`validFrom` nor a `validUntil` property, the validity period of the enclosing
+[=recognized entity credential=] applies. If it expresses one but not the
+other, the enclosing credential's corresponding property applies to the
+unexpressed value. If <var>actions</var> is empty, return <var>result</var>.
               </li>
               <li>
-It declares no `credentialValidator`, or performing [=credential validation=],
-as described in Section [[[#credential-validation]]], on
-<var>intermediate</var> with the [=credential validators=] declared by its
-`credentialValidator` property, and with options whose `chain` value is every
-item of <var>chain</var> after <var>intermediate</var>, whose `action` value
-is <var>action</var>, and whose `evaluationDateTime` value is
-<var>evaluationDateTime</var>, returns a result whose <var>valid</var> value
-is `true`.
+For each [=recognized action=] in <var>actions</var> that declares a
+`credentialValidator`, perform [=credential validation=], as described in
+Section [[[#credential-validation]]], on <var>intermediate</var> with the
+[=credential validators=] declared by its `credentialValidator` property, and
+with options whose `chain` value is every item of <var>chain</var> after
+<var>intermediate</var>, whose `action` value is <var>action</var>, and whose
+`evaluationDateTime` value is <var>evaluationDateTime</var>. If the result's
+<var>valid</var> value is not `true`, return <var>result</var>.
               </li>
             </ol>
           </li>
@@ -2009,8 +2008,12 @@ checks set by its own recognizer. A recognizing authority can use this to limit
 who the entities it recognizes can go on to recognize. The GS1 Prefixes in
 Section [[[#gs1-federated-identifier-example]]] are an example. The checks on
 intermediate credentials do not compare `action` values. Each ecosystem uses
-[=credential validators=] to say what an intermediate can recognize. A
-[=recognized action=] with no `credentialValidator` sets no limit. Limits set
+[=credential validators=] to say what an intermediate can recognize. At an
+intermediate credential, every [=recognized action=] that is valid at the
+evaluation time has to pass, so adding another action cannot bypass a limit.
+A validator meant for one kind of credential therefore needs to accept the
+kinds of credential it does not limit. A [=recognized action=] with no
+`credentialValidator` sets no limit of its own. Limits set
 above the anchor that the [=verifier=] recognizes are not checked, because the
 chain ends at that anchor.
         </p>
