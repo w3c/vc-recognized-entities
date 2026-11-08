@@ -1,0 +1,37 @@
+name: Admission on False Evidence
+summary: >-
+  A list publisher that admits an entity on false identity or eligibility
+  evidence issues a valid [=recognized entity credential=] for it, and no
+  signature check performed by a [=verifier=] can detect the false basis.
+description: >-
+  An [=E2|issuer=] applying for recognition provides identity and eligibility
+  evidence to the [=E1|list publisher=] through [=F1|Identify Entity=]. If that
+  evidence is false — a forged registration document, a misrepresented
+  accreditation, or an applicant impersonating a legitimate organization — and
+  [=P1|Create List=] accepts it, the [=E1|list publisher=] correctly signs a
+  [=O1|recognized entity credential=] for an entity that does not qualify.
+  Every downstream check succeeds: the proof is valid, the chain is well
+  formed, and the trust anchor is trusted. The specification defines no
+  process for vetting applicants, so detection depends on the [=E1|list
+  publisher=].
+elements: [E1, E2, F1, P1, O1]
+tags: [security]
+taxonomyName: STRIDE
+taxonomyClass: Spoofing
+response:
+  - name: Applicant Vetting Under Governance
+    type: Transfer
+    description: >-
+      Responsibility for detecting false evidence is transferred to the
+      [=E1|list publisher=], which vets applicant evidence under its
+      ecosystem's governance framework before [=P1|Create List=] signs a
+      credential. Governance frameworks define the evidence required for each
+      kind of recognition and how it is checked, such as against authoritative
+      registers or accreditation records. When false evidence is discovered
+      after issuance, the [=E1|list publisher=] withdraws recognition through
+      [=P7|Update List=].
+    supportedBy: []
+    responsible: [list publishers, ecosystem governance]
+    remainingRisk: >-
+      Verifiers inherit any vetting failure and cannot detect it from the
+      credential.
