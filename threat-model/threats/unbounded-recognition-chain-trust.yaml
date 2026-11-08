@@ -42,8 +42,12 @@ response:
       governance configuration. A recognizer can attach rules, called
       credential validators, to each entity it recognizes. During
       [=recognition validation=], [=E4|verifiers=] run those rules on every
-      credential in the chain. This lets a [=E1|list publisher=] limit who
-      the entities it recognizes can go on to recognize. Two gaps remain. A
+      credential in the chain. They first confirm that the chain reaches a
+      trust anchor. Then they start next to the anchor and work down the
+      chain. An entity in the middle of the chain might be recognized for
+      more than one action. Every one of those actions has to pass its rules.
+      This lets a [=E1|list publisher=] limit who the entities it recognizes
+      can go on to recognize. Two gaps remain. A
       recognizer that attaches no rules sets no limits. And a [=E4|verifier=]
       that trusts an entity in the middle of the chain stops checking there.
       It does not run the rules set above that entity.

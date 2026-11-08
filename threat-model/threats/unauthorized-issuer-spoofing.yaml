@@ -39,4 +39,5 @@ response:
       catch a chain that misleads without forgery. A recognizer can attach
       rules, called credential validators, to each entity it recognizes.
       [=Recognition validation=] runs those rules on every credential in the
-      chain, not just the first one.
+      chain, not just the first one. It starts next to the trust anchor and
+      works down the chain.

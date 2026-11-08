@@ -1449,7 +1449,8 @@ Section [[[#recognition-validation]]] rejects it.
 This algorithm follows `recognizedIn` references. It does not read
 `recognizedTo`. A recognizer can attach [=credential validators=] to each
 entity it recognizes. Section [[[#recognition-validation]]] runs those
-validators on every credential in the returned <var>chain</var>.
+validators on every credential in the returned <var>chain</var>. It starts
+next to the anchor and works down the chain.
         </p>
 
         <p class="note" title="This algorithm can run within a caller's time budget">
@@ -1681,7 +1682,8 @@ larger <var>maxDuration</var>.
 This algorithm builds candidate chains. It does not read `recognizedTo`. A
 recognizer can attach [=credential validators=] to each entity it recognizes.
 Section [[[#recognition-validation]]] runs those validators on every
-credential in each returned chain. A chain that fails is not used.
+credential in each returned chain. It starts next to the anchor and works down
+the chain. A chain that fails is not used.
         </p>
 
         <ol class="algorithm">
