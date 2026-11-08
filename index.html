@@ -1867,7 +1867,9 @@ indicating whether the [=issuer=] of the first [=verifiable credential=] in
 <var>recognizedIssuers</var>, and <var>actionRecognized</var>, indicating
 whether that [=issuer=] is recognized to perform <var>action</var> and, where a
 [=recognized action=] declares a `credentialValidator`, whether the [=verifiable
-credential=] conforms to it.
+credential=] conforms to it. <var>actionRecognized</var> also requires that
+each [=recognized entity credential=] in the chain meets the constraints that
+its own recognizer declared.
         </p>
 
         <p>
@@ -1962,9 +1964,52 @@ is `true`.
             </ol>
           </li>
           <li>
+If <var>result.actionRecognized</var> is `false`, return <var>result</var>.
+Otherwise, check each remaining link of <var>chain</var>, from its second
+[=verifiable credential=] to its next-to-last one. For each such [=verifiable
+credential=], <var>intermediate</var>, let <var>list</var> be the [=verifiable
+credential=] that follows it in <var>chain</var>, and let <var>entity</var> be
+the [=recognized entity=] in the `credentialSubject` of <var>list</var> whose
+`id` is the identifier of the [=issuer=] of <var>intermediate</var>. If
+<var>entity</var> has no `recognizedTo` property, its recognizer placed no
+constraint on it, so continue with the next link. Otherwise, if no
+[=recognized action=] declared by the `recognizedTo` property of
+<var>entity</var> meets both of the following conditions, set
+<var>result.actionRecognized</var> to `false` and return <var>result</var>.
+            <ol class="algorithm">
+              <li>
+Its validity period includes <var>evaluationDateTime</var>, determined as in
+the previous step.
+              </li>
+              <li>
+It declares no `credentialValidator`, or performing [=credential validation=],
+as described in Section [[[#credential-validation]]], on
+<var>intermediate</var> with the [=credential validators=] declared by its
+`credentialValidator` property, and with options whose `chain` value is every
+item of <var>chain</var> after <var>intermediate</var>, whose `action` value
+is <var>action</var>, and whose `evaluationDateTime` value is
+<var>evaluationDateTime</var>, returns a result whose <var>valid</var> value
+is `true`.
+              </li>
+            </ol>
+          </li>
+          <li>
 Return <var>result</var>.
           </li>
         </ol>
+
+        <p class="note" title="Constraints apply at every link">
+The previous step applies to each intermediate the constraints that its own
+recognizer declared, so a recognizing authority can limit what the entities it
+recognizes go on to recognize, such as the GS1 Prefixes in Section
+[[[#gs1-federated-identifier-example]]]. That step does not compare `action`
+values. What a [=recognized action=] means for the [=recognized entity
+credentials=] an intermediate issues is defined by its ecosystem and expressed
+through [=credential validators=]; a [=recognized action=] that declares no
+`credentialValidator` places no constraint on them. Constraints declared above
+the anchor that the [=verifier=] recognizes are not evaluated, because the
+chain ends at that anchor.
+        </p>
 
         <p class="note" title="Recognition and action recognition are distinct outcomes">
 A result in which <var>recognized</var> is `true` and
@@ -2002,8 +2047,10 @@ back to a result in which only <var>recognized</var> is `true`.
 <dfn class="export">Credential validation</dfn> is the process by which a
 [=verifier=] determines whether a [=verifiable credential=] meets the
 constraints declared by the `credentialValidator` property of a [=recognized
-action=]. Section [[[#recognition-validation]]] runs it as its final check,
-after it has walked the chain, confirmed that each adjacent pair of
+action=]. Section [[[#recognition-validation]]] runs it on the first
+[=verifiable credential=] in the chain and on each intermediate [=recognized
+entity credential=], after it has walked the chain, confirmed that each
+adjacent pair of
 [=verifiable credentials=] in the chain is related, and confirmed that the
 chain ends at an anchor that the [=verifier=] recognizes. The proof on every
 [=verifiable credential=] in the chain has already been verified, as described
