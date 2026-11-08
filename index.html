@@ -1860,7 +1860,8 @@ To perform [=recognition validation=] on a chain (<var>chain</var>) produced
 by any discovery mechanism, for a specific action (<var>action</var>, for
 example `issue`), against a configured set of recognized [=issuers=]
 (<var>recognizedIssuers</var>), at an evaluation time
-(<var>evaluationDateTime</var>), a [=verifier=] runs the following algorithm. The
+(<var>evaluationDateTime</var>), within a time budget
+(<var>maxDuration</var>), a [=verifier=] runs the following algorithm. The
 algorithm returns a result with two boolean outcomes: <var>recognized</var>,
 indicating whether the [=issuer=] of the first [=verifiable credential=] in
 <var>chain</var> is ultimately recognized by a member of
@@ -1869,7 +1870,30 @@ whether that [=issuer=] is recognized to perform <var>action</var> and, where a
 [=recognized action=] declares a `credentialValidator`, whether the [=verifiable
 credential=] conforms to it. <var>actionRecognized</var> also requires that
 each [=recognized entity credential=] in the chain meets the constraints that
-its own recognizer declared.
+its own recognizer declared. The result also contains the <var>errors</var>
+and <var>warnings</var> that [=credential validation=] reported.
+        </p>
+
+        <p>
+<var>maxDuration</var> bounds the total elapsed time of one recognition
+validation, measured from when the algorithm starts. It covers every
+[=credential validation=] the algorithm performs, however many links, actions,
+and validators the chain contains. It applies whether the chain came from
+discovery or from a [=holder=]. A [=verifier=] that ran discovery first passes
+the time that remains of the discovery budget. When the budget runs out, the
+[=verifier=] stops any validator that is still running.
+        </p>
+
+        <p>
+Each time this algorithm performs [=credential validation=], it appends the
+errors and warnings in that result to <var>result.errors</var> and
+<var>result.warnings</var>. If those errors include a
+<a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a>, or the elapsed
+time exceeds <var>maxDuration</var>, the algorithm raises a
+<a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying the
+limit instead of returning <var>result</var>. A caller can therefore tell a
+budget that ran out from a constraint that failed, and can retry with a larger
+<var>maxDuration</var>.
         </p>
 
         <p>
@@ -1884,8 +1908,9 @@ that value bounds.
 
         <ol class="algorithm">
           <li>
-Let <var>result</var> be a structure with <var>recognized</var> set to `false`
-and <var>actionRecognized</var> set to `false`.
+Let <var>result</var> be a structure with <var>recognized</var> set to `false`,
+<var>actionRecognized</var> set to `false`, and <var>errors</var> and
+<var>warnings</var> each set to an empty list.
           </li>
           <li>
 If <var>chain</var> contains fewer than two [=verifiable credentials=], return
