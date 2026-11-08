@@ -2065,9 +2065,43 @@ producing an <var>actionRecognized</var> value of `false`.
 A discovery mechanism can produce more than one candidate chain, as
 [=identifier-based discovery=] does when an [=issuer=] publishes [=recognized
 entity credentials=] from more than one recognizing authority. A [=verifier=]
-runs this algorithm on each candidate chain and uses the first result in which
-both <var>recognized</var> and <var>actionRecognized</var> are `true`, falling
-back to a result in which only <var>recognized</var> is `true`.
+chooses among them as follows. The order of the chains does not change the
+outcome.
+        </p>
+
+        <ol class="algorithm">
+          <li>
+Run this algorithm on each candidate chain. All of the runs share one time
+budget, and each run receives the time that remains. The [=verifier=] can stop
+as soon as a result has both <var>recognized</var> and
+<var>actionRecognized</var> set to `true`.
+          </li>
+          <li>
+If any result has both <var>recognized</var> and <var>actionRecognized</var>
+set to `true`, the [=issuer=] is recognized to perform the action. Use that
+result.
+          </li>
+          <li>
+Otherwise, if any run raised an error, such as a
+<a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a>, raise that error.
+That chain might have succeeded, so the [=verifier=] cannot conclude that the
+[=issuer=] is not recognized.
+          </li>
+          <li>
+Otherwise, if any result has <var>recognized</var> set to `true`, the
+[=issuer=] is recognized, but not to perform the action. Use that result.
+          </li>
+          <li>
+Otherwise, the [=issuer=] is not recognized. Use any of the results.
+          </li>
+        </ol>
+
+        <p>
+If more than one result qualifies at a step, any of them can be used. They
+establish the same thing, although their errors and warnings can differ.
+Whether the shared budget runs out can depend on network conditions and on
+the order in which the chains are run, as described in Section
+[[[#identifier-based-discovery]]].
         </p>
 
       </section>
