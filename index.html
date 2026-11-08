@@ -2879,7 +2879,8 @@ In the first example below, the GS1 Global Office publishes a [=recognized
 entity credential=] recognizing a Member Organization, GS1 Utopia, as the
 licensee of GS1 Prefix `950`. The `credentialValidator` property constrains GS1
 Utopia to issuing credentials that conform to a GS1 Company Prefix Licence
-credential schema specific to GS1 Prefix `950`.
+credential schema specific to GS1 Prefix `950`, which accepts only GS1 Company
+Prefixes that begin with `950`.
       </p>
 
       <pre class="example" title="GS1 Global Office recognizes a GS1 Member Organization">
@@ -3061,6 +3062,21 @@ discovery terminates there, completing a recognition chain from a single trade
 item to the root of the GS1 federation. A [=holder=], such as the product's
 distributor, might staple all three credentials into a single presentation so
 that the [=verifier=] does not need to fetch any of them.
+      </p>
+
+      <p>
+[=Recognition validation=] then checks every link of the assembled chain, as
+described in Section [[[#recognition-validation]]]. At the first link, the key
+credential is checked against the [=credential validator=] that GS1 Utopia
+declared for Healthy Tots. At the second link, the GS1 Utopia credential that
+recognizes Healthy Tots is checked against the [=credential validator=] that
+the GS1 Global Office declared for GS1 Utopia, which accepts only GS1 Company
+Prefixes that begin with `950`. GS1 Utopia licensed `9506000` to Healthy Tots,
+so the chain is accepted. Had GS1 Utopia recognized a company as the licensee
+of `9616000`, the chain would be rejected, even though every proof verifies
+and every `recognizedIn` reference resolves. A [=verifier=] that recognizes
+GS1 Utopia directly ends the chain there and does not evaluate the GS1 Global
+Office's constraint.
       </p>
 
       </section>
