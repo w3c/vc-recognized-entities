@@ -1683,7 +1683,10 @@ This algorithm builds candidate chains. It does not read `recognizedTo`. A
 recognizer can attach [=credential validators=] to each entity it recognizes.
 Section [[[#recognition-validation]]] runs those validators on every
 credential in each returned chain. It starts next to the anchor and works down
-the chain. A chain that fails is not used.
+the chain. A chain whose validators fail still shows that the [=issuer=] is
+recognized. It does not show that the [=issuer=] is recognized to perform the
+requested action. Section [[[#recognition-validation]]] explains how a
+[=verifier=] chooses among the results of several chains.
         </p>
 
         <ol class="algorithm">
