@@ -41,4 +41,6 @@ response:
       credential validator, to that entity. The rule rejects [=O1|recognized
       entity credentials=], or limits what they can say. [=Recognition
       validation=] runs the rule on every credential that entity issues in
-      the chain.
+      the chain. The entity might be recognized for other actions too. Every
+      one of those actions has to pass its rules, so another action cannot
+      get around this one.
