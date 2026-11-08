@@ -44,6 +44,7 @@ categories:
       - compromise-of-recognized-entity-identifier.yaml
       - verifier-trust-anchor-misconfiguration.yaml
       - anti-competitive-list-gatekeeping.yaml
+      - admission-on-false-evidence.yaml
   - name: Dependency Threats
     id: threat-model-dependency-threats
     threats:
