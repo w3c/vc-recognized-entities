@@ -17,7 +17,8 @@ description: >-
   finance or product conformity assessment, where a fraudulent issuer could
   cause significant economic harm. A chain can also mislead even when nothing
   is forged. Every signature checks out. But an entity in the middle of the
-  chain recognizes someone that its own recognizer never meant it to.
+  chain recognizes someone that its own recognizer does not explicitly
+  or transitively recognize.
 elements: [F4, F5, O2, O1]
 tags: [security]
 taxonomyName: STRIDE
@@ -39,5 +40,5 @@ response:
       catch a chain that misleads without forgery. A recognizer can attach
       rules, called credential validators, to each entity it recognizes.
       [=Recognition validation=] runs those rules on every credential in the
-      chain, not just the first one. It starts next to the trust anchor and
+      chain, not just the first one. It starts next to the recognition anchor and
       works down the chain.
