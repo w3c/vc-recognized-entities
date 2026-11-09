@@ -36,7 +36,7 @@ response:
       Verifier=]. [=E4|Verifiers=] treat unknown, overly broad, or undefined
       action values as grounds for rejection during [=P6|Validate
       Credential(s)=] rather than falling back to permissive defaults. A
-      [=E1|list publisher=] might not want an entity to recognize others. In
+      [=E1|list publisher=] might not recognize an entity to recognize others. In
       that case, the [=E1|list publisher=] attaches a rule, called a
       credential validator, to that entity. The rule rejects [=O1|recognized
       entity credentials=], or limits what they can say. [=Recognition
