@@ -2243,7 +2243,7 @@ to `false` if <var>credential</var> does not conform to the JSON Schema
 [[JSON-SCHEMA]] identified by the `id` property of <var>validator</var>.
               </li>
               <li>
-If the `mediaType` is `text/javascript`, let <var>validatorResult</var> be the
+Otherwise, if the `mediaType` is `text/javascript`, let <var>validatorResult</var> be the
 result of running the algorithm in Section
 [[[#javascript-validator-processing]]] on <var>validator</var>,
 <var>credential</var>, and <var>options</var>. Append the items of
