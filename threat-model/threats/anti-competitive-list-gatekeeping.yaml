@@ -14,7 +14,13 @@ description: >-
   business interests. Conversely, a [=E1|list publisher=] can also be coerced
   by governments or other powerful actors into revoking the recognition of
   legitimate entities, effectively censoring them from the ecosystem.
-elements: [E1, F2, O1]
+  The threat lies in the [=E1|list publisher=]'s admission and revocation
+  policy ([=P1|Create List=], [=P7|Update List=]) and in a [=E4|verifier=]
+  configured with a single trust anchor ([=P3|Configure Verifier=]). It is an
+  External Threat because the specification cannot compel a [=E1|list
+  publisher=] to recognize an entity, and a Denial of Service because the
+  excluded [=E2|issuer=] is denied participation in the ecosystem.
+elements: [E1, E2, E4, P1, P3, P7, F2, O1]
 tags: [market competition]
 taxonomyName: STRIDE
 taxonomyClass: Denial of Service
