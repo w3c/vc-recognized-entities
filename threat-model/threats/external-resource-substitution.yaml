@@ -5,7 +5,7 @@ summary: >-
   DNS hijacking when the reference is not integrity-protected.
 description: >-
   A [=O1|recognized entity credential=] may reference external resources —
-  such as <code>outputValidation</code> schema files or governance documents
+  such as <code>credentialValidator</code> schema files or governance documents
   — via URL. If those URLs are not integrity-protected, an attacker can
   substitute malicious content through any of three mechanisms: (1)
   compromising the hosting server directly and altering the files in

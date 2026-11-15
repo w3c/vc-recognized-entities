@@ -238,7 +238,7 @@ single authority)
             <td>
 An entity — such as an individual, club, organization, accreditation authority,
 national business register, or industry consortium — that issues recognized
-entity credetnials that assert that one or more entities are recognized to
+entity credentials that assert that one or more entities are recognized to
 perform specific actions. The list publisher is the authority for any recognized
 entity credentials it issues.
 <br>
@@ -250,7 +250,7 @@ entity credentials it issues.
               <dfn data-lt="E2|Issuer">E2 Issuer</dfn>
             </td>
             <td>
-An entity — such as an individual, club university, trade exporter, or a
+An entity — such as an individual, club, university, trade exporter, or a
 conformity assessment body — that has been granted a recognized entity
 credential by a list publisher and uses it to issue dependent verifiable
 credentials to holders. This entity controls an identifier document, such as a
@@ -462,8 +462,8 @@ flow crosses a security boundary between the [=C3|holder's system=] and the
             <td>
 The data flow by which [=P6|Validate Credential(s)=] requests, and receives in
 response, resources referenced by a recognized entity credential: the list
-named by a <code>recognizedIn</code> property, the schemas named by an
-<code>outputValidation</code> property, and other referenced resources. They
+named by a <code>recognizedIn</code> property, the files named by a
+<code>credentialValidator</code> property, and other referenced resources. They
 come from [=S1|Publisher Storage=] or other endpoints the list publisher
 controls, and every retrieval is subject to the verifier's retrieval policy.
 The verifier uses this flow to confirm an issuer's current status or to obtain

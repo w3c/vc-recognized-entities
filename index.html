@@ -531,24 +531,26 @@ Credentials Use Cases</a> document [[vc-use-cases]].
       <h2>Data Model</h2>
 
       <p>
-The following sections outline the data model that is used by this specification
-for Verifiable Issuer and Verifier Lists.
+The following sections define the data model that this specification uses to
+express [=recognized entities=] and the [=recognized actions=] they are
+recognized to perform.
       </p>
 
-<p>
+      <p>
 The data model described in this section has been built using input from a
-variety of the prior art evaluated for this paper including input from the EBSI
-Trusted Issuer Registry, ETSI TS 119 612, eSSIF-Lab TRAIN, the Trust over IP
-Foundation Trust Registry Protocol, and Rebooting the Web of Trust input
-documents. The data model described in this section is capable of expressing
-many, but not all, of the concepts described in those other specifications.
-</p>
-<p>
-The unified data model for this work can be represented as a list of service providers
-that represent entities or organizations that provide services such as
-credential issuance or validation. The data model also includes the
-details of the list operator description.
-</p>
+variety of prior art, including the EBSI Trusted Issuer Registry, ETSI TS 119
+612, eSSIF-Lab TRAIN, the Trust over IP Foundation Trust Registry Protocol, and
+Rebooting the Web of Trust input documents. The data model described in this
+section is capable of expressing many, but not all, of the concepts described in
+those other specifications.
+      </p>
+
+      <p>
+A [=recognized entity credential=] is issued by a `RecognizedIssuer` and
+contains one or more [=recognized entities=], such as organizations that issue
+or verify [=verifiable credentials=]. Each [=recognized entity=] can be
+associated with the [=recognized actions=] it is recognized to perform.
+      </p>
 
     <section>
         <h3>General Properties</h3>
@@ -599,7 +601,7 @@ of the [[[VC-DATA-MODEL]]] specification.
               <td>legalName</td>
               <td>
 The official legal name of an organization or entity, as registered with legal
-authorities, which can differ from the commonly used name. The value MUST be a
+authorities, which can differ from the commonly used name. The value MUST be
 one or more [=string=]s or [=language value object=]s, as described in
 <a data-cite="VC-DATA-MODEL#language-and-base-direction">Section 11.1: Language
 and Base Direction</a> of the [[[VC-DATA-MODEL]]] specification. An entity that
@@ -889,7 +891,7 @@ value.
 The [=issuer=] of the [=verifiable credential=] as defined in the Verifiable
 Credentials Data Model specification in
 <a href="https://www.w3.org/TR/vc-data-model-2.0/#issuer">
-Section 4.76: Issuer</a>. This object, whose type is <dfn class="export">`RecognizedIssuer`</dfn>, MAY also include other properties listed
+Section 4.7: Issuer</a>. This object, whose type is <dfn class="export">`RecognizedIssuer`</dfn>, MAY also include other properties listed
 in Section [[[#general-properties]]]. This object MAY include a `recognizedIn`
 property, as defined in Section [[[#recognizedentity]]], that references a
 document of recognized entities in which the [=issuer=] itself appears; this
@@ -1341,7 +1343,7 @@ they were discovered.
 When identifiers for [=subjects=], such as [=issuers=], are compared for set
 membership or equivalence, simple string comparison is used. While it is
 possible to calculate the canonical form of an identifier in a scheme before
-performing a comparison, the canoncalization rules can vary between identifier
+performing a comparison, the canonicalization rules can vary between identifier
 schemes, leading to high levels of implementation complexity. To reduce the
 implementation burden, a choice was made to use simple string comparison
 instead. Simple string comparison can sometimes lead to non-equivalence between
@@ -1437,7 +1439,7 @@ followed by each [=recognized entity credential=] found by following
 [[[#recognition-validation]]] on the returned <var>chain</var>.
         </p>
 
-        <p class="note" title="Reaching a anchor does not end validation">
+        <p class="note" title="Reaching an anchor does not end validation">
 This algorithm stops once it reaches an [=issuer=] in
 <var>recognizedIssuers</var>, because there is no reason to retrieve more
 [=verifiable credentials=] after finding a candidate anchor. That test

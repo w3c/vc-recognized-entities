@@ -1,11 +1,11 @@
 name: Overly Permissive Schema Constraints
 summary: >-
-  Broad, incomplete, or lax <code>outputValidation</code> schema rules let a
+  Broad, incomplete, or lax <code>credentialValidator</code> schema rules let a
   recognized [=issuer=] produce a wider class of [=verifiable credentials=]
   than the list publisher intended to authorize.
 description: >-
   A [=E1|list publisher=] who creates a [=O1|recognized entity credential=]
-  may specify <code>outputValidation</code> schema rules that are too broad,
+  may specify <code>credentialValidator</code> schema rules that are too broad,
   incomplete, or lax, inadvertently permitting recognized [=E2|issuers=] to
   issue a wider class of [=O2|dependent verifiable credentials=] than was
   intended. An [=E2|issuer=] — acting legitimately within the stated schema
@@ -22,7 +22,7 @@ response:
   - name: Precise and Complete Schema Validation Rules
     type: Reduce
     description: >-
-      [=E1|List publishers=] define <code>outputValidation</code> schema rules
+      [=E1|List publishers=] define <code>credentialValidator</code> schema rules
       that are as precise and restrictive as the intended recognition scope
       requires. Schemas enumerate permitted credential types explicitly rather
       than relying on broad or permissive patterns. Governance frameworks

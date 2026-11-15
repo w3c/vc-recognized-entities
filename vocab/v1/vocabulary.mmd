@@ -20,7 +20,11 @@ classDiagram
     class RecognizedAction {
         action : "issue" | "verify"
         recognizedBy : URL
-        outputValidation : URL
+    }
+
+    class CredentialValidator {
+        mediaType : string
+        digestMultibase : string
     }
 
     class RecognizedIssuer {
@@ -35,6 +39,7 @@ classDiagram
     RecognizedEntityCredential --|> cred.VerifiableCredential : rdfs.subClassOf
 
     RecognizedEntity --> RecognizedAction : recognizedTo
+    RecognizedAction --> CredentialValidator : credentialValidator
 
     RecognizedEntityCredential --> RecognizedIssuer : issuer
     RecognizedEntityCredential --> RecognizedEntity : credentialSubject
