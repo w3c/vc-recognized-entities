@@ -42,7 +42,7 @@ categories:
       - surveillance-of-recognized-entity-identifiers.yaml
       - harms-by-association.yaml
       - compromise-of-recognized-entity-identifier.yaml
-      - verifier-trust-anchor-misconfiguration.yaml
+      - verifier-recognition-anchor-misconfiguration.yaml
       - anti-competitive-list-gatekeeping.yaml
       - admission-on-false-evidence.yaml
   - name: Dependency Threats

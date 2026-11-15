@@ -33,7 +33,7 @@ response:
       credential=] matches the <code>issuer.id</code> of the credential under
       evaluation, and that the outermost [=O1|recognized entity credential=]
       was issued by an entity within the [=E4|verifier=]’s configured set of
-      trust anchors. The specification requires conforming processors to
+      recognition anchors. The specification requires conforming processors to
       produce errors when these checks fail, preventing unverified entities
       from appearing to be recognized. Checking signatures is not enough to
       catch a chain that attempts to be misleading. A recognizer can attach
@@ -46,4 +46,4 @@ response:
       - '<a href="https://www.w3.org/TR/vc-recognized-entities-1.0/#recognition-validation">Section 4.3: Recognition Validation</a>'
     responsible: [verifiers]
     remainingRisk: >-
-      A compromised or misconfigured trust anchor passes these checks.
+      A compromised or misconfigured recognition anchor passes these checks.

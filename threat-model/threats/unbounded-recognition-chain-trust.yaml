@@ -14,7 +14,7 @@ description: >-
   of any single compromised registry: an attacker who compromises a registry
   at any depth gains the ability to assert recognition claims that propagate
   upward through the entire chain to [=E4|verifiers=] that have configured
-  only a top-level trust anchor. Depth limits bound one chain. They do not
+  only a top-level recognition anchor. Depth limits bound one chain. They do not
   bound how many chains a [=E4|verifier=] traverses, which
   [[[#list-retrieval-denial-of-service]]] covers. Depth limits and signature
   checks show that each link is real. They do not show that each entity in
@@ -37,7 +37,7 @@ response:
       [=P6|Validate Credential(s)=] — transitive trust from a higher-level
       registry does not substitute for independent validation of each link.
       The ecosystem's governance authority, typically the operator of its
-      trust anchor, specifies the maximum permitted chain depth and the
+      recognition anchor, specifies the maximum permitted chain depth and the
       registry types that can appear at each level in its governance
       framework, which is outside the specification. [=E4|Verifiers=] apply
       those rules as configuration and reject chains that exceed the

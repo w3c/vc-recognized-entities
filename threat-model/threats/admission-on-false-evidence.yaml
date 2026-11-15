@@ -11,7 +11,7 @@ description: >-
   [=P1|Create List=] accepts it, the [=E1|list publisher=] correctly signs a
   [=O1|recognized entity credential=] for an entity that does not qualify.
   Every downstream check succeeds: the proof is valid, the chain is well
-  formed, and the trust anchor is trusted. The specification defines no
+  formed, and the recognition anchor is trusted. The specification defines no
   process for vetting applicants, so detection depends on the [=E1|list
   publisher=].
 elements: [E1, E2, F1, P1, O1]

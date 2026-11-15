@@ -1,12 +1,12 @@
-name: Verifier Trust Anchor Misconfiguration
+name: Verifier Recognition Anchor Misconfiguration
 summary: >-
   A [=verifier=] operator accidentally configures the wrong [=recognized
-  entity credential=] as a trust anchor, causing the [=verifier=] to accept
+  entity credential=] as a recognition anchor, causing the [=verifier=] to accept
   [=issuers=] vetted by an unintended governance authority.
 description: >-
   During [=P3|Configure Verifier=], a [=E4|verifier=] operator may
   accidentally or incorrectly configure the system to reference the wrong
-  [=O1|recognized entity credential=] as its trust anchor — for example,
+  [=O1|recognized entity credential=] as its recognition anchor — for example,
   pointing to a test registry instead of a production registry, or to a
   registry managed by a different governance authority than intended. As a
   result, during [=P6|Validate Credential(s)=], the [=E4|verifier=] will
@@ -19,20 +19,20 @@ tags: [security]
 taxonomyName: STRIDE
 taxonomyClass: Elevation of Privilege
 response:
-  - name: Trust Anchor Verification and Configuration Audits
+  - name: Recognition Anchor Verification and Configuration Audits
     type: Reduce
     description: >-
       [=E4|Verifier=] implementations display the resolved identity of the
-      configured trust anchor (e.g., the subject DID or name from the
+      configured recognition anchor (e.g., the subject DID or name from the
       [=O1|recognized entity credential=]) prominently during setup so that
       operators can confirm they have the correct registry. Deployment tooling
-      requires explicit operator confirmation when configuring trust anchors
+      requires explicit operator confirmation when configuring recognition anchors
       in production environments. Governance frameworks provide well-known,
       stable identifiers for their authoritative registries and distinguish
       test and production registries clearly. Operators perform periodic
-      audits of [=C4|verifier system=] trust anchor configuration as part of
+      audits of [=C4|verifier system=] recognition anchor configuration as part of
       routine security reviews.
     supportedBy: []
     responsible: [verifier operators, ecosystem governance]
     remainingRisk: >-
-      An operator who confirms the wrong trust anchor is not protected.
+      An operator who confirms the wrong recognition anchor is not protected.

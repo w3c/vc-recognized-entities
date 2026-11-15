@@ -1611,7 +1611,7 @@ hierarchy until it reaches an [=issuer=] it recognizes.
       <p>
 The diagram below shows the [=identifier-based discovery=] process from the
 [=verifier=]'s perspective. The same steps repeat at each level of the
-hierarchy until a recognized trust anchor is reached.
+hierarchy until a recognition anchor that the [=verifier=] recognizes is reached.
       </p>
 
       <figure>
@@ -2855,7 +2855,7 @@ specification to each specific feature provided by this specification.
         </section>
 
         <section class="threat"
-          data-threat="verifier-trust-anchor-misconfiguration.yaml">
+          data-threat="verifier-recognition-anchor-misconfiguration.yaml">
         </section>
 
         <section class="threat"
@@ -2937,7 +2937,7 @@ Chain of GS1 Credentials to Identify a Trade Item</a> section of the
 <figure>
   <pre class="diagram mermaid" style="max-width:40%">
 flowchart TD
-    GS1["GS1 Global Office\n(trust anchor)"]
+    GS1["GS1 Global Office\n(recognition anchor)"]
     MO["GS1 Utopia\nMember Organization"]
     HT["Healthy Tots\nmember company"]
 
@@ -3159,7 +3159,7 @@ GS1's rule that an identification key be properly based on the licensed GS1
 Company Prefix. If the [=verifier=] does not recognize GS1 Utopia either, it
 repeats the process one level up, following the `recognizedIn` reference on
 the GS1 Utopia credential's `issuer` object to the GS1 Global Office
-credential. Because the GS1 Global Office is a well-known trust anchor,
+credential. Because the GS1 Global Office is a well-known recognition anchor,
 discovery terminates there, completing a recognition chain from a single trade
 item to the root of the GS1 federation. A [=holder=], such as the product's
 distributor, might staple all three credentials into a single presentation so
@@ -3237,7 +3237,7 @@ authoritative national registers worldwide.
       </ul>
 
       <p>
-The discovery process runs from the trade document toward the trust anchor using
+The discovery process runs from the trade document toward the recognition anchor using
 [=identifier-based discovery=] at each step, because publishing a single
 credential that lists all registered entities in a national register, with
 potentially two million entities updated hundreds of times per day, and tens of
@@ -3256,7 +3256,7 @@ the relationships:
   <pre class="diagram mermaid" style="max-width:55%">
 %%{init: {"flowchart": {"wrappingWidth": 500}, "securityLevel": "loose"}}%%
 flowchart TD
-    GRID["UN GRID\n[Trust Anchor]"]
+    GRID["UN GRID\n[Recognition Anchor]"]
     NAT["Utopian Business Register\n[National Registrar]"]
     ACME["ACME Exports Ltd.\n[Registered Exporter]"]
 
@@ -3302,7 +3302,7 @@ Protocol [[?UNTP-DIA]].
       <p>
 In the first example below, GRID publishes a `RecognizedEntityCredential`
 recognizing the Utopian Business Register as an authoritative national
-registrar. GRID's `issuer` DID is the trust anchor that verifiers configure
+registrar. GRID's `issuer` DID is the recognition anchor that verifiers configure
 explicitly. The `credentialValidator` property constrains the Utopian Business
 Register to issuing credentials that conform to the UNTP-defined schema for
 registrar-issued entity recognition credentials.
@@ -3570,7 +3570,7 @@ endpoint, and retrieves the verifiable presentation published there. That
 presentation, signed by the Utopian Business Register's DID, contains the
 `RecognizedEntityCredential` issued by GRID in which the Utopian Business
 Register appears as a [=recognized entity=]. Because GRID is a well-known
-trust anchor operated by the United Nations, discovery terminates there,
+recognition anchor operated by the United Nations, discovery terminates there,
 completing a recognition chain from the commercial invoice to the root of the
 global trade identity infrastructure.
       </p>
@@ -3661,7 +3661,7 @@ sequenceDiagram
     A->>H: RecognizedEntityCredential recognizing the facility
     Note right of A: Issued once, valid for a year
     H->>H: Cache credential and its recognized entity credential
-    A->>V: Trust anchor configuration
+    A->>V: Recognition anchor configuration
     Note left of V: Verifier caches the authority DID document,&lt;br/>verification keys, and schemas
     end
     rect rgb(252, 244, 235)
@@ -3690,7 +3690,7 @@ The [=verifiable credentials=] it intends to present.
           <li>
 The [=recognized entity credential=] issued to it by the authority that
 recognizes it, and any further [=recognized entity credentials=] needed to
-reach a widely recognized trust anchor, as described in Section
+reach a recognition anchor that [=verifiers=] widely accept, as described in Section
 [[[#credential-based-discovery]]].
           </li>
         </ul>
@@ -3701,7 +3701,7 @@ The [=verifier=] caches:
 
         <ul>
           <li>
-The identifiers of the [=issuers=] it accepts as trust anchors, along with the
+The identifiers of the [=issuers=] it accepts as recognition anchors, along with the
 [=controlled identifier documents=] and verification key material needed to
 verify proofs from those [=issuers=] without resolving their identifiers.
           </li>
@@ -3901,7 +3901,7 @@ credential=], or after the [=verifier=] last refreshed its own cached data.
 Deployments reduce that risk by configuring a maximum acceptable age for stapled
 [=recognized entity credentials=], by issuing [=recognized entity credentials=]
 with validity periods appropriate to the expected offline interval, and by
-refreshing cached trust anchor and status information whenever connectivity is
+refreshing cached recognition anchor and status information whenever connectivity is
 available. Related guidance is provided by threat
 <a href="https://www.w3.org/TR/vc-recognized-entities-threat-model-1.0/#stale-recognition-acceptance">Stale
 Recognition Acceptance</a>.
