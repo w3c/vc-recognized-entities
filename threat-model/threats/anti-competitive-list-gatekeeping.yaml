@@ -30,7 +30,7 @@ response:
     description: >-
       The specification permits and encourages multiple overlapping and
       competing [=O1|recognized entity credential=] registries.
-      [=E4|Verifiers=] are configurable with multiple independent trust
+      [=E4|Verifiers=] are configurable with multiple independent recognition
       anchors, so that an entity recognized by any one list from within the
       configured set is accepted. This prevents any single [=E1|list
       publisher=] from having veto power over ecosystem participation.
