@@ -1673,12 +1673,12 @@ on the returned chains, which describes how to select among their results.
         </p>
 
         <p>
-<var>maxDuration</var> bounds the total elapsed time of one discovery
-operation, measured from when the algorithm starts. It covers all work,
-including that of a nested [=credential-based discovery=].
-<var>maxDepth</var> bounds one chain; <var>maxDuration</var> bounds the
-operation. Exceeding it raises a `LIMIT_EXCEEDED_ERROR`. The [=verifier=]
-stops any unfinished retrieval at the end of the budget.
+<var>maxDuration</var> limits the total time of one discovery operation and
+covers all work from the moment the algorithm starts, including any nested
+[=credential-based discovery=]. While <var>maxDepth</var> limits the length of
+one chain, <var>maxDuration</var> limits the whole operation. If the time 
+budget is exhausted, the [=verifier=] stops any unfinished retrieval and raises 
+a `LIMIT_EXCEEDED_ERROR`.
         </p>
 
         <p class="note" title="Budget exhaustion depends on conditions and order">
