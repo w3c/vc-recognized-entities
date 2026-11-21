@@ -1460,13 +1460,13 @@ next to the anchor and works down the chain.
         </p>
 
         <p>
-<var>maxDuration</var> limits the total time of one discovery operation. The
-time starts when the algorithm starts. It covers every retrieval.
-<var>maxDepth</var> limits the length of one chain. <var>maxDuration</var>
-limits the whole operation. [=Identifier-based discovery=] can perform this
-algorithm. It then passes the time that remains of its own
-<var>maxDuration</var>. The [=verifier=] stops any unfinished retrieval at the
-end of the budget. The algorithm then raises a `LIMIT_EXCEEDED_ERROR`.
+<var>maxDuration</var> limits the total time of one discovery operation and
+covers every retrieval made from the moment the algorithm starts. While
+<var>maxDepth</var> limits the length of one chain, <var>maxDuration</var>
+limits the whole operation. When [=identifier-based discovery=] performs this
+algorithm, it passes along the time that remains of its own
+<var>maxDuration</var>. If the time budget is exhausted, the [=verifier=] stops 
+any unfinished retrieval and raises a `LIMIT_EXCEEDED_ERROR`.
         </p>
 
         <ol class="algorithm">
