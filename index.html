@@ -660,8 +660,9 @@ Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
         <h3>RecognizedEntity</h3>
 
         <p>
-A <dfn class="export">recognized entity</dfn> is any entity that is recognized
-by an [=issuer=] of a `RecognizedEntityCredential` to perform a specific action.
+A <dfn class="export">recognized entity</dfn> is any entity that an [=issuer=]
+of a `RecognizedEntityCredential` recognizes, either as a known entity or as an
+entity that is recognized to perform one or more specific actions.
         </p>
 
         <table class="simple">
@@ -693,10 +694,10 @@ of the [[[VC-DATA-MODEL]]] specification.
             <tr>
               <td><dfn class="export">recognizedTo</dfn></td>
               <td>
-A specific action that the [=recognized entity=] is expected to perform as
-defined in Section [[[#recognizedaction]]]. This property may occur more
-than once if the [=recognized entity=] is expected to perform more than
-one action.
+One or more [=recognized actions=], as defined in Section
+[[[#recognizedaction]]], that the [=recognized entity=] is recognized to
+perform. This property is OPTIONAL. The text following this table describes
+when an [=issuer=] expresses it.
               </td>
             </tr>
             <tr>
@@ -747,6 +748,53 @@ that the resource complies with, determine if it supports that specification, an
 A list with a `type` property value of `RecognizedEntityCredential` MUST conform
 to [[[VC-RECOGNIZED-ENTITIES]]].
         </p>
+
+        <p>
+A [=recognized entity credential=] can make two kinds of assertion about a
+[=recognized entity=]:
+        </p>
+
+        <ul>
+          <li>
+<dfn class="export">Entity recognition</dfn> asserts that the [=issuer=]
+recognizes the entity as a legitimate, registered, or otherwise known entity,
+such as a university that a national education authority recognizes. Every
+[=recognized entity=] makes this assertion.
+          </li>
+          <li>
+<dfn class="export">Action recognition</dfn> asserts that the [=issuer=]
+recognizes the entity to perform a specific action, such as issuing
+[=verifiable credentials=] that conform to a particular schema, subject to any
+constraints expressed by [=credential validators=]. A [=recognized entity=]
+makes this assertion only through its `recognizedTo` property.
+          </li>
+        </ul>
+
+        <p>
+A [=recognized entity=] that does not express a `recognizedTo` property makes
+an [=entity recognition=] assertion only. An [=issuer=] that recognizes an
+entity to perform a specific action expresses that action as a [=recognized
+action=] in the `recognizedTo` property of that entity. [=Recognition
+validation=], described in Section [[[#recognition-validation]]], treats an
+absent `recognizedTo` property differently depending on where the [=recognized
+entity=] appears in a recognition chain:
+        </p>
+
+        <ul>
+          <li>
+When the [=recognized entity=] is the [=issuer=] of the [=verifiable
+credential=] being verified, it is recognized to perform an action only if its
+`recognizedTo` property declares a matching [=recognized action=]. Without
+`recognizedTo`, the entity is recognized, but not to perform any particular
+action.
+          </li>
+          <li>
+When the [=recognized entity=] is the [=issuer=] of an intermediate
+[=recognized entity credential=], an absent `recognizedTo` property means that
+its recognizer placed no constraint on what it can recognize, so no
+[=credential validator=] runs for that link.
+          </li>
+        </ul>
 
         <p>
 The `registration` and `recognizedTo` properties are independent of one
@@ -932,6 +980,8 @@ Section [[[#recognizedentity]]].
 The following examples demonstrate how recognized entity credentials can be
 employed in a variety of use cases. The first example below is used to
 publish information about a set of known universities in a particular nation.
+This example shows only [=entity recognition=] and not [=action recognition=]
+which requires the addition of the `recognizedTo` property.
       </p>
 
       <pre class="example" title="A set of known universities in a particular nation">
@@ -1049,7 +1099,9 @@ within a [=recognized entity credential=]:
 
       <p>
 The next example is used to publish information about a set of known issuers
-for a particular type of [=verifiable credential=].
+for a particular type of [=verifiable credential=]. Each [=recognized entity=]
+in it also makes an [=action recognition=] assertion through its
+`recognizedTo` property.
       </p>
 
       <pre class="example" title="A set of known issuers for a particular type of credential">
@@ -2077,8 +2129,9 @@ action matters to the transaction.
 
         <p>
 A [=recognized entity credential=] that lacks a `recognizedTo` property for a
-given [=recognized entity=] asserts that the entity is recognized, without
-constraining the actions it performs. A [=verifier=] that requires an explicit
+given [=recognized entity=] makes an [=entity recognition=] assertion only, as
+described in Section [[[#recognizedentity]]], without constraining the actions
+it performs. A [=verifier=] that requires an explicit
 action to be recognized treats such a [=recognized entity credential=] as
 producing an <var>actionRecognized</var> value of `false`.
         </p>
