@@ -1389,6 +1389,17 @@ already arrived, and whatever it did there is done. A proof check tells the
 Only a [=retrieval policy=] acts before the request goes out.
       </p>
 
+      <p>
+The discovery and recognition validation algorithms each run within a time
+budget, <var>maxDuration</var>. The budget limits the total time of one run
+and covers all work from the moment the algorithm starts. While
+<var>maxDepth</var> limits the length of one chain, <var>maxDuration</var>
+limits the whole operation. An algorithm that performs another algorithm
+passes along the time that remains of its own budget. If the budget is
+exhausted, the [=verifier=] stops any unfinished retrieval or validator and
+raises a `LIMIT_EXCEEDED_ERROR`.
+      </p>
+
 
       <section>
         <h3>Credential-based Discovery</h3>
@@ -1459,13 +1470,10 @@ next to the anchor and works down the chain.
         </p>
 
         <p>
-<var>maxDuration</var> limits the total time of one discovery operation and
-covers every retrieval made from the moment the algorithm starts. While
-<var>maxDepth</var> limits the length of one chain, <var>maxDuration</var>
-limits the whole operation. When [=identifier-based discovery=] performs this
+This algorithm runs within the time budget described in Section
+[[[#algorithms]]]. When [=identifier-based discovery=] performs this
 algorithm, it passes along the time that remains of its own
-<var>maxDuration</var>. If the time budget is exhausted, the [=verifier=] stops 
-any unfinished retrieval and raises a `LIMIT_EXCEEDED_ERROR`.
+<var>maxDuration</var>.
         </p>
 
         <ol class="algorithm">
@@ -1672,12 +1680,9 @@ on the returned chains, which describes how to select among their results.
         </p>
 
         <p>
-<var>maxDuration</var> limits the total time of one discovery operation and
-covers all work from the moment the algorithm starts, including any nested
-[=credential-based discovery=]. While <var>maxDepth</var> limits the length of
-one chain, <var>maxDuration</var> limits the whole operation. If the time 
-budget is exhausted, the [=verifier=] stops any unfinished retrieval and raises 
-a `LIMIT_EXCEEDED_ERROR`.
+This algorithm runs within the time budget described in Section
+[[[#algorithms]]]. The budget includes any nested [=credential-based
+discovery=].
         </p>
 
         <p class="note" title="Budget exhaustion depends on conditions and order">
@@ -1906,13 +1911,11 @@ and <var>warnings</var> that [=credential validation=] reported.
         </p>
 
         <p>
-<var>maxDuration</var> bounds the total elapsed time of one recognition
-validation, measured from when the algorithm starts. It covers every
-[=credential validation=] the algorithm performs, however many links, actions,
-and validators the chain contains. It applies whether the chain came from
-discovery or from a [=holder=]. A [=verifier=] that ran discovery first passes
-the time that remains of the discovery budget. When the budget runs out, the
-[=verifier=] stops any validator that is still running.
+This algorithm runs within the time budget described in Section
+[[[#algorithms]]]. The budget covers every [=credential validation=] the
+algorithm performs. It applies whether the chain came from discovery or from a
+[=holder=]. A [=verifier=] that ran discovery first passes the time that
+remains of the discovery budget.
         </p>
 
         <p>
