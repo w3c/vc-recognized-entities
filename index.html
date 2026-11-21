@@ -1378,7 +1378,8 @@ addresses are allowed. It blocks private addresses, such as loopback,
 link-local, and addresses inside a local network. A name is looked up before a
 request is sent, so the policy checks the address that the name points to. It
 checks each redirect the same way. It also limits how many redirects are
-followed.
+followed. It limits the size of a response. The [=verifier=] stops reading a
+response that is too large. The policy then blocks the retrieval.
       </p>
 
       <p class="note" title="A proof check cannot undo a request">
@@ -1430,7 +1431,8 @@ and fetch the [=recognized entity credentials=] directly.
         <p>
 To perform [=credential-based discovery=] on a [=verifiable credential=]
 (<var>credential</var>) against a configured set of recognized [=issuers=]
-(<var>recognizedIssuers</var>) and an optional set of [=holder=]-provided
+(<var>recognizedIssuers</var>), within a time budget (<var>maxDuration</var>),
+and an optional set of [=holder=]-provided
 [=verifiable credentials=] (<var>providedDocuments</var>), a [=verifier=] runs
 the following algorithm. The algorithm returns a <var>chain</var>, which is a
 list of [=verifiable credentials=] beginning with <var>credential</var>,
@@ -1456,11 +1458,14 @@ validators on every credential in the returned <var>chain</var>. It starts
 next to the anchor and works down the chain.
         </p>
 
-        <p class="note" title="This algorithm can run within a caller's time budget">
-<var>maxDepth</var> bounds this algorithm on its own. When
-[=identifier-based discovery=] invokes it, its retrievals also count against
-that caller's <var>maxDuration</var>, and exhausting the budget raises an
-error from the caller's operation.
+        <p>
+<var>maxDuration</var> limits the total time of one discovery operation. The
+time starts when the algorithm starts. It covers every retrieval.
+<var>maxDepth</var> limits the length of one chain. <var>maxDuration</var>
+limits the whole operation. [=Identifier-based discovery=] can perform this
+algorithm. It then passes the time that remains of its own
+<var>maxDuration</var>. The [=verifier=] stops any unfinished retrieval at the
+end of the budget. The algorithm then raises a `LIMIT_EXCEEDED_ERROR`.
         </p>
 
         <ol class="algorithm">
@@ -1495,7 +1500,9 @@ Let <var>list</var> be the [=recognized entity credential=] identified by
 sufficiently fresh, or otherwise retrieved from <var>listId</var>. Apply the
 [=retrieval policy=] to that retrieval. If <var>list</var> cannot be obtained,
 or the [=retrieval policy=] blocks the retrieval, raise a `RETRIEVAL_ERROR`
-identifying <var>listId</var>.
+identifying <var>listId</var>. If <var>maxDuration</var> is exceeded before
+<var>list</var> is obtained, raise a `LIMIT_EXCEEDED_ERROR` identifying
+<var>maxDuration</var> and <var>listId</var>.
           </li>
           <li>
 Append <var>list</var> to <var>chain</var>, set <var>current</var> to
@@ -1669,7 +1676,8 @@ on the returned chains, which describes how to select among their results.
 operation, measured from when the algorithm starts. It covers all work,
 including that of a nested [=credential-based discovery=].
 <var>maxDepth</var> bounds one chain; <var>maxDuration</var> bounds the
-operation. Exceeding it raises a `LIMIT_EXCEEDED_ERROR`.
+operation. Exceeding it raises a `LIMIT_EXCEEDED_ERROR`. The [=verifier=]
+stops any unfinished retrieval at the end of the budget.
         </p>
 
         <p class="note" title="Budget exhaustion depends on conditions and order">
@@ -1739,7 +1747,8 @@ append the chain consisting of <var>credential</var> followed by
 <var>list</var> to <var>chains</var>. Otherwise, if the `issuer` object of
 <var>list</var> contains a `recognizedIn` property, perform
 [=credential-based discovery=] on <var>list</var> against
-<var>recognizedIssuers</var> and append the chain consisting of
+<var>recognizedIssuers</var> within the time that remains of
+<var>maxDuration</var>, and append the chain consisting of
 <var>credential</var> followed by the elements of the returned chain to
 <var>chains</var>. If the elapsed time since this algorithm started exceeds
 <var>maxDuration</var>, raise a `LIMIT_EXCEEDED_ERROR` identifying
@@ -2424,10 +2433,12 @@ If they do not match, append a <a data-cite="VC-DATA-MODEL#CRYPTOGRAPHIC_SECURIT
 No part of <var>code</var> is parsed or run before this check succeeds.
             </li>
             <li>
-Let <var>maxDuration</var> and <var>maxMemory</var> be the limits on running
-time and memory that the [=verifier=] is configured to allow [=validator
-code=]. Create a new sandbox, place the [=wrapper code=] and <var>code</var> in
-it, and start measuring elapsed time and memory use. If either limit is
+Let <var>maxRunTime</var> be the lesser of the running time that the
+[=verifier=] is configured to allow [=validator code=] and the time that
+remains of the [=recognition validation=] budget, and let <var>maxMemory</var>
+be the limit on memory that the [=verifier=] is configured to allow
+[=validator code=]. Create a new sandbox, place the [=wrapper code=] and
+<var>code</var> in it, and start measuring elapsed time and memory use. If either limit is
 exceeded at any point before the sandbox is destroyed, destroy the sandbox,
 append a <a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying the limit that was exceeded to
 <var>result.errors</var>, and return <var>result</var>.
@@ -2737,8 +2748,9 @@ https://www.w3.org/TR/vc-data-model#RETRIEVAL_ERROR
 A resource could not be retrieved. This covers an identifier that does not
 resolve, a [=recognized entity credential=] that cannot be obtained, and a
 [=verifiable presentation=] that cannot be fetched from a service endpoint.
-The [=URL=] that was being retrieved SHOULD be provided in the
-`ProblemDetails` object.
+It also covers a retrieval that the [=retrieval policy=] blocks. A response
+that is too large is one example. The [=URL=] that was being retrieved SHOULD
+be provided in the `ProblemDetails` object.
           </dd>
           <dt id="LIMIT_EXCEEDED_ERROR">
 https://www.w3.org/TR/vc-data-model#LIMIT_EXCEEDED_ERROR
