@@ -2762,6 +2762,164 @@ would return the following [=validation result=].
 
         </section>
 
+        <section>
+          <h4>JSONata Validator Processing</h4>
+
+          <p>
+This section defines how [=credential validation=] evaluates a [=JSONata
+credential validator=] against an already verified chain. A third party writes
+the expression, and the [=verifier=] downloads it via a [=recognized entity
+credential=], so the [=verifier=] treats it as untrusted. JSONata has no
+built-in function that reaches the network or reads the [=verifier=]'s state.
+A [=verifier=] keeps it that way by registering no extension functions and by
+binding no variable other than `$options`.
+          </p>
+
+          <p>
+To run a [=JSONata credential validator=] (<var>validator</var>) on a
+[=verifiable credential=] (<var>credential</var>) with a [=map=] of options
+(<var>options</var>), as described in Section [[[#credential-validation]]], a
+[=verifier=] runs the following algorithm. The algorithm returns a result
+containing a boolean <var>valid</var>, a list of <var>errors</var>, and a list
+of <var>warnings</var>.
+          </p>
+
+          <ol class="algorithm">
+            <li>
+Let <var>result</var> be a structure with <var>valid</var> set to `false`,
+and <var>errors</var> and <var>warnings</var> each set to an empty list.
+            </li>
+            <li>
+Let <var>expressionUrl</var> be the value of the `id` property of
+<var>validator</var>. If <var>expressionUrl</var> is a `data:` URL, let
+<var>expression</var> be the text it encodes. Otherwise, let
+<var>expression</var> be a copy of the expression that the [=verifier=] has
+cached, or, if it has none, the text retrieved from <var>expressionUrl</var>.
+Apply the [=retrieval policy=] to that retrieval. If <var>expression</var>
+cannot be obtained, or the [=retrieval policy=] blocks the retrieval, append a
+<a href="#RETRIEVAL_ERROR">`RETRIEVAL_ERROR`</a> identifying
+<var>expressionUrl</var> to <var>result.errors</var> and return
+<var>result</var>.
+            </li>
+            <li>
+If <var>validator</var> provides a cryptographic hash of the expression,
+ensure that the cryptographic hash of <var>expression</var> matches the one
+provided by the [=issuer=], as described in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+If they do not match, append a
+<a data-cite="VC-DATA-MODEL#CRYPTOGRAPHIC_SECURITY_ERROR">`CRYPTOGRAPHIC_SECURITY_ERROR`</a>
+identifying <var>expressionUrl</var> to <var>result.errors</var> and return
+<var>result</var>. No part of <var>expression</var> is parsed or evaluated
+before this check succeeds.
+            </li>
+            <li>
+Let <var>maxRunTime</var> be the lesser of the running time that the
+[=verifier=] is configured to allow a JSONata expression and the time that
+remains of the [=recognition validation=] budget. Let <var>maxMemory</var> be
+the limit on memory that the [=verifier=] is configured to allow it. If either
+limit is exceeded at any point during the steps below, stop the evaluation,
+append a <a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying
+the limit that was exceeded to <var>result.errors</var>, and return
+<var>result</var>.
+            </li>
+            <li>
+Evaluate <var>expression</var> as defined in [[JSONATA]], with
+<var>credential</var> as the input and <var>options</var> bound to the
+`$options` variable. Register no extension functions and bind no other
+variables.
+            </li>
+            <li>
+If <var>expression</var> fails to parse, or its evaluation raises an error,
+append a <a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a>
+to <var>result.errors</var> and return <var>result</var>.
+            </li>
+            <li>
+Let <var>schema</var> be the result of the evaluation. If <var>schema</var> is
+not an object or a boolean, which are the forms a JSON Schema [[JSON-SCHEMA]]
+can take, append a
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> to
+<var>result.errors</var> and return <var>result</var>.
+            </li>
+            <li>
+Validate <var>credential</var> against <var>schema</var> as defined in
+[[JSON-SCHEMA]]. Apply the [=retrieval policy=] to any retrieval that this
+validation performs. Set <var>result.valid</var> to `true` if
+<var>credential</var> conforms to <var>schema</var>.
+            </li>
+            <li>
+Return <var>result</var>.
+            </li>
+          </ol>
+
+          <p>
+A JSONata expression MUST NOT depend on any input other than
+<var>credential</var> and `$options`. It uses `$options.evaluationDateTime`
+rather than the `$now()` or `$millis()` functions, and it does not use the
+`$random()` function. This ensures that every [=verifier=] that evaluates the
+same <var>credential</var> and <var>options</var> obtains the same result.
+          </p>
+
+          <p>
+The example below shows the expression referenced by the [=JSONata credential
+validator=] in Section [[[#jsonata-credential-validators]]]. For a key
+credential issued by Healthy Tots, it finds the [=recognized entity=] in
+`$options.chain[0]` whose `id` is the [=issuer=] of the credential. It reads
+the `licenceValue` of that entity, which is `9506000`. It then produces a JSON
+Schema whose `pattern` accepts a GTIN only if the digits after its indicator
+digit begin with that prefix. If no prefix is found, the expression produces
+the schema `false`, which no credential satisfies.
+          </p>
+
+          <pre class="example nohighlight" title="A JSONata expression that generates a JSON Schema from the recognition chain">
+(
+  $issuerId := $type($.issuer) = "string" ? $.issuer : $.issuer.id;
+  $prefix := $options.chain[0].credentialSubject[id = $issuerId].licenceValue;
+  $prefix ? {
+    "type": "object",
+    "required": ["credentialSubject"],
+    "properties": {
+      "credentialSubject": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^https://id\\.gs1\\.org/01/[0-9]" &amp; $prefix &amp; "[0-9]+$"
+          }
+        }
+      }
+    }
+  } : false
+)
+          </pre>
+
+          <p>
+For the chain in Section [[[#gs1-federated-identifier-example]]], the
+expression produces the JSON Schema below. The key credential for the GTIN
+`09506000134352` conforms to it.
+          </p>
+
+          <pre class="example nohighlight" title="The JSON Schema generated by the JSONata expression">
+{
+  "type": "object",
+  "required": ["credentialSubject"],
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^https://id\\.gs1\\.org/01/[0-9]9506000[0-9]+$"
+        }
+      }
+    }
+  }
+}
+          </pre>
+        </section>
+
       </section>
 
       <section>
