@@ -786,25 +786,26 @@ The `type` property MUST be `RecognizedAction`.
             <tr>
               <td><dfn class="export">action</dfn></td>
               <td>
-A [=string=] that specifies the name of the action to be performed such as
-`issue` or `verify`.
+The `action` property is REQUIRED. Its value MUST be a [=string=] that
+specifies the name of the action to be performed, such as `issue` or `verify`.
               </td>
             </tr>
             <tr>
               <td><dfn class="export">recognizedBy</dfn></td>
               <td>
-A [=URL=], or object containing properties from Section
-[[[#general-properties]]], of the entity that performed the task of recognizing.
+The `recognizedBy` property is OPTIONAL. Its value is a [=URL=], or object
+containing properties from Section [[[#general-properties]]], of the entity
+that performed the task of recognizing.
               </td>
             </tr>
             <tr>
               <td><dfn class="export">credentialValidator</dfn></td>
               <td>
-The value of the `credentialValidator` property MUST be one or more [=credential
-validators=], as defined in Section [[[#credential-validators]]], that provide
-[=verifiers=] with enough information to determine whether a [=verifiable
-credential=] produced by the [=recognized entity=] meets the constraints of the
-recognizing authority. If more than one [=credential validator=] is present,
+The `credentialValidator` property is OPTIONAL. Its value MUST be one or more
+[=credential validators=], as defined in Section [[[#credential-validators]]],
+that provide [=verifiers=] with enough information to determine whether a
+[=verifiable credential=] produced by the [=recognized entity=] meets the
+constraints of the recognizing authority. If more than one [=credential validator=] is present,
 the [=verifiable credential=] MUST satisfy every one of them.
               </td>
             </tr>
