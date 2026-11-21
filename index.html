@@ -2322,6 +2322,16 @@ result of running the algorithm in Section
 to `false`.
               </li>
               <li>
+Otherwise, if the `mediaType` is `application/jsonata`, let
+<var>validatorResult</var> be the result of running the algorithm in Section
+[[[#jsonata-validator-processing]]] on <var>validator</var>,
+<var>credential</var>, and <var>options</var>. Append the items of
+<var>validatorResult.errors</var> to <var>result.errors</var> and the items of
+<var>validatorResult.warnings</var> to <var>result.warnings</var>. If
+<var>validatorResult.valid</var> is not `true`, set <var>result.valid</var>
+to `false`.
+              </li>
+              <li>
 Otherwise, the [=verifier=] does not support the `mediaType`. Append an
 <a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> identifying
 the `mediaType` to <var>result.errors</var>, and set <var>result.valid</var>
