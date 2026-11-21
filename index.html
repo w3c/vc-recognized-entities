@@ -1373,13 +1373,13 @@ identifier resolver apply those limits.
       </p>
 
       <p>
-A [=retrieval policy=] says which [=URL=] schemes are allowed. It says which
-addresses are allowed. It blocks private addresses, such as loopback,
-link-local, and addresses inside a local network. A name is looked up before a
-request is sent, so the policy checks the address that the name points to. It
-checks each redirect the same way. It also limits how many redirects are
-followed. It limits the size of a response. The [=verifier=] stops reading a
-response that is too large. The policy then blocks the retrieval.
+A [=retrieval policy=] expresses which [=URL=] schemes and addresses are allowed.
+It blocks private addresses such as loopback and link-local addresses or
+addresses inside a local network. Because a name is looked up before a request
+is sent, the policy checks the address that the name points to and checks each
+redirect the same way. The policy also limits how many redirects are followed
+and how large a response can be. When a response grows too large, the
+[=verifier=] stops reading it and the retrieval is halted.
       </p>
 
       <p class="note" title="A proof check cannot undo a request">
