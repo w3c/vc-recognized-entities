@@ -163,6 +163,12 @@
             authors: ["UN/CEFACT"],
             status: "UN Transparency Protocol Specification (Draft)",
             publisher: "United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)"
+          },
+          "JSONATA": {
+            title: "JSONata: JSON query and transformation language",
+            href: "https://docs.jsonata.org/",
+            authors: ["Andrew Coleman"],
+            publisher: "JSONata"
           }
         }
       }
@@ -1205,8 +1211,9 @@ identified by `id`, as defined in
 <a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
 Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification,
 and identifies the kind of [=credential validator=]. This specification
-defines the `application/schema+json` and `text/javascript` media types for
-[=credential validators=], in the sections below.
+defines the `application/schema+json`, `text/javascript`, and
+`application/jsonata` media types for [=credential validators=] in the
+sections below.
               </td>
             </tr>
           </tbody>
@@ -1299,6 +1306,52 @@ privacy-preserving as GS1 does not learn which licensee is being verified.
     "mediaType": "text/javascript",
     "digestMultibase": "uEiDqN3Xo7mVq4cJ2r-5bKfXh9TzW0sLpYdE8gAuRnHc1Mw"
   }</span>]
+}
+          </pre>
+        </section>
+
+        <section id="jsonata-credential-validators">
+          <h4>JSONata</h4>
+
+          <p class="issue atrisk" title="JSONata credential validators are at risk">
+[=JSONata credential validators=] are at risk and are likely to be removed from
+this specification before it becomes a W3C Recommendation. We would appreciate
+feedback from implementers that find this feature useful. If there isn't enough
+support for this feature, it is likely to be removed from the specification.
+          </p>
+
+          <p>
+A <dfn class="export">JSONata credential validator</dfn> is a [=credential
+validator=] whose `mediaType` is `application/jsonata`. Its `id` links to a
+JSONata expression [[JSONATA]] that produces a JSON Schema [[JSON-SCHEMA]]. A
+[=verifier=] evaluates the expression and then validates the [=verifiable
+credential=] against the schema that the expression produced. The expression
+receives the [=verifiable credential=] being validated as its input and the
+options as the `$options` variable. Because the options include the
+recognition chain, the generated schema can depend on values found elsewhere
+in that chain. A [=verifier=] evaluates the expression as described in Section
+[[[#jsonata-validator-processing]]].
+          </p>
+
+          <p>
+The example below shows a [=recognized action=] from GS1 Utopia that declares a
+[=JSONata credential validator=]. The expression reads the GS1 Company Prefix
+that GS1 Utopia licensed to Healthy Tots from the recognition chain. It then
+produces a JSON Schema that accepts a key credential only if its GTIN begins
+with that prefix.
+          </p>
+
+          <pre class="example nohighlight" title="A recognized action that declares a JSONata credential validator">
+"recognizedTo": {
+  "type": "RecognizedAction",
+  "action": "issue",
+  "recognizedBy": "did:web:id.gs1utopia.example",
+  "credentialValidator": <span class="highlight">{
+    "id": "https://id.gs1.org/validators/gs1-company-prefix.jsonata",
+    "type": "CredentialValidator",
+    "mediaType": "application/jsonata",
+    "digestMultibase": "uEiCk7pYw2Hn5vT0rXq3LmZs9dJ4fB8aG1oKcU6eRiNyVhA"
+  }</span>
 }
           </pre>
         </section>
@@ -2256,6 +2309,16 @@ result of running the algorithm in Section
 to `false`.
               </li>
               <li>
+Otherwise, if the `mediaType` is `application/jsonata`, let
+<var>validatorResult</var> be the result of running the algorithm in Section
+[[[#jsonata-validator-processing]]] on <var>validator</var>,
+<var>credential</var>, and <var>options</var>. Append the items of
+<var>validatorResult.errors</var> to <var>result.errors</var> and the items of
+<var>validatorResult.warnings</var> to <var>result.warnings</var>. If
+<var>validatorResult.valid</var> is not `true`, set <var>result.valid</var>
+to `false`.
+              </li>
+              <li>
 Otherwise, the [=verifier=] does not support the `mediaType`. Append an
 <a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> identifying
 the `mediaType` to <var>result.errors</var>, and set <var>result.valid</var>
@@ -2709,6 +2772,164 @@ would return the following [=validation result=].
 
         </section>
 
+        <section>
+          <h4>JSONata Validator Processing</h4>
+
+          <p>
+This section defines how [=credential validation=] evaluates a [=JSONata
+credential validator=] against an already verified chain. A third party writes
+the expression, and the [=verifier=] downloads it via a [=recognized entity
+credential=], so the [=verifier=] treats it as untrusted. JSONata has no
+built-in function that reaches the network or reads the [=verifier=]'s state.
+A [=verifier=] keeps it that way by registering no extension functions and by
+binding no variable other than `$options`.
+          </p>
+
+          <p>
+To run a [=JSONata credential validator=] (<var>validator</var>) on a
+[=verifiable credential=] (<var>credential</var>) with a [=map=] of options
+(<var>options</var>), as described in Section [[[#credential-validation]]], a
+[=verifier=] runs the following algorithm. The algorithm returns a result
+containing a boolean <var>valid</var>, a list of <var>errors</var>, and a list
+of <var>warnings</var>.
+          </p>
+
+          <ol class="algorithm">
+            <li>
+Let <var>result</var> be a structure with <var>valid</var> set to `false`,
+and <var>errors</var> and <var>warnings</var> each set to an empty list.
+            </li>
+            <li>
+Let <var>expressionUrl</var> be the value of the `id` property of
+<var>validator</var>. If <var>expressionUrl</var> is a `data:` URL, let
+<var>expression</var> be the text it encodes. Otherwise, let
+<var>expression</var> be a copy of the expression that the [=verifier=] has
+cached, or, if it has none, the text retrieved from <var>expressionUrl</var>.
+Apply the [=retrieval policy=] to that retrieval. If <var>expression</var>
+cannot be obtained, or the [=retrieval policy=] blocks the retrieval, append a
+<a href="#RETRIEVAL_ERROR">`RETRIEVAL_ERROR`</a> identifying
+<var>expressionUrl</var> to <var>result.errors</var> and return
+<var>result</var>.
+            </li>
+            <li>
+If <var>validator</var> provides a cryptographic hash of the expression,
+ensure that the cryptographic hash of <var>expression</var> matches the one
+provided by the [=issuer=], as described in
+<a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
+Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification.
+If they do not match, append a
+<a data-cite="VC-DATA-MODEL#CRYPTOGRAPHIC_SECURITY_ERROR">`CRYPTOGRAPHIC_SECURITY_ERROR`</a>
+identifying <var>expressionUrl</var> to <var>result.errors</var> and return
+<var>result</var>. No part of <var>expression</var> is parsed or evaluated
+before this check succeeds.
+            </li>
+            <li>
+Let <var>maxRunTime</var> be the lesser of the running time that the
+[=verifier=] is configured to allow a JSONata expression and the time that
+remains of the [=recognition validation=] budget. Let <var>maxMemory</var> be
+the limit on memory that the [=verifier=] is configured to allow it. If either
+limit is exceeded at any point during the steps below, stop the evaluation,
+append a <a href="#LIMIT_EXCEEDED_ERROR">`LIMIT_EXCEEDED_ERROR`</a> identifying
+the limit that was exceeded to <var>result.errors</var>, and return
+<var>result</var>.
+            </li>
+            <li>
+Evaluate <var>expression</var> as defined in [[JSONATA]], with
+<var>credential</var> as the input and <var>options</var> bound to the
+`$options` variable. Register no extension functions and bind no other
+variables.
+            </li>
+            <li>
+If <var>expression</var> fails to parse, or its evaluation raises an error,
+append a <a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a>
+to <var>result.errors</var> and return <var>result</var>.
+            </li>
+            <li>
+Let <var>schema</var> be the result of the evaluation. If <var>schema</var> is
+not an object or a boolean, which are the forms a JSON Schema [[JSON-SCHEMA]]
+can take, append a
+<a href="#CREDENTIAL_VALIDATION_ERROR">`CREDENTIAL_VALIDATION_ERROR`</a> to
+<var>result.errors</var> and return <var>result</var>.
+            </li>
+            <li>
+Validate <var>credential</var> against <var>schema</var> as defined in
+[[JSON-SCHEMA]]. Apply the [=retrieval policy=] to any retrieval that this
+validation performs. Set <var>result.valid</var> to `true` if
+<var>credential</var> conforms to <var>schema</var>.
+            </li>
+            <li>
+Return <var>result</var>.
+            </li>
+          </ol>
+
+          <p>
+A JSONata expression MUST NOT depend on any input other than
+<var>credential</var> and `$options`. It uses `$options.evaluationDateTime`
+rather than the `$now()` or `$millis()` functions, and it does not use the
+`$random()` function. This ensures that every [=verifier=] that evaluates the
+same <var>credential</var> and <var>options</var> obtains the same result.
+          </p>
+
+          <p>
+The example below shows the expression referenced by the [=JSONata credential
+validator=] in Section [[[#jsonata-credential-validators]]]. For a key
+credential issued by Healthy Tots, it finds the [=recognized entity=] in
+`$options.chain[0]` whose `id` is the [=issuer=] of the credential. It reads
+the `licenceValue` of that entity, which is `9506000`. It then produces a JSON
+Schema whose `pattern` accepts a GTIN only if the digits after its indicator
+digit begin with that prefix. If no prefix is found, the expression produces
+the schema `false`, which no credential satisfies.
+          </p>
+
+          <pre class="example nohighlight" title="A JSONata expression that generates a JSON Schema from the recognition chain">
+(
+  $issuerId := $type($.issuer) = "string" ? $.issuer : $.issuer.id;
+  $prefix := $options.chain[0].credentialSubject[id = $issuerId].licenceValue;
+  $prefix ? {
+    "type": "object",
+    "required": ["credentialSubject"],
+    "properties": {
+      "credentialSubject": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^https://id\\.gs1\\.org/01/[0-9]" &amp; $prefix &amp; "[0-9]+$"
+          }
+        }
+      }
+    }
+  } : false
+)
+          </pre>
+
+          <p>
+For the chain in Section [[[#gs1-federated-identifier-example]]], the
+expression produces the JSON Schema below. The key credential for the GTIN
+`09506000134352` conforms to it.
+          </p>
+
+          <pre class="example nohighlight" title="The JSON Schema generated by the JSONata expression">
+{
+  "type": "object",
+  "required": ["credentialSubject"],
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^https://id\\.gs1\\.org/01/[0-9]9506000[0-9]+$"
+        }
+      }
+    }
+  }
+}
+          </pre>
+        </section>
+
       </section>
 
       <section>
@@ -2759,7 +2980,9 @@ validator=] whose `type` or `mediaType` the [=verifier=] does not support, a
 [=verifier=] that
 cannot provide a sandbox for [=validator code=], [=validator code=] that fails
 to load, or that throws an exception or rejects without identifying a more
-specific error type, and a result that is not in the expected form.
+specific error type, and a result that is not in the expected form. It also
+covers a JSONata expression that fails to parse or evaluate or that does not
+produce a JSON Schema.
           </dd>
           <dt id="UNRECOGNIZED_OPTION_ERROR">
 https://www.w3.org/TR/vc-data-model#UNRECOGNIZED_OPTION_ERROR
