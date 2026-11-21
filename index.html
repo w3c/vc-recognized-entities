@@ -163,6 +163,12 @@
             authors: ["UN/CEFACT"],
             status: "UN Transparency Protocol Specification (Draft)",
             publisher: "United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)"
+          },
+          "JSONATA": {
+            title: "JSONata: JSON query and transformation language",
+            href: "https://docs.jsonata.org/",
+            authors: ["Andrew Coleman"],
+            publisher: "JSONata"
           }
         }
       }
@@ -1206,8 +1212,9 @@ identified by `id`, as defined in
 <a data-cite="VC-DATA-MODEL#integrity-of-related-resources">Section 5.3:
 Integrity of Related Resources</a> of the [[[VC-DATA-MODEL]]] specification,
 and identifies the kind of [=credential validator=]. This specification
-defines the `application/schema+json` and `text/javascript` media types for
-[=credential validators=], in the sections below.
+defines the `application/schema+json`, `text/javascript`, and
+`application/jsonata` media types for [=credential validators=] in the
+sections below.
               </td>
             </tr>
           </tbody>
@@ -1300,6 +1307,52 @@ privacy-preserving as GS1 does not learn which licensee is being verified.
     "mediaType": "text/javascript",
     "digestMultibase": "uEiDqN3Xo7mVq4cJ2r-5bKfXh9TzW0sLpYdE8gAuRnHc1Mw"
   }</span>]
+}
+          </pre>
+        </section>
+
+        <section id="jsonata-credential-validators">
+          <h4>JSONata</h4>
+
+          <p class="issue atrisk" title="JSONata credential validators are at risk">
+[=JSONata credential validators=] are at risk and are likely to be removed from
+this specification before it becomes a W3C Recommendation. We would appreciate
+feedback from implementers that find this feature useful. If there isn't enough
+support for this feature, it is likely to be removed from the specification.
+          </p>
+
+          <p>
+A <dfn class="export">JSONata credential validator</dfn> is a [=credential
+validator=] whose `mediaType` is `application/jsonata`. Its `id` links to a
+JSONata expression [[JSONATA]] that produces a JSON Schema [[JSON-SCHEMA]]. A
+[=verifier=] evaluates the expression and then validates the [=verifiable
+credential=] against the schema that the expression produced. The expression
+receives the [=verifiable credential=] being validated as its input and the
+options as the `$options` variable. Because the options include the
+recognition chain, the generated schema can depend on values found elsewhere
+in that chain. A [=verifier=] evaluates the expression as described in Section
+[[[#jsonata-validator-processing]]].
+          </p>
+
+          <p>
+The example below shows a [=recognized action=] from GS1 Utopia that declares a
+[=JSONata credential validator=]. The expression reads the GS1 Company Prefix
+that GS1 Utopia licensed to Healthy Tots from the recognition chain. It then
+produces a JSON Schema that accepts a key credential only if its GTIN begins
+with that prefix.
+          </p>
+
+          <pre class="example nohighlight" title="A recognized action that declares a JSONata credential validator">
+"recognizedTo": {
+  "type": "RecognizedAction",
+  "action": "issue",
+  "recognizedBy": "did:web:id.gs1utopia.example",
+  "credentialValidator": <span class="highlight">{
+    "id": "https://id.gs1.org/validators/gs1-company-prefix.jsonata",
+    "type": "CredentialValidator",
+    "mediaType": "application/jsonata",
+    "digestMultibase": "uEiCk7pYw2Hn5vT0rXq3LmZs9dJ4fB8aG1oKcU6eRiNyVhA"
+  }</span>
 }
           </pre>
         </section>
