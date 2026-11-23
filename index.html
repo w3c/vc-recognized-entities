@@ -4187,9 +4187,10 @@ Recognized Entity Credential Propagation</a>.
       "type": "RecognizedAction",
       "action": "issue",
       "recognizedBy": "did:web:handelsregister.example",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://vocabulary.uncefact.org/untp/dpp/schema.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiDf3PnKmWq5XtRcYbVeAg7Hj2LkNp4MqSsTuVwXyZaBcF"
       }
     }
@@ -4253,12 +4254,13 @@ Recognized Entity Credential Propagation</a>.
       ]</span>
     },
     "recognizedTo": {
-      <span class="external">"type": "ScopedRecognizedAction"</span>,
+      "type": ["RecognizedAction", <span class="external">"ScopedRecognizedAction"</span>],
       "action": "issue",
       "recognizedBy": "did:web:dakks.example",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://vocabulary.uncefact.org/untp/dcc/schema.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiC4a1mXqFv7Jb2sTnRwYxPkLd8oZv3NmQrEsTuVwXyZaA"
       },
       <span class="highlight">"jurisdictionCountry": "DE"</span>,
@@ -4295,8 +4297,8 @@ Recognized Entity Credential Propagation</a>.
             <p class="note" title="ScopedRecognizedAction's place in the class hierarchy">
                 `ScopedRecognizedAction` is a type defined by the CE marking ecosystem
                 vocabulary, declared as a subclass of this specification's
-                `RecognizedAction`. The scope properties it carries are defined by UNTP, so
-                the vocabulary does not redefine them. It also does not give them an
+                `RecognizedAction`. The scope properties it carries reuse UNTP's IRIs; the
+                vocabulary does not define new ones. It also does not give them an
                 `rdfs:domain`: a domain is a global inference rule, and would make every
                 resource that uses, for example, `referenceRegulation` — including UNTP's own
                 conformity credentials — a `ScopedRecognizedAction`. Instead, a SHACL
@@ -4325,6 +4327,34 @@ ce:ScopedRecognizedActionShape
     sh:property [ sh:path untp:referenceRegulation ; sh:minCount 1 ] ;
     sh:property [ sh:path untp:assessmentCriteria ] ;
     sh:property [ sh:path untp:productCategory ] .
+            </pre>
+
+            <p>
+                JSON-LD does not follow `rdfs:subClassOf`. The terms of `RecognizedAction`,
+                such as `action` and `recognizedBy`, are scoped to that type, so the examples
+                list both types. UNTP, in turn, defines `referenceRegulation` and the other
+                scope properties only inside its own types, such as `ConformityAssessment`.
+                The CE marking context therefore maps them to UNTP's IRIs inside
+                `ScopedRecognizedAction`:
+            </p>
+            <pre class="example nohighlight" title="JSON-LD context of the CE marking vocabulary">
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "untp": "https://test.uncefact.org/vocabulary/untp/core/working/",
+    "ScopedRecognizedAction": {
+      "@id": "https://ce-marking.example/vocabulary/v1#ScopedRecognizedAction",
+      "@context": {
+        "jurisdictionCountry": "untp:jurisdictionCountry",
+        "referenceStandard": { "@id": "untp:referenceStandard", "@container": "@set" },
+        "referenceRegulation": { "@id": "untp:referenceRegulation", "@container": "@set" },
+        "assessmentCriteria": { "@id": "untp:assessmentCriteria", "@container": "@set" },
+        "productCategory": { "@id": "untp:productCategory", "@container": "@set" }
+      }
+    }
+  }
+}
             </pre>
 
             <p>
@@ -4362,12 +4392,13 @@ ce:ScopedRecognizedActionShape
     "type": ["RecognizedEntity", <span class="highlight">"Party"</span>],
     "name": "Example Conformity Assessment GmbH",
     "recognizedTo": {
-      <span class="external">"type": "ScopedRecognizedAction"</span>,
+      "type": ["RecognizedAction", <span class="external">"ScopedRecognizedAction"</span>],
       "action": "issue",
       "recognizedBy": "did:web:notifying-authority.example",
-      "outputValidation": {
+      "credentialValidator": {
         "id": "https://vocabulary.uncefact.org/untp/dcc/schema.json",
-        "type": "JsonSchema",
+        "type": "CredentialValidator",
+        "mediaType": "application/schema+json",
         "digestMultibase": "uEiC4a1mXqFv7Jb2sTnRwYxPkLd8oZv3NmQrEsTuVwXyZaA"
       },
       <span class="highlight">"jurisdictionCountry": "EU"</span>,
@@ -4433,11 +4464,14 @@ ce:ScopedRecognizedActionShape
   "credentialSubject": {
     "id": "https://alphacell.example/products/battery-123",
     <span class="highlight">"type": "ConformityAttestation"</span>,
-    <span class="highlight">"assessedProduct": {
-      "id": "https://alphacell.example/products/battery-123",
-      "type": "Product",
-      "name": "Battery #123"
-    }</span>
+    <span class="highlight">"assessment": [{
+      "type": "ConformityAssessment",
+      "assessedProduct": {
+        "id": "https://alphacell.example/products/battery-123",
+        "type": "Product",
+        "name": "Battery #123"
+      }
+    }]</span>
   },
   "evidence": [{
     "id": "https://dakks.example/credentials/accreditation/91b6f2d4",
@@ -4479,67 +4513,99 @@ ce:ScopedRecognizedActionShape
     <span class="comment">// each entry is a complete credential with its proof; only the</span>
     <span class="comment">// properties used to assemble the chain are shown</span>
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", <span class="highlight">"https://vocabulary.uncefact.org/untp/v2"</span>],
       "id": "https://alphacell.example/credentials/passport/battery-123",
       "type": ["VerifiableCredential", <span class="highlight">"DigitalProductPassport"</span>],
       "issuer": "did:web:alphacell.example"
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", <span class="highlight">"https://vocabulary.uncefact.org/untp/v2"</span>],
       "id": "https://cab.example/credentials/certificate/5b1e7740",
       "type": ["VerifiableCredential", <span class="highlight">"DigitalConformityCredential"</span>],
       "issuer": "did:web:cab.example"
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", "https://www.w3.org/ns/credentials/recognized-entities/v1"],
       "id": "https://handelsregister.example/credentials/registration/b47c1e90",
       "type": ["VerifiableCredential", "RecognizedEntityCredential"],
       "issuer": "did:web:handelsregister.example",
       "credentialSubject": [{
         "id": "did:web:alphacell.example",
-        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:handelsregister.example" }
+        "type": "RecognizedEntity",
+        "recognizedTo": {
+          "type": "RecognizedAction", "action": "issue",
+          "recognizedBy": "did:web:handelsregister.example"
+        }
       }]
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", "https://www.w3.org/ns/credentials/recognized-entities/v1"],
       "id": "https://notifying-authority.example/credentials/notification/7c0a52ab",
       "type": ["VerifiableCredential", "RecognizedEntityCredential"],
       "issuer": "did:web:notifying-authority.example",
       "credentialSubject": [{
         "id": "did:web:cab.example",
-        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:notifying-authority.example" }
+        "type": "RecognizedEntity",
+        "recognizedTo": {
+          "type": "RecognizedAction", "action": "issue",
+          "recognizedBy": "did:web:notifying-authority.example"
+        }
       }]
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", "https://www.w3.org/ns/credentials/recognized-entities/v1"],
       "id": "https://dakks.example/credentials/accreditation/91b6f2d4",
       "type": ["VerifiableCredential", "RecognizedEntityCredential"],
       "issuer": "did:web:dakks.example",
       "credentialSubject": [{
         "id": "did:web:cab.example",
-        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:dakks.example" }
+        "type": "RecognizedEntity",
+        "recognizedTo": {
+          "type": "RecognizedAction", "action": "issue",
+          "recognizedBy": "did:web:dakks.example"
+        }
       }]
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", "https://www.w3.org/ns/credentials/recognized-entities/v1"],
       "id": "https://ec.europa.example/credentials/recognition/0f2f1a2c",
       "type": ["VerifiableCredential", "RecognizedEntityCredential"],
       "issuer": "did:web:ec.europa.example",
       "credentialSubject": [{
         "id": "did:web:notifying-authority.example",
-        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:ec.europa.example" }
+        "type": "RecognizedEntity",
+        "recognizedTo": {
+          "type": "RecognizedAction", "action": "issue",
+          "recognizedBy": "did:web:ec.europa.example"
+        }
       }]
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", "https://www.w3.org/ns/credentials/recognized-entities/v1"],
       "id": "https://european-accreditation.example/credentials/recognition/3d9f8c14",
       "type": ["VerifiableCredential", "RecognizedEntityCredential"],
       "issuer": "did:web:european-accreditation.example",
       "credentialSubject": [{
         "id": "did:web:dakks.example",
-        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:european-accreditation.example" }
+        "type": "RecognizedEntity",
+        "recognizedTo": {
+          "type": "RecognizedAction", "action": "issue",
+          "recognizedBy": "did:web:european-accreditation.example"
+        }
       }]
     },
     {
+      "@context": ["https://www.w3.org/ns/credentials/v2", "https://www.w3.org/ns/credentials/recognized-entities/v1"],
       "id": "https://iaf.example/credentials/recognition/5e7a21c9",
       "type": ["VerifiableCredential", "RecognizedEntityCredential"],
       "issuer": "did:web:iaf.example",
       "credentialSubject": [{
         "id": "did:web:european-accreditation.example",
-        "recognizedTo": { "action": "issue", "recognizedBy": "did:web:iaf.example" }
+        "type": "RecognizedEntity",
+        "recognizedTo": {
+          "type": "RecognizedAction", "action": "issue",
+          "recognizedBy": "did:web:iaf.example"
+        }
       }]
     }
   ],
@@ -4580,12 +4646,12 @@ ce:ScopedRecognizedActionShape
             <ul>
                 <li>
                     Both the notification chain and the accreditation chain have to validate.
-                    The algorithm alone accepts the first candidate chain that does.
+                    The algorithm alone is satisfied by any one candidate chain that does.
                 </li>
                 <li>
                     At every hop, not only the first, the `recognizedTo` of the matched
                     [=recognized entity=] permits what the next credential does: the same
-                    `action` and an `outputValidation` that credential conforms to.
+                    `action` and a `credentialValidator` that credential satisfies.
                 </li>
                 <li>
                     The `recognizedBy` of each matched [=recognized entity=] equals the
@@ -4846,7 +4912,7 @@ ce:ScopedRecognizedActionShape
 
                         <g transform="translate(40,640)">
                             <circle class="cev-dot" cx="8" cy="-4" r="8"/>
-                            <text class="cev-cap" x="26" y="0">lookup inside the stapled presentation · a green tick marks a hop whose proof and validity period verified offline · gold marks the authority's own trust anchors</text>
+                            <text class="cev-cap" x="26" y="0">lookup inside the stapled presentation · a green tick marks a hop whose proof and validity period verified offline · gold marks the authority's own recognition anchors</text>
                         </g>
 
 
@@ -4860,7 +4926,7 @@ ce:ScopedRecognizedActionShape
             </figure>
 
             <p class="note" title="Scope of a recognized action">
-                `action` and `outputValidation` constrain what kind of credential the
+                `action` and `credentialValidator` constrain what kind of credential the
                 conformity assessment body can issue, but not the regulation, conformity
                 assessment module, or product category it was notified for — the limits that
                 decide whether a given certificate is valid. This example carries them as
@@ -4899,7 +4965,7 @@ ce:ScopedRecognizedActionShape
                     Stapling removes the need to fetch recognition credentials, but checking a
                     proof still needs the [=issuer=]'s public key. In
                     [[[#holder-based-delivery]]], the [=verifier=] caches the key material of
-                    its trust anchors in advance. Here, most proofs come from intermediate
+                    its recognition anchors in advance. Here, most proofs come from intermediate
                     issuers and from the [=holder=], whose keys the [=verifier=] cannot know in
                     advance. A `did:web` DID document is fetched over HTTPS, and a stapled copy
                     proves nothing, because a `did:web` document is not self-certifying. Two
@@ -5001,7 +5067,7 @@ did:webvh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:cab.example
                     Neither approach checks revocation offline; none of the credentials in this
                     example carries a `credentialStatus`, and [[[#stale-credentials]]] describes
                     the limits of status information cached in advance. As in
-                    [[[#holder-based-delivery]]], schemas referenced by `outputValidation` have
+                    [[[#holder-based-delivery]]], schemas referenced by `credentialValidator` have
                     to be cached in advance, and so does the register entry referenced by
                     `relatedResource`; their digests let the [=verifier=] check the cached
                     copies.
