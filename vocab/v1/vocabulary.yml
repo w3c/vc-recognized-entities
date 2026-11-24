@@ -1,3 +1,6 @@
+mermaid:
+  accDescr: RDFS vocabulary used by the Recognized Entities specification, represented as a Mermaid diagram.
+
 json_ld:
   alias:
     "language": "@language"
