@@ -163,6 +163,18 @@
             authors: ["UN/CEFACT"],
             status: "UN Transparency Protocol Specification (Draft)",
             publisher: "United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)"
+          },
+          "KYA-OS": {
+            title: "KYA-OS Protocol Specification",
+            href: "https://github.com/decentralized-identity/kya-os-mcp/blob/main/SPEC.md",
+            authors: ["Dylan Hobbs"],
+            status: "DIF Specification v1.0.0",
+            publisher: "Decentralized Identity Foundation"
+          },
+          "MCP": {
+            title: "Model Context Protocol Specification",
+            href: "https://modelcontextprotocol.io/specification",
+            publisher: "Model Context Protocol"
           }
         }
       }
@@ -522,6 +534,30 @@ An example of such a scheme is GS1, the organization behind many of the world's
 barcodes. A detailed description of its use case is presented in the <a
 href="https://www.w3.org/TR/vc-use-cases/#chain-of-gs1-credentials-to-identify-a-trade-item">Verifiable
 Credentials Use Cases</a> document [[vc-use-cases]].
+        </p>
+      </section>
+
+      <section>
+        <h3>AI Agent Delegation</h3>
+
+        <p>
+An individual asks an AI agent to work on their behalf. The agent needs to read
+the individual's files on a storage service through the Model Context Protocol
+[[?MCP]]. The individual issues a `RecognizedEntityCredential` to the agent's
+identifier. It states the actions the agent is recognized to perform and the
+limits on those actions, such as which tools it can call and which folders it
+can read. The agent can hand part of its task to a sub-agent. It does so by
+issuing its own `RecognizedEntityCredential` to the sub-agent, with limits that
+are no wider than its own.
+        </p>
+
+        <p>
+The storage service has never seen either agent. It does know the individual
+who owns the files. When the sub-agent makes a request, the service checks that
+the request leads back to the individual through a chain of recognition. It
+also checks that each step in that chain stays within the limits set by the
+step above it. Section [[[#ai-agent-delegation-example]]] shows this use case in
+detail.
         </p>
       </section>
 
@@ -4315,6 +4351,488 @@ copies.
                 </p>
             </section>
         </section>
+
+      <section>
+        <h3>AI Agent Delegation Example</h3>
+
+        <p class="issue">
+This example has not yet been reviewed by the Working Group or by the authors
+of the KYA-OS specification.
+        </p>
+
+        <p>
+The KYA-OS specification [[?KYA-OS]] adds identity and delegation to the Model
+Context Protocol [[?MCP]]. In KYA-OS, a person delegates authority to an AI
+agent with a delegation credential. That agent can pass part of its authority
+to another agent. A server checks the whole chain before it runs a tool. This
+example shows how the data model defined by this specification can express the
+same chain. It expands the use case in Section [[[#ai-agent-delegation]]].
+        </p>
+
+        <p>
+Alice keeps her files on a storage service called Example Files. She asks a
+research agent to prepare a report on a project called Apollo. Alice lets the
+research agent list and read the files in her `projects/apollo` folder for one
+week. The research agent hands the reading of quarterly reports to a summarizer
+sub-agent. The summarizer can read only the `projects/apollo/reports` folder,
+and only for one day. Each agent is identified by a `did:key` DID, as KYA-OS
+does for short-lived agents. The diagram below shows the relationships:
+        </p>
+
+        <figure>
+          <pre class="diagram mermaid" style="max-width:45%">
+flowchart TD
+    ALICE["Alice\n(recognition anchor)"]
+    RA["Research agent"]
+    SA["Summarizer sub-agent"]
+    FILES["Example Files\nMCP server (verifier)"]
+
+    REC1["RecognizedEntityCredential\nsubject: research agent"]
+    REC2["RecognizedEntityCredential\nsubject: summarizer"]
+    CALL["ExampleToolCallCredential\nread_file request"]
+
+    ALICE -->|issues| REC1
+    REC1 -->|recognizes| RA
+    RA -->|issues| REC2
+    REC2 -->|recognizes| SA
+    SA -->|issues| CALL
+    CALL -.->|"presented with both\nrecognized entity credentials"| FILES
+
+    style ALICE fill:#005a9c,color:#fff
+    style FILES fill:#aec6e8,color:#000
+    style REC1 fill:darkgray,color:white
+    style REC2 fill:darkgray,color:white
+    style CALL fill:teal
+          </pre>
+          <figcaption>
+Relationship of a person, AI agents, and credentials in a delegation chain
+          </figcaption>
+        </figure>
+
+        <p>
+Alice states her limits with the `constraints` property defined by KYA-OS. Its
+`scopes` list the tools an agent can call. Its `audience` names the one server
+on which the agent can call them. Its `crisp.scopes` use the `path-prefix`
+matcher to limit the folders an agent can read. In this example, `constraints`
+is a property of the [=recognized action=]. Each limit therefore applies to the
+credentials that the [=recognized entity=] is recognized to issue.
+        </p>
+
+        <p>
+One [=JavaScript credential validator=] enforces these limits at every step.
+Alice declares it for the research agent, and the research agent declares the
+same validator for the summarizer. The validator code is shown later in this
+section. In the first example below, Alice recognizes the research agent.
+        </p>
+
+        <pre class="example nohighlight"
+          title="A person recognizes an AI agent and limits what it can do">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// purple text is from an example vocabulary that reuses KYA-OS terms</span>
+    <span class="external">"https://agents.example/vocabulary/v1"</span>
+  ],
+  "id": "urn:uuid:0b6f3e2c-7a19-4c5d-9e84-2f1d6a8b3c57",
+  "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+  "issuer": {
+    "id": "did:web:alice.example",
+    "type": "RecognizedIssuer",
+    "name": "Alice"
+  },
+  "validFrom": "2026-11-23T00:00:00Z",
+  "validUntil": "2026-11-30T00:00:00Z",
+  "credentialSubject": [{
+    "id": "did:key:z6MkqnBLBJa2JLpcSAj5D5wzFBhssJjmKfKCoxSwr74xCM21",
+    "type": "RecognizedEntity",
+    "name": "Apollo research agent",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:web:alice.example",
+      "credentialValidator": {
+        "id": "https://agents.example/validators/kya-os-constraints.js",
+        "type": "CredentialValidator",
+        "mediaType": "text/javascript",
+        "digestMultibase": "uEiC7rXk2pQm9sVt4nWz8yHa3dLf6gJb1cNe5oRu0iMqTwA"
+      },
+      <span class="external">"constraints": {
+        "audience": "did:web:files.example",
+        "scopes": ["tool:list_directory", "tool:read_file"],
+        "crisp": {
+          "scopes": [{
+            "resource": "projects/apollo",
+            "matcher": "path-prefix"
+          }]
+        }
+      }</span>
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-11-23T09:12:40Z",
+    "verificationMethod": "did:web:alice.example#issuance-key-1",
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z4fVt8xQ2mKpLbRwYs7dCfHj9gNzE3aQoUbT6rWkM5xP1AcDeFgHiJkLmNpQrStUvWxYz1A2b3C4d5E6f7G8h9J0"
+  }
+}
+        </pre>
+
+        <p>
+In the next example, the research agent recognizes the summarizer. The
+summarizer can call one of the two tools that the research agent received. It
+can call that tool on the same server. Its folder lies inside the folder that
+Alice granted, and its recognition ends one day after it starts. The research
+agent declares the same [=credential validator=] that Alice declared.
+        </p>
+
+        <pre class="example nohighlight"
+          title="An AI agent recognizes a sub-agent with narrower limits">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://www.w3.org/ns/credentials/recognized-entities/v1",
+    <span class="comment">// purple text is from an example vocabulary that reuses KYA-OS terms</span>
+    <span class="external">"https://agents.example/vocabulary/v1"</span>
+  ],
+  "id": "urn:uuid:5f0c8e2a-9b41-4d7e-a3c6-1e2f7b9d4a60",
+  "type": ["VerifiableCredential", "RecognizedEntityCredential"],
+  "issuer": {
+    "id": "did:key:z6MkqnBLBJa2JLpcSAj5D5wzFBhssJjmKfKCoxSwr74xCM21",
+    "type": "RecognizedIssuer",
+    "name": "Apollo research agent"
+  },
+  "validFrom": "2026-11-23T14:00:00Z",
+  "validUntil": "2026-11-24T14:00:00Z",
+  "credentialSubject": [{
+    "id": "did:key:z6MksmVRBztzbYeGgdX9DBk8qyhQbgVWh4DbYY1PmYYMtgSb",
+    "type": "RecognizedEntity",
+    "name": "Apollo report summarizer",
+    "recognizedTo": {
+      "type": "RecognizedAction",
+      "action": "issue",
+      "recognizedBy": "did:key:z6MkqnBLBJa2JLpcSAj5D5wzFBhssJjmKfKCoxSwr74xCM21",
+      "credentialValidator": {
+        "id": "https://agents.example/validators/kya-os-constraints.js",
+        "type": "CredentialValidator",
+        "mediaType": "text/javascript",
+        "digestMultibase": "uEiC7rXk2pQm9sVt4nWz8yHa3dLf6gJb1cNe5oRu0iMqTwA"
+      },
+      <span class="external">"constraints": {
+        "audience": "did:web:files.example",
+        "scopes": ["tool:read_file"],
+        "crisp": {
+          "scopes": [{
+            "resource": "projects/apollo/reports",
+            "matcher": "path-prefix"
+          }]
+        }
+      }</span>
+    }
+  }],
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-11-23T14:00:05Z",
+    "verificationMethod": "did:key:z6MkqnBLBJa2JLpcSAj5D5wzFBhssJjmKfKCoxSwr74xCM21#z6MkqnBLBJa2JLpcSAj5D5wzFBhssJjmKfKCoxSwr74xCM21",
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z2Kx9vLp4WsRdTbWcAe8FhJk1NmQrSuVwXyZaBcDeFgHiJkLmNpQrStUvWxYz1A2b3C4d5E6f7G8h9J0kL1mN2pQ"
+  }
+}
+        </pre>
+
+        <p>
+The summarizer then asks Example Files for a quarterly report. It describes the
+tool call in a short-lived [=verifiable credential=] that it issues. The
+`scope` property names the scope that the call uses. KYA-OS requires every
+call to name its scope in this way.
+        </p>
+
+        <pre class="example nohighlight"
+          title="A tool call issued by a sub-agent">
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    <span class="comment">// purple text is from an example vocabulary that reuses KYA-OS terms</span>
+    <span class="external">"https://agents.example/vocabulary/v1"</span>
+  ],
+  "id": "urn:uuid:c2d94a71-3e58-4b0f-8a16-7d5e9f2b4c83",
+  "type": ["VerifiableCredential", <span class="external">"ExampleToolCallCredential"</span>],
+  "issuer": "did:key:z6MksmVRBztzbYeGgdX9DBk8qyhQbgVWh4DbYY1PmYYMtgSb",
+  "validFrom": "2026-11-23T15:00:00Z",
+  "validUntil": "2026-11-23T15:05:00Z",
+  "credentialSubject": <span class="external">{
+    "type": "ToolCall",
+    "audience": "did:web:files.example",
+    "scope": "tool:read_file",
+    "name": "read_file",
+    "arguments": {
+      "path": "projects/apollo/reports/2026-q3.md"
+    }
+  }</span>,
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2026-11-23T15:00:00Z",
+    "verificationMethod": "did:key:z6MksmVRBztzbYeGgdX9DBk8qyhQbgVWh4DbYY1PmYYMtgSb#z6MksmVRBztzbYeGgdX9DBk8qyhQbgVWh4DbYY1PmYYMtgSb",
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z5nT3gYhAu1C7bPmWxKdQvSb4yZcNhRa8LgUjE2fXoTn7MpYvBk5rWsDzHqA3iCuJe9NfVtGmXbLpRy6dSaKcZw4"
+  }
+}
+        </pre>
+
+        <p>
+The summarizer sends the tool call to Example Files inside a [=verifiable
+presentation=]. The presentation also carries the two [=recognized entity
+credentials=] above, as described in Section [[[#holder-based-delivery]]]. The
+summarizer signs the presentation with its own key. The proof echoes a
+`challenge` and a `domain` that Example Files chose, so the presentation cannot
+be replayed. KYA-OS reaches the same goal with a signed request proof and a
+nonce.
+        </p>
+
+        <p>
+Example Files knows Alice as the owner of the files. It therefore configures
+`did:web:alice.example` as the recognition anchor for requests that read her
+files. It verifies the proof on the presentation and on each credential in it.
+It then builds the chain by matching each `issuer` to a `credentialSubject`.
+The chain starts with the tool call, continues with the research agent's
+credential for the summarizer, and ends with Alice's credential for the
+research agent. Example Files runs [=recognition validation=] on that chain for
+the `issue` action, as described in Section [[[#recognition-validation]]].
+        </p>
+
+        <p>
+[=Recognition validation=] checks the chain from the anchor down. It first
+runs the validator that Alice declared on the research agent's credential for
+the summarizer. That check confirms that the research agent gave away no more
+than it received. It next runs the validator that the research agent declared
+on the tool call. That check confirms the tool and the server of the call. It
+also confirms that the file lies inside `projects/apollo/reports`. Had the
+research agent granted the summarizer `tool:write_file`, the first check would
+fail. The chain would then be rejected before any validator declared by the
+research agent runs.
+        </p>
+
+        <p>
+The example below shows the [=validator code=], which serves both checks.
+When the credential is a [=recognized entity credential=], the code confirms
+that every action it recognizes narrows the limits that its issuer received. It
+also confirms that each of those actions declares the same [=credential
+validators=], so that the limits reach the next step in the chain. Any other
+credential is treated as a tool call, which has to stay inside the limits of its
+issuer. Like KYA-OS, the code refuses paths that contain `.` or `..` segments.
+        </p>
+
+        <pre class="example" title="Validator code that enforces KYA-OS constraints across a recognition chain">
+/**
+ * Checks that a credential issued by an AI agent stays inside the
+ * constraints that its delegator placed on that agent.
+ *
+ * @param {object} credential - The credential being validated.
+ * @param {object} options - The validation options.
+ * @param {Array&lt;object&gt;} options.chain - The rest of the recognition
+ *   chain; `chain[0]` recognizes the issuer of `credential`.
+ * @param {string} options.action - The action being evaluated.
+ * @param {string} options.evaluationDateTime - The evaluation time.
+ *
+ * @returns {{valid: boolean, errors: Array&lt;object&gt;,
+ *   warnings: Array&lt;object&gt;}} The validation result.
+ */
+export default function validate(credential, options) {
+  const errors = [];
+  const warnings = [];
+  const getId = value =&gt; typeof value === 'string' ? value : value?.id;
+  const fail = (code, title, detail) =&gt; {
+    errors.push({
+      type: `https://agents.example/validators#${code}`, title, detail
+    });
+    return {valid: false, errors, warnings};
+  };
+
+  // throw on any option this validator does not recognize
+  const knownOptions = new Set(['chain', 'action', 'evaluationDateTime']);
+  for(const name of Object.keys(options)) {
+    if(!knownOptions.has(name)) {
+      const error = new Error(`Unrecognized option "${name}".`);
+      error.type =
+        'https://www.w3.org/TR/vc-data-model#UNRECOGNIZED_OPTION_ERROR';
+      throw error;
+    }
+  }
+
+  // the constraints are read from the recognition chain, so it is required
+  const {chain} = options;
+  if(!Array.isArray(chain) || chain.length === 0) {
+    return fail('MISSING_CHAIN', 'Missing recognition chain',
+      'This validator requires the recognition chain.');
+  }
+
+  // this ecosystem gives each agent one recognized action, which carries
+  // the constraints that `chain[0]` placed on the issuer of `credential`
+  const issuerId = getId(credential.issuer);
+  const entity = [].concat(chain[0].credentialSubject)
+    .find(subject =&gt; subject.id === issuerId);
+  const granted = [].concat(entity?.recognizedTo ?? [])[0];
+  if(!isConstraints(granted?.constraints)) {
+    return fail('MISSING_CONSTRAINTS', 'Missing constraints',
+      `No constraints found for ${issuerId}.`);
+  }
+
+  // a delegation to another agent has to narrow what its issuer received
+  if([].concat(credential.type).includes('RecognizedEntityCredential')) {
+    for(const subject of [].concat(credential.credentialSubject)) {
+      for(const action of [].concat(subject.recognizedTo ?? [])) {
+        if(!narrows(action.constraints, granted.constraints) ||
+          !keepsValidators(action, granted)) {
+          return fail('DELEGATION_WIDENED', 'Delegation widened',
+            `The delegation to ${subject.id} is wider than its parent.`);
+        }
+      }
+    }
+    return {valid: true, errors, warnings};
+  }
+
+  // any other credential is a tool call that has to fit the constraints
+  if(!permits(granted.constraints, credential.credentialSubject)) {
+    return fail('CALL_NOT_PERMITTED', 'Tool call not permitted',
+      `The tool call by ${issuerId} is outside its constraints.`);
+  }
+  return {valid: true, errors, warnings};
+}
+
+// the folders that `path-prefix` scopes allow; an empty folder allows nothing
+function folders(constraints) {
+  return [].concat(constraints?.crisp?.scopes ?? [])
+    .filter(scope =&gt; scope.matcher === 'path-prefix' &amp;&amp;
+      typeof scope.resource === 'string' &amp;&amp; scope.resource !== '')
+    .map(scope =&gt; scope.resource);
+}
+
+// usable constraints name one audience, a list of scopes, and a folder
+function isConstraints(constraints) {
+  return typeof constraints?.audience === 'string' &amp;&amp;
+    Array.isArray(constraints.scopes) &amp;&amp; folders(constraints).length &gt; 0;
+}
+
+// a path lies under a folder when it is the folder or continues it with
+// "/"; a path with a "." or ".." segment lies under no folder
+function isUnder(path, folder) {
+  if(typeof path !== 'string' ||
+    path.split('/').some(segment =&gt; segment === '.' || segment === '..')) {
+    return false;
+  }
+  return path === folder || path.startsWith(`${folder}/`);
+}
+
+// child constraints narrow their parent when they name the same audience,
+// some of its scopes, and only folders that lie under its folders
+function narrows(child, parent) {
+  return isConstraints(child) &amp;&amp; child.audience === parent.audience &amp;&amp;
+    child.scopes.every(scope =&gt; parent.scopes.includes(scope)) &amp;&amp;
+    folders(child).every(
+      folder =&gt; folders(parent).some(outer =&gt; isUnder(folder, outer)));
+}
+
+// a child action keeps every credential validator of its parent action
+function keepsValidators(child, parent) {
+  const ids = action =&gt; [].concat(action.credentialValidator ?? [])
+    .map(validator =&gt; validator.id);
+  return ids(parent).every(id =&gt; ids(child).includes(id));
+}
+
+// a tool call fits when it targets the audience, names an allowed scope
+// for the tool it calls, and reads a path under an allowed folder
+function permits(constraints, call) {
+  return call?.audience === constraints.audience &amp;&amp;
+    constraints.scopes.includes(call.scope) &amp;&amp;
+    call.scope === `tool:${call.name}` &amp;&amp;
+    folders(constraints).some(folder =&gt; isUnder(call.arguments?.path, folder));
+}
+        </pre>
+
+        <p>
+The table below shows how the parts of KYA-OS map to this example.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <tr>
+              <th>KYA-OS</th>
+              <th>This example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Responsible party and principal</td>
+              <td>
+Alice, whom Example Files configures as the recognition anchor
+              </td>
+            </tr>
+            <tr>
+              <td>Delegation credential</td>
+              <td>
+A [=recognized entity credential=] whose subject is the agent's DID
+              </td>
+            </tr>
+            <tr>
+              <td>CRISP constraints</td>
+              <td>
+`constraints` on the [=recognized action=], enforced by a [=JavaScript
+credential validator=]
+              </td>
+            </tr>
+            <tr>
+              <td>Narrowing at each delegation step</td>
+              <td>
+The same validator, run on each intermediate credential
+              </td>
+            </tr>
+            <tr>
+              <td>Designating the scope of a call</td>
+              <td>
+The `scope` of the tool call, checked by the validator
+              </td>
+            </tr>
+            <tr>
+              <td>Request proof and nonce</td>
+              <td>
+A [=verifiable presentation=] signed by the sub-agent, with a `challenge` and a
+`domain`
+              </td>
+            </tr>
+            <tr>
+              <td>Cascading revocation</td>
+              <td>
+A `credentialStatus` on each [=recognized entity credential=]; revoking one
+breaks every chain that passes through it
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="note" title="What this example does not cover">
+This specification does not cover every KYA-OS feature. It defines no budget
+that adds up across calls, because [=recognition validation=] keeps no state
+between requests. It also defines no signed response from the server. KYA-OS
+uses those responses to build an audit trail of each tool call.
+        </p>
+
+        <p class="note" title="Using recognized entity credentials alongside KYA-OS">
+A KYA-OS deployment can keep its own delegation credentials and still use this
+specification. KYA-OS lets a server ask a trust registry about the standing of
+an entity. It also lets the person at the root of a delegation chain prove that
+their identity was verified. A [=recognized entity credential=] can carry
+either fact. For example, a bank that verified Alice's identity can issue a
+[=recognized entity credential=] whose subject is `did:web:alice.example`. A
+server that has never seen Alice can configure the bank as its anchor. It then
+checks that the root of a KYA-OS delegation chain is a [=recognized entity=] in
+the bank's credential.
+        </p>
+
+      </section>
 
       <section class="informative">
         <h3>Holder-Based Delivery</h3>
