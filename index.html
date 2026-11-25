@@ -3595,40 +3595,40 @@ defines only the `registration` property that contains them.
             <h3>CE Product Conformity Example</h3>
 
             <p class="issue">
-                This example has not yet been reviewed by the Working Group, nor by the
-                European bodies whose processes it models.
+This example has not yet been reviewed by the Working Group, nor by the
+European bodies whose processes it models.
             </p>
 
             <p>
-                This example applies the data model to the European CE marking regime,
-                expanding the use case in [[[#product-conformity]]]. Unlike the preceding
-                examples, two independent recognition chains converge on a single entity: a
-                conformity assessment body is recognized by a notifying authority under the
-                regulation it assesses against, and separately by a national accreditation
-                body under the regulation governing accreditation. A [=verifier=] might need
-                both. Three entities are roots: the European Commission, the International
-                Accreditation Forum, and the national business register.
+This example applies the data model to the European CE marking regime,
+expanding the use case in [[[#product-conformity]]]. Unlike the preceding
+examples, two independent recognition chains converge on a single entity: a
+conformity assessment body is recognized by a notifying authority under the
+regulation it assesses against, and separately by a national accreditation
+body under the regulation governing accreditation. A [=verifier=] might need
+both. Three entities are roots: the European Commission, the International
+Accreditation Forum, and the national business register.
             </p>
 
             <figure>
                 <div data-include="diagrams/ce-marking-flow.svg"
                      data-include-replace="true"></div>
                 <figcaption>
-                    Issuance. Each circle is one verifiable credential moving from its issuer
-                    to its subject.
+Issuance. Each circle is one verifiable credential moving from its issuer
+to its subject.
                 </figcaption>
             </figure>
 
             <p>
-                The national business register recognizes the manufacturer. The register is the
-                root of this chain: a [=verifier=] trusts its DID directly. The subject's
-                `registration` is a UNTP `RegisteredIdentity`, so the credential doubles as a
-                Digital Identity Anchor [[?UNTP-DIA]] binding the manufacturer's DID to its
-                commercial register number. Its `id` is the URL of the register entry,
-                `registrationScopeList` names the company's legal form, and, because a German
-                register number is unique only within one register court, the `idScheme` is
-                scoped to the court. `relatedResource` fixes the version of the entry the
-                register attested to.
+The national business register recognizes the manufacturer. The register is the
+root of this chain: a [=verifier=] trusts its DID directly. The subject's
+`registration` is a UNTP `RegisteredIdentity`, so the credential doubles as a
+Digital Identity Anchor [[?UNTP-DIA]] binding the manufacturer's DID to its
+commercial register number. Its `id` is the URL of the register entry,
+`registrationScopeList` names the company's legal form, and, because a German
+register number is unique only within one register court, the `idScheme` is
+scoped to the court. `relatedResource` fixes the version of the entry the
+register attested to.
             </p>
 
             <pre class="example nohighlight"
@@ -3700,13 +3700,13 @@ defines only the `registration` property that contains them.
       </pre>
 
             <p>
-                The national accreditation body accredits the conformity assessment body. Every
-                entity in the chain is identified by a `did:web` DID, and `recognizedBy` names
-                the entity that did the recognizing. The accreditation body is itself the
-                subject of a credential issued by the European co-operation for Accreditation,
-                which in turn is the subject of one issued by the International Accreditation
-                Forum, where the chain terminates. The credentials carry no `recognizedIn`; a
-                [=verifier=] links them by matching each `issuer` to a `credentialSubject`.
+The national accreditation body accredits the conformity assessment body. Every
+entity in the chain is identified by a `did:web` DID, and `recognizedBy` names
+the entity that did the recognizing. The accreditation body is itself the
+subject of a credential issued by the European co-operation for Accreditation,
+which in turn is the subject of one issued by the International Accreditation
+Forum, where the chain terminates. The credentials carry no `recognizedIn`; a
+[=verifier=] links them by matching each `issuer` to a `credentialSubject`.
             </p>
 
             <pre class="example nohighlight"
@@ -3788,16 +3788,16 @@ defines only the `registration` property that contains them.
       </pre>
 
             <p class="note" title="ScopedRecognizedAction's place in the class hierarchy">
-                `ScopedRecognizedAction` is a type defined by the CE marking ecosystem
-                vocabulary, declared as a subclass of this specification's
-                `RecognizedAction`. The scope properties it carries reuse UNTP's IRIs; the
-                vocabulary does not define new ones. It also does not give them an
-                `rdfs:domain`: a domain is a global inference rule, and would make every
-                resource that uses, for example, `referenceRegulation` — including UNTP's own
-                conformity credentials — a `ScopedRecognizedAction`. Instead, a SHACL
-                [[?SHACL]] shape states which properties a `ScopedRecognizedAction` is
-                expected to carry, without changing what they mean elsewhere. The UNTP IRIs
-                are from UNTP's working-draft namespace.
+`ScopedRecognizedAction` is a type defined by the CE marking ecosystem
+vocabulary, declared as a subclass of this specification's
+`RecognizedAction`. The scope properties it carries reuse UNTP's IRIs; the
+vocabulary does not define new ones. It also does not give them an
+`rdfs:domain`: a domain is a global inference rule, and would make every
+resource that uses, for example, `referenceRegulation` — including UNTP's own
+conformity credentials — a `ScopedRecognizedAction`. Instead, a SHACL
+[[?SHACL]] shape states which properties a `ScopedRecognizedAction` is
+expected to carry, without changing what they mean elsewhere. The UNTP IRIs
+are from UNTP's working-draft namespace.
             </p>
             <pre class="example nohighlight" title="RDF class hierarchy and SHACL shape for ScopedRecognizedAction">
 @prefix ce:   &lt;https://ce-marking.example/vocabulary/v1#&gt; .
@@ -3823,12 +3823,12 @@ ce:ScopedRecognizedActionShape
             </pre>
 
             <p>
-                JSON-LD does not follow `rdfs:subClassOf`. The terms of `RecognizedAction`,
-                such as `action` and `recognizedBy`, are scoped to that type, so the examples
-                list both types. UNTP, in turn, defines `referenceRegulation` and the other
-                scope properties only inside its own types, such as `ConformityAssessment`.
-                The CE marking context therefore maps them to UNTP's IRIs inside
-                `ScopedRecognizedAction`:
+JSON-LD does not follow `rdfs:subClassOf`. The terms of `RecognizedAction`,
+such as `action` and `recognizedBy`, are scoped to that type, so the examples
+list both types. UNTP, in turn, defines `referenceRegulation` and the other
+scope properties only inside its own types, such as `ConformityAssessment`.
+The CE marking context therefore maps them to UNTP's IRIs inside
+`ScopedRecognizedAction`:
             </p>
             <pre class="example nohighlight" title="JSON-LD context of the CE marking vocabulary">
 {
@@ -3851,13 +3851,13 @@ ce:ScopedRecognizedActionShape
             </pre>
 
             <p>
-                The notifying authority notifies the same body under the Battery Regulation.
-                Notification presumes accreditation, so the accreditation credential above is
-                cited as `evidence`. The credential carries no `registration`: the notified
-                body number, 0123, is assigned by the European Commission and recorded in its
-                register of notified bodies, not in a register the notifying authority
-                maintains. That number would appear as a `registration` in a credential issued
-                by the Commission.
+The notifying authority notifies the same body under the Battery Regulation.
+Notification presumes accreditation, so the accreditation credential above is
+cited as `evidence`. The credential carries no `registration`: the notified
+body number, 0123, is assigned by the European Commission and recorded in its
+register of notified bodies, not in a register the notifying authority
+maintains. That number would appear as a `registration` in a credential issued
+by the Commission.
             </p>
 
             <pre class="example nohighlight"
@@ -3933,8 +3933,8 @@ ce:ScopedRecognizedActionShape
       </pre>
 
             <p>
-                The conformity certificate the body then issues identifies its issuer only by
-                DID. Its `evidence` cites the accreditation the body relied on.
+The conformity certificate the body then issues identifies its issuer only by
+DID. Its `evidence` cites the accreditation the body relied on.
             </p>
 
             <pre class="example nohighlight"
@@ -3983,17 +3983,17 @@ ce:ScopedRecognizedActionShape
       </pre>
 
             <p>
-                A market surveillance authority that inspects the battery might have no
-                network access. The manufacturer therefore hands over the product passport
-                together with every credential needed to verify it, stapled into one
-                [=verifiable presentation=], as described in [[[#holder-based-delivery]]].
-                Besides the four credentials above, the presentation contains the passport and
-                the three credentials in which the roots recognize the intermediate
-                authorities. The authority's presentation request asks for credentials from
-                its three root DIDs; because the credentials carry no `recognizedIn`, the
-                request cannot use a `recognizedIn` object in `acceptedIssuers` and names the
-                roots instead. The manufacturer signs the presentation, echoing the request's
-                `challenge` and `domain`.
+A market surveillance authority that inspects the battery might have no
+network access. The manufacturer therefore hands over the product passport
+together with every credential needed to verify it, stapled into one
+[=verifiable presentation=], as described in [[[#holder-based-delivery]]].
+Besides the four credentials above, the presentation contains the passport and
+the three credentials in which the roots recognize the intermediate
+authorities. The authority's presentation request asks for credentials from
+its three root DIDs; because the credentials carry no `recognizedIn`, the
+request cannot use a `recognizedIn` object in `acceptedIssuers` and names the
+roots instead. The manufacturer signs the presentation, echoing the request's
+`challenge` and `domain`.
             </p>
 
             <pre class="example nohighlight"
@@ -4117,42 +4117,42 @@ ce:ScopedRecognizedActionShape
             </pre>
 
             <p>
-                The authority has configured three root DIDs: `did:web:ec.europa.example`,
-                `did:web:iaf.example`, and `did:web:handelsregister.example`. It verifies the
-                presentation's proof, its `challenge` and `domain`, and the proof of every
-                contained credential, using key material obtained as described in
-                [[[#ce-offline-keys]]]. It then builds candidate chains for the passport and for
-                the conformity certificate the passport cites: each next credential in a chain
-                is a stapled [=recognized entity credential=] whose `credentialSubject` `id`
-                equals the `issuer` of the previous one, until a credential issued by a root.
-                The conformity assessment body is the subject of two credentials, so its
-                certificate yields two chains, one ending at the European Commission and one at
-                the IAF. The authority runs [=recognition validation=], as described in
-                [[[#recognition-validation]]], on each chain. That algorithm also requires a
-                period during which every credential in a chain is valid at the same time.
+The authority has configured three root DIDs: `did:web:ec.europa.example`,
+`did:web:iaf.example`, and `did:web:handelsregister.example`. It verifies the
+presentation's proof, its `challenge` and `domain`, and the proof of every
+contained credential, using key material obtained as described in
+[[[#ce-offline-keys]]]. It then builds candidate chains for the passport and for
+the conformity certificate the passport cites: each next credential in a chain
+is a stapled [=recognized entity credential=] whose `credentialSubject` `id`
+equals the `issuer` of the previous one, until a credential issued by a root.
+The conformity assessment body is the subject of two credentials, so its
+certificate yields two chains, one ending at the European Commission and one at
+the IAF. The authority runs [=recognition validation=], as described in
+[[[#recognition-validation]]], on each chain. That algorithm also requires a
+period during which every credential in a chain is valid at the same time.
             </p>
 
             <p>
-                The CE marking ecosystem adds rules that the algorithm does not express:
+The CE marking ecosystem adds rules that the algorithm does not express:
             </p>
 
             <ul>
                 <li>
-                    Both the notification chain and the accreditation chain have to validate.
-                    The algorithm alone is satisfied by any one candidate chain that does.
+Both the notification chain and the accreditation chain have to validate.
+The algorithm alone is satisfied by any one candidate chain that does.
                 </li>
                 <li>
-                    At every hop, not only the first, the `recognizedTo` of the matched
-                    [=recognized entity=] permits what the next credential does: the same
-                    `action` and a `credentialValidator` that credential satisfies.
+At every hop, not only the first, the `recognizedTo` of the matched
+[=recognized entity=] permits what the next credential does: the same
+`action` and a `credentialValidator` that credential satisfies.
                 </li>
                 <li>
-                    The `recognizedBy` of each matched [=recognized entity=] equals the
-                    `issuer` of the credential that contains it.
+The `recognizedBy` of each matched [=recognized entity=] equals the
+`issuer` of the credential that contains it.
                 </li>
                 <li>
-                    For a `ScopedRecognizedAction`, the scope covers the certificate: its
-                    regulation, conformity assessment module, and product category.
+For a `ScopedRecognizedAction`, the scope covers the certificate: its
+regulation, conformity assessment module, and product category.
                 </li>
             </ul>
 
@@ -4160,66 +4160,66 @@ ce:ScopedRecognizedActionShape
                 <div data-include="diagrams/ce-marking-verification.svg"
                      data-include-replace="true"></div>
                 <figcaption>
-                    Offline verification. Inside the stapled presentation, the verifier matches
-                    each issuer's DID to a credential subject and follows `recognizedBy` until
-                    it reaches one of its configured root DIDs.
+Offline verification. Inside the stapled presentation, the verifier matches
+each issuer's DID to a credential subject and follows `recognizedBy` until
+it reaches one of its configured root DIDs.
                 </figcaption>
             </figure>
 
             <p class="note" title="Scope of a recognized action">
-                `action` and `credentialValidator` constrain what kind of credential the
-                conformity assessment body can issue, but not the regulation, conformity
-                assessment module, or product category it was notified for — the limits that
-                decide whether a given certificate is valid. This example carries them as
-                direct properties of `recognizedTo`, typed `ScopedRecognizedAction` — a
-                specialization of `RecognizedAction` defined by the CE marking ecosystem —
-                reusing UNTP terms for the values. A body notified only for toys would present
-                a structurally identical recognition chain.
+`action` and `credentialValidator` constrain what kind of credential the
+conformity assessment body can issue, but not the regulation, conformity
+assessment module, or product category it was notified for — the limits that
+decide whether a given certificate is valid. This example carries them as
+direct properties of `recognizedTo`, typed `ScopedRecognizedAction` — a
+specialization of `RecognizedAction` defined by the CE marking ecosystem —
+reusing UNTP terms for the values. A body notified only for toys would present
+a structurally identical recognition chain.
             </p>
 
             <p class="note" title="Scope in registration and in recognizedTo">
-                The accreditation credential states a scope twice, for different purposes.
-                The `registrationScopeList` of its `registration` points to the scope document
-                in the accreditation body's register — the body's standing in that register.
-                The `ScopedRecognizedAction` states the same limits as machine-checkable
-                constraints on the certificates whose issuance is recognized. A [=verifier=]
-                checks the latter; the former lets it, or a person, consult the authoritative
-                record. Neither is evaluated by the algorithm in
-                [[[#recognition-validation]]]; both checks belong to the CE marking ecosystem.
+The accreditation credential states a scope twice, for different purposes.
+The `registrationScopeList` of its `registration` points to the scope document
+in the accreditation body's register — the body's standing in that register.
+The `ScopedRecognizedAction` states the same limits as machine-checkable
+constraints on the certificates whose issuance is recognized. A [=verifier=]
+checks the latter; the former lets it, or a person, consult the authoritative
+record. Neither is evaluated by the algorithm in
+[[[#recognition-validation]]]; both checks belong to the CE marking ecosystem.
             </p>
 
             <p class="note" title="Assembling the chain from a stapled presentation">
-                The credentials in this example carry no `recognizedIn`. The [=holder=]
-                delivers them as described in [[[#holder-based-delivery]]], and
-                [=recognition validation=] applies to the resulting chains however they were
-                obtained. What this specification does not define is how a [=verifier=]
-                builds the ordered candidate chains from an unordered set of stapled
-                credentials; the matching by DID described above is one way to do it. A
-                [=verifier=] that is online and finds the presentation incomplete can fall
-                back to [=identifier-based discovery=].
+The credentials in this example carry no `recognizedIn`. The [=holder=]
+delivers them as described in [[[#holder-based-delivery]]], and
+[=recognition validation=] applies to the resulting chains however they were
+obtained. What this specification does not define is how a [=verifier=]
+builds the ordered candidate chains from an unordered set of stapled
+credentials; the matching by DID described above is one way to do it. A
+[=verifier=] that is online and finds the presentation incomplete can fall
+back to [=identifier-based discovery=].
             </p>
 
             <section id="ce-offline-keys" class="notoc">
                 <h4>Verifying Issuer Keys Offline</h4>
 
                 <p>
-                    Stapling removes the need to fetch recognition credentials, but checking a
-                    proof still needs the [=issuer=]'s public key. In
-                    [[[#holder-based-delivery]]], the [=verifier=] caches the key material of
-                    its recognition anchors in advance. Here, most proofs come from intermediate
-                    issuers and from the [=holder=], whose keys the [=verifier=] cannot know in
-                    advance. A `did:web` DID document is fetched over HTTPS, and a stapled copy
-                    proves nothing, because a `did:web` document is not self-certifying. Two
-                    approaches close this gap; they are compared here.
+Stapling removes the need to fetch recognition credentials, but checking a
+proof still needs the [=issuer=]'s public key. In
+[[[#holder-based-delivery]]], the [=verifier=] caches the key material of
+its recognition anchors in advance. Here, most proofs come from intermediate
+issuers and from the [=holder=], whose keys the [=verifier=] cannot know in
+advance. A `did:web` DID document is fetched over HTTPS, and a stapled copy
+proves nothing, because a `did:web` document is not self-certifying. Two
+approaches close this gap; they are compared here.
                 </p>
 
                 <p>
-                    <strong>Key bound by the parent credential.</strong> Each recognized entity
-                    credential also states the key its subject signs with. The parent's proof
-                    then vouches for the child's key, as in an X.509 certificate chain, and the
-                    [=verifier=] only needs the root keys installed in advance. The identifiers
-                    stay `did:web`. The `verificationMethod` property on the subject is not
-                    defined by this specification; it comes from [[?CID]].
+<strong>Key bound by the parent credential.</strong> Each recognized entity
+credential also states the key its subject signs with. The parent's proof
+then vouches for the child's key, as in an X.509 certificate chain, and the
+[=verifier=] only needs the root keys installed in advance. The identifiers
+stay `did:web`. The `verificationMethod` property on the subject is not
+defined by this specification; it comes from [[?CID]].
                 </p>
 
                 <pre class="example nohighlight"
@@ -4253,12 +4253,12 @@ ce:ScopedRecognizedActionShape
                 </pre>
 
                 <p>
-                    <strong>Self-certifying DIDs.</strong> Each entity uses `did:webvh` instead
-                    of `did:web`. A `did:webvh` DID embeds a hash of its first log entry, and its
-                    DID log is a hash-linked, signed history of every DID document version. The
-                    [=holder=] staples each [=issuer=]'s DID log, and the [=verifier=] checks it
-                    against the DID itself, without network access. A `did:webvh` controller can
-                    also publish a `did:web` document for resolvers that only support `did:web`.
+<strong>Self-certifying DIDs.</strong> Each entity uses `did:webvh` instead
+of `did:web`. A `did:webvh` DID embeds a hash of its first log entry, and its
+DID log is a hash-linked, signed history of every DID document version. The
+[=holder=] staples each [=issuer=]'s DID log, and the [=verifier=] checks it
+against the DID itself, without network access. A `did:webvh` controller can
+also publish a `did:web` document for resolvers that only support `did:web`.
                 </p>
 
                 <pre class="nohighlight">
@@ -4305,13 +4305,13 @@ did:webvh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:cab.example
                 </table>
 
                 <p>
-                    Neither approach checks revocation offline; none of the credentials in this
-                    example carries a `credentialStatus`, and [[[#stale-credentials]]] describes
-                    the limits of status information cached in advance. As in
-                    [[[#holder-based-delivery]]], schemas referenced by `credentialValidator` have
-                    to be cached in advance, and so does the register entry referenced by
-                    `relatedResource`; their digests let the [=verifier=] check the cached
-                    copies.
+Neither approach checks revocation offline; none of the credentials in this
+example carries a `credentialStatus`, and [[[#stale-credentials]]] describes
+the limits of status information cached in advance. As in
+[[[#holder-based-delivery]]], schemas referenced by `credentialValidator` have
+to be cached in advance, and so does the register entry referenced by
+`relatedResource`; their digests let the [=verifier=] check the cached
+copies.
                 </p>
             </section>
         </section>
