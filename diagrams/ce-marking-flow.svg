@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 640" style="width:100%"
+     font-family="Inter, Helvetica, Arial, sans-serif" role="img"
+     aria-labelledby="cef-t cef-d">
+    <title id="cef-t">Flow of verifiable credentials along the CE marking recognition chain</title>
+    <desc id="cef-d">Each circle is a verifiable credential travelling from the issuing
+        recognized entity to the recognized entity it names as subject. Three root
+        authorities — the European Commission, the IAF and the national business
+        register — start the chains; they converge on the conformity assessment body
+        and the battery manufacturer.</desc>
+
+    <style>
+        :root { --text: #000; }
+        @media (prefers-color-scheme: dark) { :root { --text: #ddd; } }
+        .cef-rot   { fill:#0b5288; stroke:#0f766e; }
+        .cef-actor { fill:#e8eaf8; stroke:#0f766e; }
+        .cef-prod  { fill:#ffffff; stroke:#0f766e; }
+        .cef-box   { stroke-width:1.5; rx:6; }
+        .cef-lw    { fill:#ffffff; font-size:13px; font-weight:600; }
+        .cef-ld    { fill:#111111; font-size:13px; font-weight:600; }
+        .cef-sub   { font-size:10.5px; font-weight:400; opacity:.8; }
+        .cef-ray   { stroke:#687880; stroke-width:1.5; fill:none; }
+        .cef-vc    { fill:#a6a6a6; stroke:#0f766e; stroke-width:1.5; }
+        .cef-vct   { fill:#11847b; font-size:10px; font-weight:600; text-anchor:middle; }
+        .cef-cap   { fill:var(--text, #000); font-size:11.5px; }
+        .cef-hd    { fill:var(--text, #000); font-size:16px; font-weight:700; }
+    </style>
+
+    <defs>
+        <marker id="cef-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#687880"/>
+        </marker>
+
+        <!-- one ray per issuance edge; the credentials ride these -->
+        <path id="cef-r1" class="cef-ray" marker-end="url(#cef-a)" d="M200 90  L280 90"/>
+        <path id="cef-r2" class="cef-ray" marker-end="url(#cef-a)" d="M200 300 L280 300"/>
+        <path id="cef-r3" class="cef-ray" marker-end="url(#cef-a)" d="M200 540 L540 540"/>
+        <path id="cef-r4" class="cef-ray" marker-end="url(#cef-a)" d="M460 90  L812 288"/>
+        <path id="cef-r5" class="cef-ray" marker-end="url(#cef-a)" d="M460 300 L540 300"/>
+        <path id="cef-r6" class="cef-ray" marker-end="url(#cef-a)" d="M720 300 L810 300"/>
+        <path id="cef-r7" class="cef-ray" marker-end="url(#cef-a)" d="M866 326 L694 516"/>
+        <path id="cef-r8" class="cef-ray" marker-end="url(#cef-a)" d="M720 540 L810 540"/>
+    </defs>
+
+    <text class="cef-hd" x="40" y="38">Verifiable credentials along the CE marking recognition chain</text>
+    <text class="cef-cap" x="40" y="58">Each circle is one credential, moving from its issuer to its subject. 16 s loop.</text>
+
+    <g stroke-linecap="round">
+        <use href="#cef-r1"/><use href="#cef-r2"/><use href="#cef-r3"/><use href="#cef-r4"/>
+        <use href="#cef-r5"/><use href="#cef-r6"/><use href="#cef-r7"/><use href="#cef-r8"/>
+    </g>
+
+    <!-- ─── entities ─────────────────────────────────────────────────────── -->
+    <g class="cef-box">
+        <rect class="cef-rot"   x="20"  y="65"  width="180" height="50"/>
+        <rect class="cef-rot"   x="280" y="65"  width="180" height="50"/>
+        <rect class="cef-rot"   x="20"  y="275" width="180" height="50"/>
+        <rect class="cef-rot"   x="280" y="275" width="180" height="50"/>
+        <rect class="cef-rot"   x="540" y="275" width="180" height="50"/>
+        <rect class="cef-actor" x="810" y="275" width="180" height="50"/>
+        <rect class="cef-rot"   x="20"  y="515" width="180" height="50"/>
+        <rect class="cef-actor" x="540" y="515" width="180" height="50"/>
+        <rect class="cef-prod"  x="810" y="515" width="180" height="50"/>
+    </g>
+    <g text-anchor="middle">
+        <text class="cef-lw" x="110" y="86">European Commission<tspan class="cef-sub" x="110" dy="17">root of trust</tspan></text>
+        <text class="cef-lw" x="370" y="86">National Notifying Authority<tspan class="cef-sub" x="370" dy="17">e.g. BMWK</tspan></text>
+        <text class="cef-lw" x="110" y="296">IAF<tspan class="cef-sub" x="110" dy="17">root of trust</tspan></text>
+        <text class="cef-lw" x="370" y="296">European Accreditation<tspan class="cef-sub" x="370" dy="17">EA</tspan></text>
+        <text class="cef-lw" x="630" y="296">Accreditation body<tspan class="cef-sub" x="630" dy="17">e.g. DAkkS</tspan></text>
+        <text class="cef-ld" x="900" y="296">Conformity assessment<tspan class="cef-sub" x="900" dy="17">TÜV — notified body 0123</tspan></text>
+        <text class="cef-lw" x="110" y="536">Business register<tspan class="cef-sub" x="110" dy="17">root of trust</tspan></text>
+        <text class="cef-ld" x="630" y="536">Manufacturer<tspan class="cef-sub" x="630" dy="17">AlphaCell Batteries GmbH</tspan></text>
+        <text class="cef-ld" x="900" y="536">Battery #123<tspan class="cef-sub" x="900" dy="17">physical product</tspan></text>
+    </g>
+
+    <!-- ─── the credentials ──────────────────────────────────────────────────
+         keyTimes are fractions of the 16 s loop: the credential waits at the
+         issuer, travels, then disappears at the subject.
+           r1 r2 r3  0.5→2.7 s   roots issue
+           r4 r5     3.2→5.4 s
+           r6        5.9→8.1 s
+           r7        8.6→10.8 s
+           r8       11.3→13.5 s
+    ──────────────────────────────────────────────────────────────────────── -->
+
+    <g class="mover">
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_NNA</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.031;0.169"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.031;0.169;1">
+                <mpath href="#cef-r1"/>
+            </animateMotion>
+        </g>
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_RAB</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.031;0.169"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.031;0.169;1">
+                <mpath href="#cef-r2"/>
+            </animateMotion>
+        </g>
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_REGBIZ</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.031;0.169"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.031;0.169;1">
+                <mpath href="#cef-r3"/>
+            </animateMotion>
+        </g>
+
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_CABREG</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.2;0.338"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.2;0.338;1">
+                <mpath href="#cef-r4"/>
+            </animateMotion>
+        </g>
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_NAB</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.2;0.338"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.2;0.338;1">
+                <mpath href="#cef-r5"/>
+            </animateMotion>
+        </g>
+
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_ACAB</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.369;0.506"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.369;0.506;1">
+                <mpath href="#cef-r6"/>
+            </animateMotion>
+        </g>
+
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_CC</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.538;0.675"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.538;0.675;1">
+                <mpath href="#cef-r7"/>
+            </animateMotion>
+        </g>
+
+        <g opacity="1">
+            <circle class="cef-vc" r="11"/><text class="cef-vct" y="-18">C_DPP</text>
+            <animate attributeName="opacity" dur="16s" repeatCount="indefinite" calcMode="discrete"
+                     values="1;0;1;0" keyTimes="0;0.001;0.706;0.844"/>
+            <animateMotion dur="16s" repeatCount="indefinite" calcMode="linear"
+                           keyPoints="0;0;1;1" keyTimes="0;0.706;0.844;1">
+                <mpath href="#cef-r8"/>
+            </animateMotion>
+        </g>
+    </g>
+
+
+    <g transform="translate(40,600)">
+        <circle class="cef-vc" cx="8" cy="-4" r="8"/>
+        <text class="cef-cap" x="26" y="0">verifiable credential · C_NNA…C_ACAB are RecognizedEntityCredentials, C_CC a DigitalConformityCredential, C_DPP the product passport</text>
+    </g>
+</svg>
